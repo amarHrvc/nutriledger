@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bd show:*)",
+      "Bash(bd update:*)",
+      "Bash(bd close:*)",
+      "Bash(curl:*)",
+      "Bash(bd ready:*)",
+      "Bash(bd list:*)",
+      "Bash(bd stats:*)",
+      "Bash(bd remember:*)"
+    ]
+  },
+  "disabledMcpjsonServers": [
+    "laravel-boost"
+  ]
+}

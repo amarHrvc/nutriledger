@@ -1,0 +1,26 @@
+sequenceDiagram
+    actor User
+    participant Browser
+    participant Fortify
+    participant DB
+
+    User->>Browser: Enter email + password
+    Browser->>Fortify: POST /login
+    Fortify->>DB: SELECT * FROM users WHERE email = ?
+    DB-->>Fortify: User record
+    Fortify->>Fortify: Hash::check(password, hash)
+
+    alt Invalid credentials
+        Fortify-->>Browser: 422 Unprocessable
+        Browser-->>User: Show error message
+    else Valid + 2FA enabled
+        Fortify-->>Browser: Redirect /two-factor-challenge
+        User->>Browser: Enter TOTP code
+        Browser->>Fortify: POST /two-factor-challenge
+        Fortify->>Fortify: Verify TOTP code
+        Fortify-->>Browser: Redirect /dashboard
+        Browser-->>User: Dashboard
+    else Valid + no 2FA
+        Fortify-->>Browser: Redirect /dashboard
+        Browser-->>User: Dashboard
+    end

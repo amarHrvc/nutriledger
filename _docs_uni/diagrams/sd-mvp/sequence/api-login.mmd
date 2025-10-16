@@ -1,0 +1,26 @@
+sequenceDiagram
+    actor User
+    participant SPA as React SPA
+    participant API as Laravel API
+    participant Sanctum
+    participant DB
+
+    User->>SPA: Enter email + password
+    SPA->>API: POST /api/login { email, password }
+    API->>API: LoginRequest::authorize() + validate()
+    API->>DB: SELECT * FROM users WHERE email = ?
+    DB-->>API: User record
+    API->>Sanctum: Hash::check(password, hash)
+
+    alt Invalid credentials
+        Sanctum-->>API: false
+        API-->>SPA: 422 { errors: { email: [...] } }
+        SPA-->>User: Show field error
+    else Valid credentials
+        Sanctum-->>API: true
+        API->>DB: INSERT INTO personal_access_tokens
+        DB-->>API: Token string
+        API-->>SPA: 200 { data: { user, token }, message: "Logged in" }
+        SPA->>SPA: Store token in AuthStore
+        SPA-->>User: Redirect to dashboard
+    end

@@ -1,0 +1,114 @@
+classDiagram
+    direction TB
+
+    class User {
+        +int id
+        +string name
+        +string email
+        +string password
+        +string role
+        +datetime deleted_at
+        +isAdmin() bool
+        +isDoctor() bool
+        +isPatient() bool
+    }
+
+    class Patient {
+        +int id
+        +int user_id
+        +string first_name
+        +string last_name
+        +date date_of_birth
+        +string gender
+        +string blood_type
+        +string allergies
+        +string medical_notes
+        +datetime deleted_at
+        +fullName() string
+    }
+
+    class PatientSocioeconomic {
+        +int id
+        +int patient_id
+        +string employment_status
+        +string income_level
+        +bool has_health_insurance
+        +string smoking_status
+        +string physical_activity_level
+        +string food_security_status
+        +string dietary_restrictions_cultural
+    }
+
+    class Visit {
+        +int id
+        +int patient_id
+        +int doctor_id
+        +date date
+        +string notes
+    }
+
+    class VisitVital {
+        +int id
+        +int visit_id
+        +float blood_pressure_systolic
+        +float blood_pressure_diastolic
+        +float pulse
+        +float temperature
+        +float weight_kg
+        +float height_cm
+        +float bmi
+        +bool has_abnormal_values
+    }
+
+    class Medication {
+        +int id
+        +int patient_id
+        +string name
+        +string dose
+        +string frequency
+        +string duration
+        +date expiry_date
+        +string status
+    }
+
+    class LabResult {
+        +int id
+        +int patient_id
+        +int visit_id
+        +string parameter
+        +float value
+        +string unit
+        +string category
+        +datetime reviewed_at
+    }
+
+    class Recommendation {
+        +int id
+        +int visit_id
+        +string diet_plan
+        +string supplementation
+        +string lifestyle_suggestions
+        +string status
+        +date date_valid_to
+    }
+
+    class Reminder {
+        +int id
+        +int patient_id
+        +int visit_id
+        +string type
+        +date date
+        +string notes
+    }
+
+    User "1" --> "0..1" Patient : has
+    Patient "1" --> "0..1" PatientSocioeconomic : has
+    Patient "1" --> "0..*" Visit : has many
+    User "1" --> "0..*" Visit : conducts as doctor
+    Visit "1" --> "0..1" VisitVital : has
+    Patient "1" --> "0..*" Medication : has
+    Patient "1" --> "0..*" LabResult : has
+    Visit "1" --> "0..*" LabResult : optionally linked
+    Visit "1" --> "0..*" Recommendation : has
+    Patient "1" --> "0..*" Reminder : has
+    Visit "1" --> "0..*" Reminder : optionally linked

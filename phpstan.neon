@@ -1,0 +1,21 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+        - config
+        - database
+        - routes
+    
+    # Rule level 0-9 (start with 5, increase gradually)
+    level: 5
+    
+    # Ignore specific errors
+    ignoreErrors:
+    
+    # Laravel-specific
+    excludePaths:
+        - bootstrap/cache/*
+        - storage/*
+        - vendor/*

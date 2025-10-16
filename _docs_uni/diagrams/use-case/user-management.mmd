@@ -1,0 +1,18 @@
+graph LR
+    subgraph System ["User Management"]
+        UC1([View User List])
+        UC2([Create User])
+        UC3([Edit User])
+        UC4([Delete User])
+        UC5([Force Delete User])
+    end
+
+    Admin((Admin)) --> UC1
+    Admin --> UC2
+    Admin --> UC3
+    Admin --> UC4
+    Admin --> UC5
+
+    Doktor((Doktor)) --> UC2
+    Doktor --> UC3
+    Doktor --> UC4

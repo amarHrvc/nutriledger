@@ -1,0 +1,109 @@
+<?php
+
+use App\Livewire\Settings\Appearance;
+use App\Livewire\Settings\Password;
+use App\Livewire\Settings\Profile;
+use App\Livewire\Settings\TwoFactor;
+use App\Livewire\Patient\Visit\VisitList;
+use App\Livewire\Patient\Visit\CreateVisit;
+use App\Livewire\Patient\Visit\ViewVisit;
+use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Features;
+
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+
+Route::view('dashboard', 'dashboard')
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+Route::middleware(['auth'])->group(function () {
+    Route::redirect('settings', 'settings/profile');
+
+    Route::get('settings/profile', Profile::class)->name('settings.profile');
+    Route::get('settings/password', Password::class)->name('settings.password');
+    Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
+
+    Route::get('settings/two-factor', TwoFactor::class)
+        ->middleware(
+            when(
+                Features::canManageTwoFactorAuthentication()
+                    && Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword'),
+                ['password.confirm'],
+                [],
+            ),
+        )
+        ->name('two-factor.show');
+});
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/users', function () {
+        return view('admin.users.index');
+    })->name('users.index');
+
+    Route::get('/users/create', function () {
+        return view('admin.users.create');
+    })->name('users.create');
+
+    // Route model binding automatically loads User by {user} parameter
+    Route::get('/users/{user}/edit', function (App\Models\User $user) {
+        return view('admin.users.edit', ['user' => $user]);
+    })->name('users.edit');
+});
+
+// Patient routes - List and Create restricted by role
+Route::middleware(['auth'])->group(function () {
+    Route::get('/patients', \App\Livewire\Patient\PatientList::class)
+        ->can('viewAny', \App\Models\Patient::class)
+        ->name('patients.index');
+
+    Route::get('/patients/create', \App\Livewire\Patient\CreatePatient::class)
+        ->can('create', \App\Models\Patient::class)
+        ->name('patients.create');
+
+    Route::get('/patients/{patient}', \App\Livewire\Patient\ViewPatient::class)
+        ->name('patients.show');
+
+    Route::get('/patients/{patient}/edit', \App\Livewire\Patient\EditPatient::class)
+        ->name('patients.edit');
+
+    Route::get('/patients/{patient}/socioeconomic', \App\Livewire\Patient\Socioeconomic\ViewSocioeconomic::class)
+        ->name('patients.socioeconomic.show');
+
+    Route::get('/patients/{patient}/socioeconomic/create', \App\Livewire\Patient\Socioeconomic\ManageSocioeconomic::class)
+        ->can('create', \App\Models\PatientSocioeconomic::class)
+        ->name('patients.socioeconomic.create');
+
+    Route::get('/patients/{patient}/socioeconomic/edit', \App\Livewire\Patient\Socioeconomic\ManageSocioeconomic::class)
+        ->can('create', \App\Models\PatientSocioeconomic::class)
+        ->name('patients.socioeconomic.edit');
+
+    Route::get('/patients/{patient}/socioeconomic/delete', \App\Livewire\Patient\Socioeconomic\DeleteSocioeconomic::class)
+        ->can('create', \App\Models\PatientSocioeconomic::class)
+        ->name('patients.socioeconomic.delete');
+
+//  ------------------ Visits ------------------
+
+    Route::prefix('patients/{patient}/visits')->name('visit.')->group(function () {
+
+        Route::get('/', VisitList::class)
+            ->can('viewAny', \App\Models\Visit::class)
+            ->name('index');
+
+        Route::get('/create', CreateVisit::class)
+            ->can('create', \App\Models\Visit::class)
+            ->name('create');
+
+        Route::get('/{visit}', ViewVisit::class)
+            ->name('show');
+
+//        Route::get('/{visit}/edit', EditVisit::class)
+//            ->can('update', \App\Models\Visit::class)
+//            ->name('edit');
+
+        //TODO: Delete for visit !!!!!!!!!!!!
+    });
+});
+
+require __DIR__.'/auth.php';

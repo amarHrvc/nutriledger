@@ -1,0 +1,34 @@
+---
+title: Sequence 3 - PUT /api/patients/{id} (Update Patient)
+---
+sequenceDiagram
+    actor Client as Admin/Doctor Client
+    participant API as Laravel API
+    participant MW as Auth + Role Middleware
+    participant Policy as PatientPolicy
+    participant Request as UpdatePatientRequest
+    participant Service as PatientService
+    participant DB as Database
+
+    Client->>API: PUT /api/patients/{id} {updated fields}
+    API->>MW: Verify Sanctum token
+    MW-->>API: Authenticated (admin or doktor)
+    API->>Policy: authorize('update', patient)
+    alt pacijent attempts update
+        Policy-->>API: Denied
+        API-->>Client: 403 Forbidden
+    else admin or doktor
+        Policy-->>API: Allowed
+        API->>Request: Validate request data
+        alt Validation fails
+            Request-->>API: Validation errors
+            API-->>Client: 422 Unprocessable Entity
+        else Validation passes
+            Request-->>API: Validated data
+            API->>Service: updatePatient(patient, validatedData)
+            Service->>DB: UPDATE patients SET ...
+            DB-->>Service: Updated patient
+            Service-->>API: Patient
+            API-->>Client: 200 PatientResource JSON
+        end
+    end

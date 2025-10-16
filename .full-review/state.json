@@ -1,0 +1,16 @@
+{
+  "target": "feature/socioeconomic-data branch — socioeconomic patient data feature (tasks 12-20)",
+  "status": "in_progress",
+  "flags": {
+    "security_focus": false,
+    "performance_critical": false,
+    "strict_mode": false,
+    "framework": "Laravel 12 + Livewire 3 + Flux UI"
+  },
+  "current_step": "1A+1B",
+  "current_phase": 1,
+  "completed_steps": ["00-scope"],
+  "files_created": ["00-scope.md"],
+  "started_at": "2026-02-28T00:00:00Z",
+  "last_updated": "2026-02-28T00:00:00Z"
+}

@@ -1,0 +1,52 @@
+graph LR
+    subgraph System ["NutriBase — MVP (Groups 1-3)"]
+        subgraph Auth ["Authentication"]
+            UC_LOGIN([Login])
+            UC_LOGOUT([Logout])
+            UC_2FA([Enable 2FA])
+            UC_PROFILE([Edit Own Profile])
+        end
+
+        subgraph Users ["User Management"]
+            UC_USR_LIST([View User List])
+            UC_USR_CREATE([Create User])
+            UC_USR_EDIT([Edit User])
+            UC_USR_DELETE([Delete User])
+        end
+
+        subgraph Patients ["Patient Management"]
+            UC_PAT_LIST([View Patient List])
+            UC_PAT_CREATE([Create Patient])
+            UC_PAT_VIEW([View Patient Profile])
+            UC_PAT_EDIT([Edit Patient])
+            UC_PAT_DELETE([Soft Delete Patient])
+            UC_PAT_FORCE_DELETE([Force Delete Patient])
+            UC_SOCIO_VIEW([View Socioeconomic Data])
+            UC_SOCIO_MANAGE([Manage Socioeconomic Data])
+        end
+
+        subgraph Visits ["Visits & Encounters"]
+            UC_VIS_LIST([View Visit List])
+            UC_VIS_CREATE([Create Visit])
+            UC_VIS_VIEW([View Visit])
+            UC_VIS_UPDATE([Update Visit])
+            UC_VIS_DELETE([Delete Visit])
+        end
+    end
+
+    Admin((Admin)) --> UC_LOGIN & UC_LOGOUT & UC_2FA & UC_PROFILE
+    Admin --> UC_USR_LIST & UC_USR_CREATE & UC_USR_EDIT & UC_USR_DELETE
+    Admin --> UC_PAT_LIST & UC_PAT_CREATE & UC_PAT_VIEW & UC_PAT_EDIT & UC_PAT_DELETE & UC_PAT_FORCE_DELETE
+    Admin --> UC_SOCIO_VIEW & UC_SOCIO_MANAGE
+    Admin --> UC_VIS_LIST & UC_VIS_CREATE & UC_VIS_VIEW & UC_VIS_UPDATE & UC_VIS_DELETE
+
+    Doktor((Doktor)) --> UC_LOGIN & UC_LOGOUT & UC_2FA & UC_PROFILE
+    Doktor --> UC_USR_CREATE & UC_USR_EDIT & UC_USR_DELETE
+    Doktor --> UC_PAT_LIST & UC_PAT_CREATE & UC_PAT_VIEW & UC_PAT_EDIT & UC_PAT_DELETE
+    Doktor --> UC_SOCIO_VIEW & UC_SOCIO_MANAGE
+    Doktor --> UC_VIS_LIST & UC_VIS_CREATE & UC_VIS_VIEW & UC_VIS_UPDATE
+
+    Pacijent((Pacijent)) --> UC_LOGIN & UC_LOGOUT & UC_2FA & UC_PROFILE
+    Pacijent --> UC_PAT_VIEW & UC_PAT_EDIT
+    Pacijent --> UC_SOCIO_VIEW
+    Pacijent --> UC_VIS_VIEW

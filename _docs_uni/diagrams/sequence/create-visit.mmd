@@ -1,0 +1,31 @@
+sequenceDiagram
+    actor Doctor
+    participant Browser
+    participant VisitPolicy
+    participant CreateVisit as CreateVisit (Livewire)
+    participant DB
+
+    Doctor->>Browser: GET /patients/{patient}/visits/create
+    Browser->>VisitPolicy: can('create', Visit::class)
+
+    alt Not authorized
+        VisitPolicy-->>Browser: 403 Forbidden
+        Browser-->>Doctor: Access denied
+    else Authorized
+        VisitPolicy-->>Browser: Allow
+        Browser-->>Doctor: Create visit form
+
+        Doctor->>Browser: Fill date + notes, submit
+        Browser->>CreateVisit: call save()
+        CreateVisit->>CreateVisit: validate()
+
+        alt Validation fails
+            CreateVisit-->>Browser: Validation errors
+            Browser-->>Doctor: Errors shown inline
+        else Validation passes
+            CreateVisit->>DB: Visit::create([...validated, doctor_id => auth()->id()])
+            DB-->>CreateVisit: Visit $visit
+            CreateVisit-->>Browser: redirect('/patients/{patient}/visits/' . $visit->id)
+            Browser-->>Doctor: Visit detail page
+        end
+    end

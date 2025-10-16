@@ -1,0 +1,16 @@
+flowchart TD
+    A([Start]) --> B[Navigate to Patient profile — Medications tab]
+    B --> C{Authorized?\nAdmin or Doktor}
+    C -->|No| D[403 Forbidden]
+    D --> Z([End])
+    C -->|Yes| E[Click Add Medication]
+    E --> F[Display medication form\nname, dose, frequency, duration, expiry date]
+    F --> G[Fill in details]
+    G --> H[Submit]
+    H --> I{Validation passes?}
+    I -->|No| J[Show validation errors]
+    J --> G
+    I -->|Yes| K[Medication::create with status = active]
+    K --> L[Redirect to Medications list]
+    L --> M[Grouped by status: active / discontinued]
+    M --> N([End])

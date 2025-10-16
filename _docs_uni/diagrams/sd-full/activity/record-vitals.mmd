@@ -1,0 +1,22 @@
+flowchart TD
+    A([Start]) --> B[Navigate to Visit detail page]
+    B --> C{Vitals already recorded?}
+    C -->|Yes| D[Show existing vitals — read only]
+    D --> Z([End])
+    C -->|No| E{Authorized?\nAdmin or Doktor}
+    E -->|No| F[403 Forbidden]
+    F --> Z
+    E -->|Yes| G[Display record vitals form\nBP, pulse, temp, weight, height]
+    G --> H[Fill in measurements]
+    H --> I[Submit]
+    I --> J{Validation passes?}
+    J -->|No| K[Show validation errors]
+    K --> H
+    J -->|Yes| L[Calculate BMI = weight / height²]
+    L --> M{Any value outside normal range?}
+    M -->|Yes| N[Set has_abnormal_values = true]
+    M -->|No| O[Set has_abnormal_values = false]
+    N --> P[VisitVital::create persisted]
+    O --> P
+    P --> Q[Redirect to Visit detail with vitals panel]
+    Q --> R([End])
