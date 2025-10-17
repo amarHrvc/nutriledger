@@ -1,0 +1,156 @@
+// =====================
+// ENUMS
+// =====================
+Enum uloga_tip {
+admin
+doktor
+pacijent
+}
+
+
+Enum spol_tip {
+M
+Ž
+}
+
+
+Enum ucastalost_tip {
+jednom_dnevno
+dvaput_dnevno
+jednom_nedeljno
+po_potrebi
+svaki_dan
+ujutro_i_uvece
+custom
+}
+
+
+Enum trajanje_tip {
+pet_dana
+sedam_dana
+deset_dana
+mjesec_dana
+trajno
+custom
+}
+
+
+// =====================
+// USERS
+// =====================
+Table users {
+id bigint [pk, increment]
+ime varchar
+prezime varchar
+email varchar [unique]
+lozinka varchar
+uloga uloga_tip
+created_at timestamp
+updated_at timestamp
+}
+
+
+// =====================
+// PACIJENTI (profilne informacije)
+// =====================
+Table pacijenti {
+id bigint [pk, increment]
+user_id bigint [unique, ref: > users.id]
+datum_rodjenja date
+spol spol_tip
+kontakt_telefon varchar
+adresa text
+datum_prvog_pregleda date
+created_at timestamp
+updated_at timestamp
+}
+
+
+// =====================
+// OSTALE TABLICE POVEZANE NA pacijenti
+// =====================
+Table socio_ekonomski_podaci {
+id bigint [pk, increment]
+pacijent_id bigint [ref: > pacijenti.id]
+porodicni_status varchar
+zanimanje varchar
+zivotni_stil text
+socijalna_podrska text
+created_at timestamp
+updated_at timestamp
+}
+
+
+Table anamneza {
+id bigint [pk, increment]
+pacijent_id bigint [ref: > pacijenti.id]
+digestivni bool
+kardiovaskularni bool
+endokrini bool
+koza bool
+mentalno_emocionalno bool
+spavanje bool
+misicno_osteo bool
+ostalo bool
+napomene text
+created_at timestamp
+updated_at timestamp
+}
+
+
+Table alergije {
+id bigint [pk, increment]
+pacijent_id bigint [ref: > pacijenti.id]
+tip enum('hrana','lijekovi','ostalo')
+opis text
+created_at timestamp
+updated_at timestamp
+}
+
+
+Table lijekovi {
+id bigint [pk, increment]
+pacijent_id bigint [ref: > pacijenti.id]
+naziv varchar
+doza varchar
+ucastalost ucastalost_tip
+trajanje trajanje_tip
+napomena text
+created_at timestamp
+updated_at timestamp
+}
+
+
+Table vitalni_parametri {
+id bigint [pk, increment]
+pacijent_id bigint [ref: > pacijenti.id]
+datum date
+sistolni int
+dijastolni int
+puls int
+temperatura decimal(5,2)
+spo2 decimal(5,2)
+respiratorna_frekvencija int
+tjelesna_masa decimal(6,2)
+tjelesna_visina decimal(6,2)
+bmi decimal(5,2)
+mast decimal(5,2)
+misicna_masa decimal(5,2)
+voda decimal(5,2)
+bmr decimal(5,2)
+visceralna_mast decimal(5,2)
+created_at timestamp
+updated_at timestamp
+}
+
+
+Table preporuke {
+id bigint [pk, increment]
+pacijent_id bigint [ref: > pacijenti.id]
+plan_ishrane text
+suplementi text
+lifestyle text
+prioritetne_napomene text
+created_at timestamp
+updated_at timestamp
+}
