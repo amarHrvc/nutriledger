@@ -74,7 +74,7 @@ class User extends Authenticatable
     /**
      * Check if user is doctor
      */
-    public function isDoktor(): bool
+    public function isDoctor(): bool
     {
         return $this->role === 'doktor';
     }
@@ -82,7 +82,7 @@ class User extends Authenticatable
     /**
      * Check if user is patient
      */
-    public function isPacijent(): bool
+    public function isPatient(): bool
     {
         return $this->role === 'pacijent';
     }
