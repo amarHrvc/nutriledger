@@ -33,6 +33,10 @@ class Register extends Component
         ]);
 
         event(new Registered(($user = User::create($validated))));
+        $user->role = 'pacijent';
+
+        fwrite(STDERR, "Registration test STDERR: " . $user);
+
 
         Auth::login($user);
 
