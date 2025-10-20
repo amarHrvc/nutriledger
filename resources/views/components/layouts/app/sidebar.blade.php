@@ -15,6 +15,19 @@
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                 </flux:navlist.group>
+
+                @if(auth()->user()->isAdmin())
+
+                    <flux:navlist.group :heading="__('Admin')" class="grid">
+                        <flux:navlist.item icon="users" :href="route('admin.users.index')" :current="request()->routeIs('admin.users*')" wire:navigate>
+                            {{ __('Users') }}
+                        </flux:navlist.item>
+                    </flux:navlist.group>
+
+
+                @endif
+
+
             </flux:navlist>
 
             <flux:spacer />
@@ -32,6 +45,7 @@
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">
                 <flux:profile
+                    as="button"
                     :name="auth()->user()->name"
                     :initials="auth()->user()->initials()"
                     icon:trailing="chevrons-up-down"
@@ -83,6 +97,7 @@
 
             <flux:dropdown position="top" align="end">
                 <flux:profile
+                    as="button"
                     :initials="auth()->user()->initials()"
                     icon-trailing="chevron-down"
                 />
