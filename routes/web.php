@@ -38,6 +38,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/users', function () {
         return view('admin.users.index');
     })->name('users.index');
+
+    Route::get('/users/create', function () {
+        return view('admin.users.create');
+    })->name('users.create');
 });
 
 require __DIR__.'/auth.php';

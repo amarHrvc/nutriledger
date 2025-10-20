@@ -14,7 +14,7 @@
             />
         </div>
 
-        <div>
+        <div class="flex gap-2">
             <select
                 wire:model.live="roleFilter"
                 class="rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
@@ -24,6 +24,14 @@
                 <option value="doktor">Doktor</option>
                 <option value="pacijent">Pacijent</option>
             </select>
+
+            <a
+                href="{{ route('admin.users.create') }}"
+                wire:navigate
+                class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+                Create User !!!!!!!!!!!
+            </a>
         </div>
     </div>
 
