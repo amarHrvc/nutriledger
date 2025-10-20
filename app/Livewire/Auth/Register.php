@@ -5,6 +5,7 @@ namespace App\Livewire\Auth;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
@@ -32,11 +33,11 @@ class Register extends Component
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        event(new Registered(($user = User::create($validated))));
-        $user->role = 'pacijent';
+        $validated['role'] = 'pacijent';
 
-        fwrite(STDERR, "Registration test STDERR: " . $user);
+        $user = User::create($validated);
 
+        event(new Registered($user));
 
         Auth::login($user);
 

@@ -17,7 +17,7 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        fwrite(STDERR, "RoleMiddleware role STDERR: " . json_encode($roles));
+        Log::debug("RoleMiddleware role: " . json_encode($roles));
 
         $user = Auth::user();
 

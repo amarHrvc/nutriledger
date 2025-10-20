@@ -34,4 +34,10 @@ Route::middleware(['auth'])->group(function () {
         ->name('two-factor.show');
 });
 
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/users', function () {
+        return view('admin.users.index');
+    })->name('users.index');
+});
+
 require __DIR__.'/auth.php';
