@@ -1,12 +1,13 @@
 <div>
     <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Create New User</h2>
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Add a new user to the system</p>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Edit User</h2>
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Update user information</p>
     </div>
 
     <div class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
-        <form action="{{ route('admin.users.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('admin.users.update', $user) }}" method="POST" class="space-y-6">
             @csrf
+            @method('PUT')
 
             <!-- Name -->
             <div>
@@ -17,7 +18,7 @@
                     type="text"
                     id="name"
                     name="name"
-                    value="{{ old('name') }}"
+                    value="{{ old('name', $user->name) }}"
                     class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                     required
                 />
@@ -35,7 +36,7 @@
                     type="email"
                     id="email"
                     name="email"
-                    value="{{ old('email') }}"
+                    value="{{ old('email', $user->email) }}"
                     class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                     required
                 />
@@ -55,26 +56,25 @@
                     class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                     required
                 >
-                    <option value="pacijent" {{ old('role') == 'pacijent' ? 'selected' : '' }}>Pacijent</option>
-                    <option value="doktor" {{ old('role') == 'doktor' ? 'selected' : '' }}>Doktor</option>
-                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="pacijent" {{ old('role', $user->role) == 'pacijent' ? 'selected' : '' }}>Pacijent</option>
+                    <option value="doktor" {{ old('role', $user->role) == 'doktor' ? 'selected' : '' }}>Doktor</option>
+                    <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                 </select>
                 @error('role')
                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                 @enderror
             </div>
 
-            <!-- Password -->
+            <!-- Password (Optional) -->
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Password <span class="text-red-500">*</span>
+                    Password <span class="text-sm text-gray-500">(Leave blank to keep current password)</span>
                 </label>
                 <input
                     type="password"
                     id="password"
                     name="password"
                     class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
-                    required
                 />
                 @error('password')
                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -84,14 +84,13 @@
             <!-- Password Confirmation -->
             <div>
                 <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Confirm Password <span class="text-red-500">*</span>
+                    Confirm Password
                 </label>
                 <input
                     type="password"
                     id="password_confirmation"
                     name="password_confirmation"
                     class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
-                    required
                 />
             </div>
 
@@ -107,7 +106,7 @@
                     type="submit"
                     class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
-                    Create User
+                    Update User
                 </button>
             </div>
         </form>

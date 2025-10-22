@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -42,6 +44,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/users/create', function () {
         return view('admin.users.create');
     })->name('users.create');
+
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+
+    Route::get('/users/{user}/edit', function (User $user) {
+        return view('admin.users.edit', compact('user'));
+    })->name('users.edit');
+
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
 require __DIR__.'/auth.php';
