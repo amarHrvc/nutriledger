@@ -57,9 +57,12 @@ class Login extends Component
 
     /**
      * Validate the user's credentials.
+     * 
+     * @return \App\Models\User
      */
     protected function validateCredentials(): User
     {
+        /** @var \App\Models\User|null $user */
         $user = Auth::getProvider()->retrieveByCredentials(['email' => $this->email, 'password' => $this->password]);
 
         if (! $user || ! Auth::getProvider()->validateCredentials($user, ['password' => $this->password])) {

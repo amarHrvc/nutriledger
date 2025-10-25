@@ -20,6 +20,7 @@
         "barryvdh/laravel-debugbar": "^3.16",
         "barryvdh/laravel-ide-helper": "^3.6",
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.7",
         "laravel/boost": "^1.5",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.18",
@@ -57,6 +58,9 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
+        ],
+        "analyse": [
+            "./vendor/bin/phpstan analyse --memory-limit=512M"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
