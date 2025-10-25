@@ -174,3 +174,8 @@ dist
 # End of https://www.toptal.com/developers/gitignore/api/node,laravel,composer
 
 .idea/**
+
+# IDE Helper files
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
