@@ -1,156 +1,175 @@
-// =====================
-// ENUMS
-// =====================
-Enum uloga_tip {
-admin
-doktor
-pacijent
-}
+// # =====================================
+// # USERS & PATIENTS
+// # =====================================
 
-
-Enum spol_tip {
-M
-Ž
-}
-
-
-Enum ucastalost_tip {
-jednom_dnevno
-dvaput_dnevno
-jednom_nedeljno
-po_potrebi
-svaki_dan
-ujutro_i_uvece
-custom
-}
-
-
-Enum trajanje_tip {
-pet_dana
-sedam_dana
-deset_dana
-mjesec_dana
-trajno
-custom
-}
-
-
-// =====================
-// USERS
-// =====================
 Table users {
-id bigint [pk, increment]
-ime varchar
-prezime varchar
-email varchar [unique]
-lozinka varchar
-uloga uloga_tip
-created_at timestamp
-updated_at timestamp
+  id bigint [pk, increment]
+  first_name varchar
+  last_name varchar
+  email varchar [unique]
+  password varchar
+  role enum('admin', 'doctor', 'user')
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table patients {
+  id bigint [ref: > users.id]
+  first_name varchar
+  last_name varchar
+  date_of_birth date
+  gender enum('male', 'female')
+  phone varchar
+  email varchar
+  address text
+  first_visit_date date
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table socio_economic_data {
+  id bigint [pk, increment]
+  patient_id bigint [ref: > patients.id]
+  marital_status varchar
+  occupation varchar
+  lifestyle text
+  social_support text
+  created_at timestamp
+  updated_at timestamp
+}
+
+// # =====================================
+// # MVP TABLES
+// # =====================================
+
+Table allergies {
+  id bigint [pk, increment]
+  patient_id bigint [ref: > patients.id]
+  type enum('food', 'medication', 'other')
+  description text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table medications {
+  id bigint [pk, increment]
+  patient_id bigint [ref: > patients.id]
+  name varchar
+  dosage varchar
+  frequency varchar
+  duration varchar
+  status enum('active', 'inactive', 'discontinued')
+  date_valid_to date
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table visits {
+  id bigint [pk, increment]
+  doctor_id bigint [ref: > users.id]
+  patient_id bigint [ref: > patients.id]
+  date date
+  notes text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table vital_signs {
+  id bigint [pk, increment]
+  visit_id bigint [ref: > visits.id]
+  date date
+  systolic int
+  diastolic int
+  pulse int
+  temperature decimal
+  spo2 decimal
+  respiratory_rate int
+  body_weight decimal
+  height decimal
+  bmi decimal
+  fat_percentage decimal
+  muscle_mass decimal
+  water_percentage decimal
+  bmr decimal
+  visceral_fat decimal
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table recommendations {
+  id bigint [pk, increment]
+  visit_id bigint [ref: > visits.id]
+  diet_plan text
+  supplements text
+  lifestyle text
+  priority_notes text
+  status enum('active', 'inactive', 'expired')
+  date_valid_to date
+  created_at timestamp
+  updated_at timestamp
 }
 
 
-// =====================
-// PACIJENTI (profilne informacije)
-// =====================
-Table pacijenti {
-id bigint [pk, increment]
-user_id bigint [unique, ref: > users.id]
-datum_rodjenja date
-spol spol_tip
-kontakt_telefon varchar
-adresa text
-datum_prvog_pregleda date
-created_at timestamp
-updated_at timestamp
+Table labs {
+id bigint [pk]
+patient_id bigint [ref: > patients.id]
+visit_id bigint [ref: > visits.id, null] // optional: ties to Visit 2, when doctor reviewed
+parameter varchar
+value decimal
+unit varchar
+category enum('hematology', 'biochemistry', 'hormones', 'vitamins_minerals', 'other')
+created_at timestamp // when entry was made
+reviewed_at timestamp [null] // optional — when the result was evaluated
 }
 
+// // # =====================================
+// // # POST-MVP TABLES
+// // # =====================================
 
-// =====================
-// OSTALE TABLICE POVEZANE NA pacijenti
-// =====================
-Table socio_ekonomski_podaci {
-id bigint [pk, increment]
-pacijent_id bigint [ref: > pacijenti.id]
-porodicni_status varchar
-zanimanje varchar
-zivotni_stil text
-socijalna_podrska text
-created_at timestamp
-updated_at timestamp
+Table body_measurements {
+  id bigint [pk, increment]
+  patient_id bigint [ref: > patients.id]
+  date date
+  waist decimal
+  hips decimal
+  upper_arm decimal
+  thigh decimal
+  calf decimal
+  chest decimal
+  shoulders decimal
+  created_at timestamp
+  updated_at timestamp
 }
 
-
-Table anamneza {
-id bigint [pk, increment]
-pacijent_id bigint [ref: > pacijenti.id]
-digestivni bool
-kardiovaskularni bool
-endokrini bool
-koza bool
-mentalno_emocionalno bool
-spavanje bool
-misicno_osteo bool
-ostalo bool
-napomene text
-created_at timestamp
-updated_at timestamp
+Table food_preferences {
+  id bigint [pk, increment]
+  patient_id bigint [ref: > patients.id]
+  food_preferences text
+  restrictions text
+  intolerances text
+  created_at timestamp
+  updated_at timestamp
 }
 
-
-Table alergije {
-id bigint [pk, increment]
-pacijent_id bigint [ref: > pacijenti.id]
-tip enum('hrana','lijekovi','ostalo')
-opis text
-created_at timestamp
-updated_at timestamp
+Table physical_activity {
+  id bigint [pk, increment]
+  patient_id bigint [ref: > patients.id]
+  activity_type varchar
+  duration int
+  frequency varchar
+  intensity varchar
+  notes text
+  created_at timestamp
+  updated_at timestamp
 }
 
-
-Table lijekovi {
-id bigint [pk, increment]
-pacijent_id bigint [ref: > pacijenti.id]
-naziv varchar
-doza varchar
-ucastalost ucastalost_tip
-trajanje trajanje_tip
-napomena text
-created_at timestamp
-updated_at timestamp
-}
-
-
-Table vitalni_parametri {
-id bigint [pk, increment]
-pacijent_id bigint [ref: > pacijenti.id]
-datum date
-sistolni int
-dijastolni int
-puls int
-temperatura decimal(5,2)
-spo2 decimal(5,2)
-respiratorna_frekvencija int
-tjelesna_masa decimal(6,2)
-tjelesna_visina decimal(6,2)
-bmi decimal(5,2)
-mast decimal(5,2)
-misicna_masa decimal(5,2)
-voda decimal(5,2)
-bmr decimal(5,2)
-visceralna_mast decimal(5,2)
-created_at timestamp
-updated_at timestamp
-}
-
-
-Table preporuke {
-id bigint [pk, increment]
-pacijent_id bigint [ref: > pacijenti.id]
-plan_ishrane text
-suplementi text
-lifestyle text
-prioritetne_napomene text
-created_at timestamp
-updated_at timestamp
+// check for possibility of standalone recommendations
+Table reminders {
+  id bigint [pk, increment]
+  visit_id bigint [ref: > visits.id]
+  date date
+  type enum('checkup', 'lab', 'measurement', 'other')
+  description text
+  created_at timestamp
+  updated_at timestamp
 }
