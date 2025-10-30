@@ -1,7 +1,7 @@
 {
     "mcpServers": {
         "laravel-boost": {
-            "command": "C:\\laragon\\bin\\php\\php-8.4.5-Win32-vs17-x64\\php.exe",
+            "command": "C:\\Users\\Korisnik\\scoop\\apps\\php8.3\\8.3.21\\php.exe",
             "args": [
                 "D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\artisan",
                 "boost:mcp"
