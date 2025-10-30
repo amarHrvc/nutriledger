@@ -69,6 +69,12 @@ class EditUser extends Component
      */
     public function save()
     {
+        // Livewire doesn't re-apply route middleware with arguments (role:admin)
+        // So we need explicit authorization here
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+
         // Validate all fields
         $validated = $this->validate();
 
