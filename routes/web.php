@@ -42,6 +42,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/users/create', function () {
         return view('admin.users.create');
     })->name('users.create');
+
+    // Route model binding automatically loads User by {user} parameter
+    Route::get('/users/{user}/edit', function (App\Models\User $user) {
+        return view('admin.users.edit', ['user' => $user]);
+    })->name('users.edit');
 });
 
 require __DIR__.'/auth.php';

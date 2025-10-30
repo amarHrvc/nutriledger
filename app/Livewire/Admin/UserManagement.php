@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Log;
 
 class UserManagement extends Component
 {
@@ -46,4 +47,12 @@ class UserManagement extends Component
     {
         $this->resetPage();
     }
+
+
+    public function updatedRoleFilter()
+    {
+        LOG::debug($this->roleFilter);
+    }
+
+
 }
