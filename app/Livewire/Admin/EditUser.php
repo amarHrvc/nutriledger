@@ -11,7 +11,7 @@ class EditUser extends Component
 {
     // The user being edited (loaded from route parameter)
     public User $user;
-    
+
     // Form properties (public = available in view)
     public string $name = '';
     public string $email = '';
@@ -71,9 +71,11 @@ class EditUser extends Component
     {
         // Livewire doesn't re-apply route middleware with arguments (role:admin)
         // So we need explicit authorization here
-        if (auth()->user()->role !== 'admin') {
-            abort(403);
-        }
+//        if (auth()->user()->role !== 'admin') {
+//            abort(403);
+//        }
+
+        $this->authorize('update', User::class);
 
         // Validate all fields
         $validated = $this->validate();
