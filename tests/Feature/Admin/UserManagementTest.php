@@ -370,14 +370,64 @@ test('update user can keep same email', function () {
 
 // Delete User Tests
 test('admin can delete a user', function () {
-    // Skip this test until delete functionality is implemented
-    $this->markTestSkipped('Delete functionality not yet implemented in Livewire');
+    $user = User::factory()->create();
+
+    Livewire::actingAs($this->admin)
+        ->test(\App\Livewire\Admin\DeleteUser::class, ['user' => $user])
+        ->call('delete')
+        ->assertOk();
+
+    $this->assertDatabaseMissing('users', [
+        'id' => $user->id,
+        'name' => $user->name,
+        'email' => $user->email,
+        'soft_deleted_at' => null,
+    ]);
 });
 
-test('admin cannot delete themselves', function () {
-    // Skip this test until delete functionality is implemented
-    $this->markTestSkipped('Delete functionality not yet implemented in Livewire');
+test('admin can soft delete a user', function () {
+    $user = User::factory()->create();
+
+    Livewire::actingAs($this->admin)
+        ->test(\App\Livewire\Admin\DeleteUser::class, ['user' => $user])
+        ->call('delete')
+        ->assertOk();
+
+    $this->assertSoftDeleted('users', [
+        'id' => $user->id,
+    ]);
+
+
+    // User should NOT appear in normal queries
+    expect(User::find($user->id))->toBeNull();
+
+    // But should exist when including trashed
+    $trashedUser = User::withTrashed()->find($user->id);
+    expect($trashedUser)->not->toBeNull()
+        ->and($trashedUser->deleted_at)->not->toBeNull();
+
+//    dump($trashedUser);
+
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+    ]);
+
+
 });
+
+
+test('admin cannot delete themselves', function () {
+    Livewire::actingAs($this->admin)
+        ->test(\App\Livewire\Admin\DeleteUser::class, ['user' => $this->admin])
+        ->call('delete')
+        ->assertSessionHas('error');
+
+    $this->assertDatabaseHas('users', [
+        'id' => $this->admin->id,
+        'deleted_at' => null,
+    ]);
+});
+
 
 test('deleting user shows confirmation', function () {
     $user = User::factory()->create(['role' => 'pacijent']);
@@ -412,11 +462,20 @@ test('doktor cannot update users', function () {
         ->assertStatus(200);
 });
 
-test('doktor cannot delete users', function () {
-    $user = User::factory()->create();
+test('doktor can delete users', function () {
+    $user = User::factory()->create(['role' => 'pacijent']);
 
-    // Skip this test until delete functionality is implemented
-    $this->markTestSkipped('Delete functionality not yet implemented in Livewire');
+    Livewire::actingAs($this->doktor)
+        ->test(\App\Livewire\Admin\DeleteUser::class, ['user' => $user])
+        ->call('delete')
+        ->assertSessionHas('success')
+        ->assertRedirect(route('admin.users.index'));
+
+    $this->assertSoftDeleted('users', ['id' => $user->id]);
+
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+    ]);
 });
 
 test('pacijent cannot create users', function () {
@@ -444,6 +503,12 @@ test('pacijent cannot update users', function () {
 test('pacijent cannot delete users', function () {
     $user = User::factory()->create();
 
-    // Skip this test until delete functionality is implemented
-    $this->markTestSkipped('Delete functionality not yet implemented in Livewire');
+    Livewire::actingAs($this->pacijent)
+        ->test(\App\Livewire\Admin\DeleteUser::class, ['user' => $user])
+        ->call('delete')
+        ->assertForbidden();
+
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+    ]);
 });
