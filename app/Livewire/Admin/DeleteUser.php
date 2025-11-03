@@ -21,7 +21,7 @@ class DeleteUser extends Component
         return view('livewire.admin.delete-user');
     }
 
-    public function delete(): Redirector
+    public function delete(): RedirectResponse
     {
         $this->authorize('delete', $this->user);
         $this->user->delete();
