@@ -1,8 +1,8 @@
 # 📊 Nutri-Ledger - Current Development State
 
-> **Last Updated:** 2025-11-08T00:30:00.000Z  
-> **Branch:** `feature/user_management`  
-> **Latest Commit:** `1ed8ca4 [Feature] Add delete user UI with confirmation modal`
+> **Last Updated:** 2025-11-08T10:40:53.841Z  
+> **Branch:** `feature/patient_management`  
+> **Latest Commit:** Ready to start Patient Management
 
 ---
 
@@ -101,25 +101,26 @@ All CRUD operations fully implemented with authorization, tests, and UI:
 
 ## 📝 Instructions for AI Assistant
 
-### 🎓 LEARNING MODE ACTIVE
+### ⚡ IMPLEMENTATION MODE ACTIVE
 
-**The developer is learning Livewire and refreshing Laravel skills through hands-on practice.**
+**The developer wants AI to implement code directly with TDD approach.**
 
 #### AI Behavior:
-- ✅ **EXPLAIN** concepts, patterns, and approaches in detail
-- ✅ **GUIDE** with step-by-step instructions and code examples
-- ✅ **TEACH** the "why" behind each decision
-- ✅ **SHOW** code examples with detailed comments
-- ❌ **DON'T** implement code directly (unless explicitly requested)
-- ❌ **DON'T** use `create`/`edit` tools for code (only for docs)
+- ✅ **"command:"** prefix = AI implements the task directly
+- ✅ **"question:"** prefix = AI explains concepts in detail
+- ✅ **TDD Required**: Write test first, make it pass (Red → Green)
+- ✅ **Use `create`/`edit` tools** for all code implementation
+- ✅ **Run tests** after each implementation to verify
+- ✅ **Update docs** automatically (CURRENT_STATE.md)
+- ❌ **DON'T create MD files** except CURRENT_STATE updates
 
-#### Exceptions - AI Can Implement:
-1. **Explicitly requested**: "write this", "implement this", "create file"
-2. **Documentation**: Updates to `_docs/*.md` files
-3. **Boilerplate**: Migrations, configs (after explanation)
-4. **Bug fixes**: Critical issues (explain first, fix with approval)
+#### Development Approach:
+- **Feature-by-Feature**: Complete vertical slices (DB → Model → Factory → Policy → GUI → Tests)
+- **TDD Workflow**: Test first, then implementation
+- **Patient First**: Complete Patient feature entirely before Socioeconomic
+- **Documentation**: Only update existing _docs files, no new markdown files
 
-**Full teaching guidelines:** `_docs/LEARNING_MODE.md`
+**Full teaching guidelines:** `_docs/LEARNING_MODE.md` (paused during implementation mode)
 
 ---
 
@@ -162,11 +163,34 @@ User::onlyTrashed()->get()
 ## 🎯 Current Focus
 
 **Feature Group 1:** User Management - ✅ **COMPLETE**  
-**Feature Group 2:** Patient Management - 📋 **READY TO START**  
+**Feature Group 2:** Patient Management - 🚀 **IN PROGRESS**  
+**Approach:** Feature-by-Feature with TDD (Patient first, then Socioeconomic)  
 **Blockers:** None  
-**Next:** Begin Patient Registration & Management implementation
+**Next Task:** Patient DB Migration
 
-**Detailed Task List Available:** `_docs/PATIENT_FEATURE_TASKS.md`
+**Detailed Task List:** `_docs/_Feature/2_PATIENT_MANAGEMENT_FEATURE_TASKS.md`
+
+### 📋 Patient Feature Progress (Vertical Slice)
+
+#### Phase 1: Patient Core Feature
+- [ ] Task 1: Patient DB Migration
+- [ ] Task 2: Patient Model + Relationships
+- [ ] Task 3: Patient Factory
+- [ ] Task 4: Patient Policy
+- [ ] Task 5: Patient Routes
+- [ ] Task 6: List Patients (Livewire + Tests)
+- [ ] Task 7: Create Patient (Livewire + Tests)
+- [ ] Task 8: View Patient (Livewire + Tests)
+- [ ] Task 9: Edit Patient (Livewire + Tests)
+- [ ] Task 10: Delete Patient (Livewire + Tests)
+- [ ] Task 11: Navigation Integration
+
+#### Phase 2: Socioeconomic Extension
+- [ ] Task 12: Socioeconomic DB + Model
+- [ ] Task 13: Socioeconomic Factory
+- [ ] Task 14: Edit Socioeconomic (Livewire + Tests)
+- [ ] Task 15: Integration with Patient Profile
+- [ ] Task 16: Final Verification
 
 ---
 

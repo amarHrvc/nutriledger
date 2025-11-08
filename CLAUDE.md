@@ -5,35 +5,32 @@
 
 The Laravel Boost guidelines are specifically curated by Laravel maintainers for this application. These guidelines should be followed closely to enhance the user's satisfaction building Laravel applications.
 
-## 🎓 LEARNING MODE - CRITICAL
-**This application is in EDUCATIONAL/LEARNING mode.**
+## ⚡ IMPLEMENTATION MODE - ACTIVE
+**This application is in DIRECT IMPLEMENTATION mode.**
 
 ### Primary Goal
-The developer wants to **LEARN Livewire and refresh Laravel knowledge** through hands-on practice.
+The developer wants **AI to implement features directly with TDD approach.**
 
 ### AI Behavior Rules
-1. **EXPLAIN, DON'T IMPLEMENT** - Provide detailed explanations and step-by-step guidance
-2. **TEACH CONCEPTS FIRST** - Explain the "why" before the "how"
-3. **SHOW EXAMPLES** - Provide code examples with detailed comments
-4. **LET USER WRITE CODE** - Do not use `create` or `edit` tools unless explicitly requested
-5. **BE A MENTOR** - Guide, teach, encourage, and answer questions
+1. **"command:" prefix** = Implement the task directly (no explanations unless needed)
+2. **"question:" prefix** = Explain concepts in detail before implementation
+3. **TDD REQUIRED** = Write tests first, then make them pass (Red → Green → Refactor)
+4. **USE TOOLS** = Use `create`, `edit`, and `powershell` tools to implement code
+5. **VERIFY WORK** = Run tests after implementation to ensure green
+6. **UPDATE DOCS** = Update `_docs/_CURRENT_STATE.md` after completing tasks
 
-### When AI CAN Implement Code
-- ✅ Explicitly requested: "write this for me", "implement this"
-- ✅ Documentation updates (MD files in `_docs/`)
-- ✅ Boilerplate after explanation (migrations, configs)
-- ✅ Critical bug fixes (explain first, then fix with approval)
+### Development Approach
+- **Feature-by-Feature**: Complete vertical slices (Patient fully, then Socioeconomic)
+- **TDD Workflow**: Test → Implementation → Verification
+- **No New MD Files**: Only update existing documentation files
+- **Run Tests**: Always verify with `php artisan test --filter=<relevant>`
 
-### Teaching Format
-For each task:
-1. Explain the goal and concepts
-2. Break down into numbered steps
-3. Show code examples with explanations
-4. Explain Livewire/Laravel patterns
-5. Provide verification steps
-6. Summarize key takeaways
+### When AI Should Ask First
+- ❓ Architecture decisions affecting other features
+- ❓ Breaking changes to existing code
+- ❓ Deviations from established patterns
 
-**See `_docs/LEARNING_MODE.md` for complete teaching guidelines.**
+**Note:** Learning mode is paused. See `_docs/LEARNING_MODE.md` if switching back to educational mode.
 
 ---
 

@@ -1,8 +1,10 @@
 # 📋 Patient Management Feature - Development Tasks
 
 > **Created:** 2025-11-07  
+> **Updated:** 2025-11-08T10:40:53.841Z  
 > **Feature Group:** 2 - Patient Registration & Management  
-> **Status:** Not Started  
+> **Status:** 🚀 IN PROGRESS  
+> **Approach:** Feature-by-Feature with TDD  
 > **Dependencies:** User Management (✅ Complete)
 
 ---
@@ -14,6 +16,22 @@ Build a complete Patient Management system where:
 - Doctors and Admins can register and manage patient profiles
 - Patient profiles contain bio-data and socio-economic information
 - Separate from User Management (users are accounts, patients are medical records)
+
+## 🏗️ Development Approach: Feature-by-Feature with TDD
+
+### ⚡ Implementation Mode Active
+- AI implements code directly when prefixed with **"command:"**
+- TDD workflow: Write test → Implement → Verify (Red → Green → Refactor)
+- Complete Patient feature (vertical slice) before Socioeconomic
+- Run tests after each task to ensure green
+
+### 📋 Task Organization
+
+#### **PHASE 1: Patient Core Feature** (Vertical Slice)
+Complete end-to-end functionality for Patient management.
+
+#### **PHASE 2: Socioeconomic Extension** (Add-on Feature)
+Extend Patient with optional socioeconomic data.
 
 ---
 
@@ -63,43 +81,194 @@ patient_socioeconomic
 
 ---
 
+## 📋 TASK SUMMARY: FEATURE-BY-FEATURE APPROACH
+
+### **PHASE 1: Patient Core Feature** (Complete Vertical Slice)
+1. ✅ Patient DB Migration - Create patients table
+2. ✅ Patient Model + Relationships - Eloquent model with User relationship
+3. ✅ Patient Factory - Test data generation
+4. ✅ Patient Policy - Authorization rules
+5. ✅ Patient Routes - CRUD route registration
+6. ✅ List Patients - Livewire component + tests
+7. ✅ Create Patient - Form component + tests
+8. ✅ View Patient - Profile page + tests
+9. ✅ Edit Patient - Edit form + tests
+10. ✅ Delete Patient - Delete with confirmation + tests
+11. ✅ Navigation - Add to main menu
+
+**🎉 Checkpoint: Patient feature 100% complete and working**
+
+### **PHASE 2: Socioeconomic Extension**
+12. ✅ Socioeconomic DB + Model - Table and relationships
+13. ✅ Socioeconomic Factory - Test data
+14. ✅ Edit Socioeconomic - Form component + tests
+15. ✅ Integration - Add to patient profile
+16. ✅ Final Verification - End-to-end tests
+
+**🎉 Checkpoint: Full system complete**
+
+---
+
+## 📖 DETAILED TASK BREAKDOWN
+
+Below are the detailed implementations for each task following the TDD approach.
+
+---
+
 ## ✅ TASK 1: Database Setup
 
+### 🎯 Goal
+Set up the database schema for patients and their socioeconomic data with proper relationships and constraints.
+
+### 📚 Key Concepts
+- **Laravel Migrations**: Version control for your database schema
+- **Foreign Key Constraints**: Enforce referential integrity at the database level
+- **Cascade Deletes**: Automatically clean up related records
+- **Soft Deletes**: Keep deleted records for audit/recovery
+- **Indexes**: Speed up queries on frequently searched columns
+- **Enum Types**: Restrict column values to predefined options
+
+---
+
 ### 1.1 Create Patient Migration
-
-**File:** `database/migrations/YYYY_MM_DD_HHMMSS_create_patients_table.php`
-
-**Instructions:**
-```php
-- Create patients table with all fields listed above
-- Add foreign key constraint: user_id references users(id) onDelete('cascade')
-- Add unique index on user_id (one patient per user)
-- Add soft deletes
-- Add indexes on: user_id, date_of_birth, phone
-```
 
 **Command:**
 ```bash
 php artisan make:migration create_patients_table
 ```
 
+**File:** `database/migrations/YYYY_MM_DD_HHMMSS_create_patients_table.php`
+
+**🔍 What to Implement:**
+
+In the `up()` method, create a table with:
+
+1. **Primary Key**: `id` (auto-increment)
+2. **Foreign Key**: `user_id` → references `users.id`
+   - Must be unique (one patient per user)
+   - Cascade on delete (if user deleted, patient deleted too)
+3. **Personal Info**: first_name, last_name, date_of_birth, gender, phone
+4. **Address Info**: address, city, postal_code
+5. **Emergency Contact**: emergency_contact_name, emergency_contact_phone
+6. **Medical Info**: blood_type, allergies, medical_notes
+7. **Timestamps**: created_at, updated_at
+8. **Soft Delete**: deleted_at (for trash/restore functionality)
+
+**📝 Implementation Guidance:**
+
+```php
+public function up(): void
+{
+    Schema::create('patients', function (Blueprint $table) {
+        $table->id();
+        
+        // Foreign key to users table
+        $table->foreignId('user_id')
+            ->unique()                    // One patient per user
+            ->constrained()               // References users.id
+            ->onDelete('cascade');        // Delete patient if user deleted
+        
+        // Personal information (all required)
+        $table->string('first_name');
+        $table->string('last_name');
+        $table->date('date_of_birth');
+        $table->enum('gender', ['male', 'female', 'other']);
+        $table->string('phone')->nullable();
+        
+        // Address information (all optional)
+        $table->text('address')->nullable();
+        $table->string('city')->nullable();
+        $table->string('postal_code')->nullable();
+        
+        // Emergency contact (optional)
+        $table->string('emergency_contact_name')->nullable();
+        $table->string('emergency_contact_phone')->nullable();
+        
+        // Medical information (optional)
+        $table->enum('blood_type', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+            ->nullable();
+        $table->text('allergies')->nullable();
+        $table->text('medical_notes')->nullable();
+        
+        // Timestamps and soft deletes
+        $table->timestamps();
+        $table->softDeletes();
+        
+        // Performance indexes
+        $table->index('date_of_birth');
+        $table->index('phone');
+    });
+}
+```
+
+**🧠 Why These Choices?**
+- **`foreignId()` + `constrained()`**: Laravel's shorthand for foreign keys
+- **`unique()` on user_id**: Business rule - one patient profile per user account
+- **`onDelete('cascade')`**: Clean up patient when user account is deleted
+- **`enum()` for gender/blood_type**: Restricts values at database level
+- **`nullable()` for optional fields**: Not all data required upfront
+- **`softDeletes()`**: Allows "deleting" without losing data permanently
+- **Indexes**: Speed up searches by DOB and phone number
+
 ---
 
 ### 1.2 Create Socio-Economic Migration
-
-**File:** `database/migrations/YYYY_MM_DD_HHMMSS_create_patient_socioeconomic_table.php`
-
-**Instructions:**
-```php
-- Create patient_socioeconomic table with all fields listed above
-- Add foreign key constraint: patient_id references patients(id) onDelete('cascade')
-- Add unique index on patient_id (one socioeconomic record per patient)
-```
 
 **Command:**
 ```bash
 php artisan make:migration create_patient_socioeconomic_table
 ```
+
+**File:** `database/migrations/YYYY_MM_DD_HHMMSS_create_patient_socioeconomic_table.php`
+
+**🔍 What to Implement:**
+
+This table stores socioeconomic data separately because:
+- It's optional (not all patients need this data)
+- It can be filled in later
+- It keeps the patients table focused on medical/bio data
+- It follows database normalization principles
+
+**📝 Implementation Guidance:**
+
+```php
+public function up(): void
+{
+    Schema::create('patient_socioeconomic', function (Blueprint $table) {
+        $table->id();
+        
+        // One-to-one with patients table
+        $table->foreignId('patient_id')
+            ->unique()                    // One socioeconomic record per patient
+            ->constrained()               // References patients.id
+            ->onDelete('cascade');        // Delete when patient deleted
+        
+        // Socioeconomic factors (all optional)
+        $table->enum('marital_status', ['single', 'married', 'divorced', 'widowed'])
+            ->nullable();
+        $table->string('occupation')->nullable();
+        $table->string('education_level')->nullable();
+        $table->enum('income_level', ['low', 'medium', 'high'])->nullable();
+        $table->enum('living_situation', ['alone', 'family', 'assisted', 'other'])
+            ->nullable();
+        
+        // Insurance information
+        $table->string('insurance_provider')->nullable();
+        $table->string('insurance_number')->nullable();
+        
+        // Additional notes
+        $table->text('lifestyle_notes')->nullable();
+        
+        $table->timestamps();
+    });
+}
+```
+
+**🧠 Why Separate Table?**
+- **Optional Data**: Can create patient without socioeconomic data
+- **One-to-One Relationship**: Each patient has at most one socioeconomic record
+- **Data Organization**: Separates medical from social/economic data
+- **Performance**: Doesn't bloat patients table with nullable columns
 
 ---
 
@@ -110,22 +279,104 @@ php artisan make:migration create_patient_socioeconomic_table
 php artisan migrate
 ```
 
-**Verification:**
+**Expected Output:**
+```
+INFO  Running migrations.
+
+2025_11_08_100000_create_patients_table ........................ 15ms DONE
+2025_11_08_100001_create_patient_socioeconomic_table ........... 8ms DONE
+```
+
+---
+
+### 1.4 Verification
+
+**Option 1: Check Migration Status**
+```bash
+php artisan migrate:status
+```
+
+Look for your two new migrations with "Ran" status.
+
+**Option 2: Inspect Database**
 ```bash
 php artisan tinker
-DB::table('patients')->count();  // Should return 0
-DB::table('patient_socioeconomic')->count();  // Should return 0
 ```
+
+```php
+// Check tables exist and are empty
+DB::table('patients')->count();              // Should return 0
+DB::table('patient_socioeconomic')->count(); // Should return 0
+
+// Inspect table structure
+Schema::getColumnListing('patients');
+Schema::getColumnListing('patient_socioeconomic');
+```
+
+**Option 3: SQLite Browser** (if you prefer GUI)
+- Open `database/database.sqlite` in SQLite browser
+- Verify tables `patients` and `patient_socioeconomic` exist
+- Check foreign key constraints are set up
+
+---
+
+### ✅ Task 1 Completion Checklist
+
+- [ ] Patients migration created with all fields
+- [ ] Foreign key constraint on user_id with cascade delete
+- [ ] Unique constraint on user_id
+- [ ] Soft deletes enabled
+- [ ] Appropriate indexes added
+- [ ] Socioeconomic migration created with all fields
+- [ ] Foreign key constraint on patient_id with cascade delete
+- [ ] Both migrations ran successfully
+- [ ] Tables verified in database
+
+**🎓 What You've Learned:**
+- Creating migrations with foreign keys
+- Using enum types for restricted values
+- Setting up one-to-one relationships at DB level
+- Implementing cascade deletes
+- Adding performance indexes
+- Soft delete functionality
 
 ---
 
 ## ✅ TASK 2: Models & Relationships
 
+### 🎯 Goal
+Create Eloquent models that represent your database tables and define relationships between User, Patient, and Socioeconomic data.
+
+### 📚 Key Concepts
+- **Eloquent Models**: Object-oriented way to interact with database tables
+- **Relationships**: Define how models connect (BelongsTo, HasOne)
+- **Fillable Properties**: Mass assignment protection (security)
+- **Casts**: Automatic type conversion (string → Carbon date)
+- **Accessors**: Computed properties (full_name, age)
+- **Soft Deletes**: Models that use soft delete functionality
+
+---
+
 ### 2.1 Create Patient Model
+
+**Command:**
+```bash
+php artisan make:model Patient
+```
 
 **File:** `app/Models/Patient.php`
 
-**Instructions:**
+**🔍 What to Implement:**
+
+Your Patient model needs:
+1. **Traits**: `HasFactory` (for testing), `SoftDeletes` (for trash/restore)
+2. **Fillable Array**: List of fields that can be mass-assigned (security feature)
+3. **Casts**: Convert `date_of_birth` from string to Carbon date object
+4. **Relationships**: Define connections to User and PatientSocioeconomic
+5. **Accessors**: Computed properties like `full_name` and `age`
+
+**📝 Implementation Guidance:**
+
 ```php
 <?php
 
@@ -136,11 +387,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Patient extends Model
 {
     use HasFactory, SoftDeletes;
 
+    // Mass assignment protection - only these fields can be filled
     protected $fillable = [
         'user_id',
         'first_name',
@@ -158,48 +411,105 @@ class Patient extends Model
         'medical_notes',
     ];
 
-    protected $casts = [
-        'date_of_birth' => 'date',
-    ];
+    // Automatic type casting (Laravel 11+ uses casts() method)
+    protected function casts(): array
+    {
+        return [
+            'date_of_birth' => 'date',  // Converts to Carbon date object
+        ];
+    }
 
-    // Relationship: Patient belongs to User
+    /**
+     * Relationship: Patient belongs to User
+     * 
+     * Each patient is linked to exactly one user account.
+     * Usage: $patient->user
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relationship: Patient has one SocioEconomic record
+    /**
+     * Relationship: Patient has one SocioEconomic record
+     * 
+     * Optional relationship - patient may not have socioeconomic data yet.
+     * Usage: $patient->socioeconomic
+     */
     public function socioeconomic(): HasOne
     {
         return $this->hasOne(PatientSocioeconomic::class);
     }
 
-    // Helper: Get full name
-    public function getFullNameAttribute(): string
+    /**
+     * Accessor: Full name (computed property)
+     * 
+     * Usage: $patient->full_name (no parentheses!)
+     * Note: Laravel 9+ uses Attribute::make() for accessors
+     */
+    protected function fullName(): Attribute
     {
-        return "{$this->first_name} {$this->last_name}";
+        return Attribute::make(
+            get: fn() => "{$this->first_name} {$this->last_name}"
+        );
     }
 
-    // Helper: Get age
-    public function getAgeAttribute(): int
+    /**
+     * Accessor: Age in years (computed property)
+     * 
+     * Usage: $patient->age
+     * Requires date_of_birth to be cast to 'date'
+     * The ?-> operator safely handles null dates
+     */
+    protected function age(): Attribute
     {
-        return $this->date_of_birth->age;
+        return Attribute::make(
+            get: fn() => $this->date_of_birth?->age ?? 0
+        );
     }
 }
 ```
 
-**Command:**
-```bash
-php artisan make:model Patient
-```
+**🧠 Key Concepts Explained:**
+
+1. **`$fillable` vs `$guarded`**: 
+   - `$fillable` = whitelist approach (safer)
+   - Protects against mass assignment vulnerabilities
+   - Only listed fields can be filled via `Patient::create($data)`
+
+2. **`casts()` method** (Laravel 11+ style):
+   - Automatically converts database strings to proper types
+   - `date_of_birth` becomes a Carbon instance (powerful date object)
+   - Enables: `$patient->date_of_birth->format('Y-m-d')`
+
+3. **BelongsTo Relationship**:
+   - "Patient belongs to User" (inverse of "User has one Patient")
+   - Laravel looks for `user_id` foreign key automatically
+   - Access: `$patient->user->email`
+
+4. **HasOne Relationship**:
+   - "Patient has one Socioeconomic record"
+   - Optional: may return `null` if not yet created
+   - Access: `$patient->socioeconomic->occupation`
+
+5. **Accessors (Laravel 9+ style)**:
+   - Computed properties that don't exist in database
+   - Used WITHOUT parentheses: `$patient->full_name`
+   - Great for deriving data from existing fields
 
 ---
 
 ### 2.2 Create PatientSocioeconomic Model
 
+**Command:**
+```bash
+php artisan make:model PatientSocioeconomic
+```
+
 **File:** `app/Models/PatientSocioeconomic.php`
 
-**Instructions:**
+**🔍 What to Implement:**
+
 ```php
 <?php
 
@@ -213,6 +523,7 @@ class PatientSocioeconomic extends Model
 {
     use HasFactory;
 
+    // Specify custom table name (Laravel looks for 'patient_socioeconomics' by default)
     protected $table = 'patient_socioeconomic';
 
     protected $fillable = [
@@ -227,7 +538,12 @@ class PatientSocioeconomic extends Model
         'lifestyle_notes',
     ];
 
-    // Relationship: Socioeconomic belongs to Patient
+    /**
+     * Relationship: Socioeconomic belongs to Patient
+     * 
+     * Inverse of Patient->hasOne(Socioeconomic)
+     * Usage: $socioeconomic->patient
+     */
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);
@@ -235,10 +551,10 @@ class PatientSocioeconomic extends Model
 }
 ```
 
-**Command:**
-```bash
-php artisan make:model PatientSocioeconomic
-```
+**🧠 Why This Structure?**
+- **No Soft Deletes**: Socioeconomic data deleted when patient deleted (cascade)
+- **Simple Model**: Just data storage, no computed properties needed yet
+- **BelongsTo**: Can navigate back to parent patient
 
 ---
 
@@ -246,18 +562,79 @@ php artisan make:model PatientSocioeconomic
 
 **File:** `app/Models/User.php`
 
-**Add this method:**
+**🔍 What to Add:**
+
+Add a relationship method so you can access patient data from a user account.
+
 ```php
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * Relationship: User has one Patient
+ * Relationship: User has one Patient profile
+ * 
+ * Not all users have a patient profile (only those with role 'pacijent')
+ * Usage: $user->patient
  */
 public function patient(): HasOne
 {
     return $this->hasOne(Patient::class);
 }
 ```
+
+**Where to add it?** In the User model, after other relationship methods (if any).
+
+**🧠 Why Add This?**
+- Enables: `$user->patient->full_name`
+- Bi-directional navigation: User ↔ Patient
+- Useful in authentication: `auth()->user()->patient`
+
+---
+
+### 2.4 Test Relationships in Tinker
+
+**Verification Commands:**
+
+```bash
+php artisan tinker
+```
+
+```php
+// Check models are autoloaded
+$patient = new App\Models\Patient();
+$socio = new App\Models\PatientSocioeconomic();
+
+// Check relationships are defined
+$patient->user();          // Should return BelongsTo instance
+$patient->socioeconomic(); // Should return HasOne instance
+
+$user = App\Models\User::first();
+$user->patient();          // Should return HasOne instance
+
+// Exit tinker
+exit
+```
+
+---
+
+### ✅ Task 2 Completion Checklist
+
+- [ ] Patient model created with all traits and properties
+- [ ] Patient has `belongsTo(User)` relationship
+- [ ] Patient has `hasOne(PatientSocioeconomic)` relationship
+- [ ] Patient has `fullName` and `age` accessors
+- [ ] PatientSocioeconomic model created
+- [ ] PatientSocioeconomic has `belongsTo(Patient)` relationship
+- [ ] User model updated with `hasOne(Patient)` relationship
+- [ ] Relationships verified in tinker
+
+**🎓 What You've Learned:**
+- Creating Eloquent models with artisan
+- Defining one-to-one relationships (HasOne, BelongsTo)
+- Using `$fillable` for mass assignment protection
+- Modern accessor syntax with `Attribute::make()`
+- Type casting with `casts()` method
+- Bi-directional relationship navigation
+- Using tinker to test model setup
 
 ---
 
