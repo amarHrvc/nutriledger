@@ -106,24 +106,22 @@
     @foreach ($users as $user)
         @can('delete', $user)
             <flux:modal :name="'delete-user-' . $user->id" class="min-w-[22rem]">
-                <form wire:submit="deleteUser({{ $user->id }})">
-                    <div class="space-y-6">
-                        <div>
-                            <flux:heading size="lg">Delete User?</flux:heading>
-                            <flux:text class="mt-2">
-                                You're about to delete <strong>{{ $user->name }}</strong> ({{ $user->email }}).<br>
-                                This action cannot be reversed.
-                            </flux:text>
-                        </div>
-                        <div class="flex gap-2">
-                            <flux:spacer />
-                            <flux:modal.close>
-                                <flux:button variant="ghost">Cancel</flux:button>
-                            </flux:modal.close>
-                            <flux:button type="submit" variant="danger">Delete User</flux:button>
-                        </div>
+                <div class="space-y-6">
+                    <div>
+                        <flux:heading size="lg">Delete User?</flux:heading>
+                        <flux:text class="mt-2">
+                            You're about to delete <strong>{{ $user->name }}</strong> ({{ $user->email }}).<br>
+                            This action cannot be reversed.
+                        </flux:text>
                     </div>
-                </form>
+                    <div class="flex gap-2">
+                        <flux:spacer />
+                        <flux:modal.close>
+                            <flux:button variant="ghost">Cancel</flux:button>
+                        </flux:modal.close>
+                        <flux:button wire:click="deleteUser({{ $user->id }})" variant="danger">Delete User</flux:button>
+                    </div>
+                </div>
             </flux:modal>
         @endcan
     @endforeach
