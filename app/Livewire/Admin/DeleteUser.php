@@ -3,8 +3,9 @@
 namespace App\Livewire\Admin;
 
 use App\Models\User;
-use Illuminate\Routing\Redirector;
+use Illuminate\Http\RedirectResponse;
 use Livewire\Component;
+use Livewire\Features\SupportRedirects\Redirector as Redirector;
 
 class DeleteUser extends Component
 {
@@ -21,7 +22,7 @@ class DeleteUser extends Component
         return view('livewire.admin.delete-user');
     }
 
-    public function delete(): RedirectResponse
+    public function delete(): Redirector
     {
         $this->authorize('delete', $this->user);
         $this->user->delete();
