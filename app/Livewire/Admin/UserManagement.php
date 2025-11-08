@@ -54,5 +54,19 @@ class UserManagement extends Component
         LOG::debug($this->roleFilter);
     }
 
-
+    /**
+     * Delete a user.
+     */
+    public function deleteUser(int $userId)
+    {
+        $user = User::findOrFail($userId);
+        
+        $this->authorize('delete', $user);
+        
+        $user->delete();
+        
+        session()->flash('success', 'User deleted successfully.');
+        
+        $this->resetPage();
+    }
 }

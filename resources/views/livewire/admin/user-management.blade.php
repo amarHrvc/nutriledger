@@ -68,13 +68,23 @@
                             {{ $user->created_at->format('M d, Y') }}
                         </td>
                         <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                            <a
-                                href="{{ route('admin.users.edit', $user) }}"
-                                wire:navigate
-                                class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                            >
-                                Edit
-                            </a>
+                            <div class="flex items-center gap-3">
+                                <a
+                                    href="{{ route('admin.users.edit', $user) }}"
+                                    wire:navigate
+                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                                >
+                                    Edit
+                                </a>
+
+                                @can('delete', $user)
+                                    <flux:modal.trigger :name="'delete-user-' . $user->id">
+                                        <button class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                                            Delete
+                                        </button>
+                                    </flux:modal.trigger>
+                                @endcan
+                            </div>
                         </td>
                     </tr>
                 @empty
@@ -91,4 +101,30 @@
     <div class="mt-4">
         {{ $users->links() }}
     </div>
+
+    {{-- Delete Confirmation Modals --}}
+    @foreach ($users as $user)
+        @can('delete', $user)
+            <flux:modal :name="'delete-user-' . $user->id" class="min-w-[22rem]">
+                <form wire:submit="deleteUser({{ $user->id }})">
+                    <div class="space-y-6">
+                        <div>
+                            <flux:heading size="lg">Delete User?</flux:heading>
+                            <flux:text class="mt-2">
+                                You're about to delete <strong>{{ $user->name }}</strong> ({{ $user->email }}).<br>
+                                This action cannot be reversed.
+                            </flux:text>
+                        </div>
+                        <div class="flex gap-2">
+                            <flux:spacer />
+                            <flux:modal.close>
+                                <flux:button variant="ghost">Cancel</flux:button>
+                            </flux:modal.close>
+                            <flux:button type="submit" variant="danger">Delete User</flux:button>
+                        </div>
+                    </div>
+                </form>
+            </flux:modal>
+        @endcan
+    @endforeach
 </div>
