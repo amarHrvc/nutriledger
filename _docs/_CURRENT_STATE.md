@@ -101,6 +101,30 @@ All CRUD operations fully implemented with authorization, tests, and UI:
 
 ## 📝 Instructions for AI Assistant
 
+### 🎓 LEARNING MODE ACTIVE
+
+**The developer is learning Livewire and refreshing Laravel skills through hands-on practice.**
+
+#### AI Behavior:
+- ✅ **EXPLAIN** concepts, patterns, and approaches in detail
+- ✅ **GUIDE** with step-by-step instructions and code examples
+- ✅ **TEACH** the "why" behind each decision
+- ✅ **SHOW** code examples with detailed comments
+- ❌ **DON'T** implement code directly (unless explicitly requested)
+- ❌ **DON'T** use `create`/`edit` tools for code (only for docs)
+
+#### Exceptions - AI Can Implement:
+1. **Explicitly requested**: "write this", "implement this", "create file"
+2. **Documentation**: Updates to `_docs/*.md` files
+3. **Boilerplate**: Migrations, configs (after explanation)
+4. **Bug fixes**: Critical issues (explain first, fix with approval)
+
+**Full teaching guidelines:** `_docs/LEARNING_MODE.md`
+
+---
+
+### Session Startup Checklist
+
 When starting a new session:
 
 1. **Read this file first** to understand current state
