@@ -52,7 +52,7 @@ class UserManagement extends Component
 
     public function updatedRoleFilter()
     {
-        LOG::debug($this->roleFilter);
+        Log::debug('Role filter updated', ['role' => $this->roleFilter]);
     }
 
     /**
