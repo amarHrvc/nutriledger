@@ -105,7 +105,10 @@
     {{-- Delete Confirmation Modals --}}
     @foreach ($users as $user)
         @can('delete', $user)
-            <flux:modal :name="'delete-user-' . $user->id" class="min-w-[22rem]">
+            <flux:modal
+                :name="'delete-user-' . $user->id"
+                class="w-full max-w-md"
+                wire:key="'modal- ' . $user->id">
                 <div class="space-y-6">
                     <div>
                         <flux:heading size="lg">Delete User?</flux:heading>
@@ -116,9 +119,11 @@
                     </div>
                     <div class="flex gap-2">
                         <flux:spacer />
-                        <flux:modal.close>
-                            <flux:button variant="ghost">Cancel</flux:button>
-                        </flux:modal.close>
+
+                        <flux:button
+                            variant="ghost"
+                            @click="$flux.modal('{{ 'delete-user-' . $user->id }}').close()">Cancel</flux:button>
+
                         <flux:button wire:click="deleteUser({{ $user->id }})" variant="danger">Delete User</flux:button>
                     </div>
                 </div>

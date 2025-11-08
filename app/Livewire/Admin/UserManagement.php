@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\User;
+use Flux\Flux;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Log;
@@ -60,13 +61,15 @@ class UserManagement extends Component
     public function deleteUser(int $userId)
     {
         $user = User::findOrFail($userId);
-        
+
         $this->authorize('delete', $user);
-        
+
         $user->delete();
-        
+
         session()->flash('success', 'User deleted successfully.');
-        
+
         $this->resetPage();
+
+        FLUX::modal('delete-user-' . $user->id)->close();
     }
 }
