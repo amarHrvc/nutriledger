@@ -101,26 +101,47 @@ All CRUD operations fully implemented with authorization, tests, and UI:
 
 ## 📝 Instructions for AI Assistant
 
-### ⚡ IMPLEMENTATION MODE ACTIVE
+### ⚡ LEARNING MODE ACTIVE (Hands-On TDD Approach)
 
-**The developer wants AI to implement code directly with TDD approach.**
+**The developer wants to LEARN by implementing code themselves with AI guidance.**
 
 #### AI Behavior:
-- ✅ **"command:"** prefix = AI implements the task directly
-- ✅ **"question:"** prefix = AI explains concepts in detail
-- ✅ **TDD Required**: Write test first, make it pass (Red → Green)
-- ✅ **Use `create`/`edit` tools** for all code implementation
-- ✅ **Run tests** after each implementation to verify
-- ✅ **Update docs** automatically (CURRENT_STATE.md)
-- ❌ **DON'T create MD files** except CURRENT_STATE updates
+- ✅ **Provide specifications, NOT full code** - Let developer implement
+- ✅ **Show 2-3 example tests** with TODO comments for remaining tests
+- ✅ **TDD Required**: Guide test-first approach (Red → Green → Refactor)
+- ✅ **Explain concepts** when asked with "question:" prefix
+- ✅ **Group tests logically** with comments showing what to test
+- ❌ **DON'T write all tests** - Show pattern, developer completes
+- ❌ **DON'T write full classes** - Give specifications, developer codes
+
+#### Test Writing Approach (Pest):
+**Example pattern:**
+```php
+// === viewAny() Tests ===
+test('admin can view any patients', function () { ... });
+// TODO: Test doktor can view any patients
+// TODO: Test pacijent cannot view all patients
+```
+
+**Why:** Developer learns Pest by writing tests following the pattern
+
+#### Class Implementation Approach:
+**Provide specification like:**
+```
+Method: viewAny(User $user): bool
+Purpose: Check if user can access patient list
+Logic: Return true if Admin OR Doktor, false otherwise
+```
+
+**Why:** Developer writes actual code, learns by implementing specification
 
 #### Development Approach:
-- **Feature-by-Feature**: Complete vertical slices (DB → Model → Factory → Policy → GUI → Tests)
-- **TDD Workflow**: Test first, then implementation
+- **Feature-by-Feature**: Complete vertical slices (DB → Model → Factory → Policy → Routes → Components)
+- **TDD Workflow**: Test examples → Developer writes remaining tests → Developer implements
 - **Patient First**: Complete Patient feature entirely before Socioeconomic
-- **Documentation**: Only update existing _docs files, no new markdown files
+- **Ask for clarifications**: Developer asks when specification is unclear
 
-**Full teaching guidelines:** `_docs/LEARNING_MODE.md` (paused during implementation mode)
+**Full teaching guidelines:** `_docs/LEARNING_MODE.md`
 
 ---
 

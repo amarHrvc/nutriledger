@@ -5,32 +5,61 @@
 
 The Laravel Boost guidelines are specifically curated by Laravel maintainers for this application. These guidelines should be followed closely to enhance the user's satisfaction building Laravel applications.
 
-## ⚡ IMPLEMENTATION MODE - ACTIVE
-**This application is in DIRECT IMPLEMENTATION mode.**
+## ⚡ LEARNING MODE - ACTIVE (Hands-On TDD)
+**This application is in HANDS-ON LEARNING mode with TDD approach.**
 
 ### Primary Goal
-The developer wants **AI to implement features directly with TDD approach.**
+The developer wants **to LEARN by implementing code themselves with AI providing guidance and specifications.**
 
 ### AI Behavior Rules
-1. **"command:" prefix** = Implement the task directly (no explanations unless needed)
-2. **"question:" prefix** = Explain concepts in detail before implementation
-3. **TDD REQUIRED** = Write tests first, then make them pass (Red → Green → Refactor)
-4. **USE TOOLS** = Use `create`, `edit`, and `powershell` tools to implement code
-5. **VERIFY WORK** = Run tests after implementation to ensure green
-6. **UPDATE DOCS** = Update `_docs/_CURRENT_STATE.md` after completing tasks
+1. **"question:" prefix** = Explain concepts in detail before proceeding
+2. **Default mode** = Provide specifications and examples, NOT full implementations
+3. **TDD GUIDANCE** = Show 2-3 example tests with TODO comments for remaining tests
+4. **SPECIFICATIONS** = Describe what code should do, let developer write it
+5. **LEARNING FOCUS** = Help developer practice Pest, Laravel, Livewire patterns
+
+### Test Writing Approach (Pest)
+**DON'T write all tests. Instead:**
+- ✅ Provide 2-3 example tests showing the pattern
+- ✅ Add TODO comments for remaining test cases
+- ✅ Group tests logically with section comments
+- ❌ Don't write every single test case
+
+**Example:**
+```php
+// === viewAny() Authorization Tests ===
+test('admin can view any patients', function () { ... });
+// TODO: Test doktor can view any patients  
+// TODO: Test pacijent cannot view all patients
+```
+
+### Class Implementation Approach
+**DON'T write full classes. Instead:**
+- ✅ Provide method specifications describing logic
+- ✅ Include file paths and artisan commands
+- ✅ Explain the "why" behind the approach
+- ❌ Don't write complete implementations
+
+**Example:**
+```
+Method: viewAny(User $user): bool
+Purpose: Determine if user can access patient list
+Logic: Return true if user is Admin OR Doktor, false for Pacijent
+```
 
 ### Development Approach
 - **Feature-by-Feature**: Complete vertical slices (Patient fully, then Socioeconomic)
-- **TDD Workflow**: Test → Implementation → Verification
+- **TDD Workflow**: Example tests → Developer completes tests → Developer implements code
+- **Clarifications Welcome**: Developer asks when specification is unclear
 - **No New MD Files**: Only update existing documentation files
-- **Run Tests**: Always verify with `php artisan test --filter=<relevant>`
 
-### When AI Should Ask First
-- ❓ Architecture decisions affecting other features
-- ❓ Breaking changes to existing code
-- ❓ Deviations from established patterns
+### When AI Should Provide Full Code
+- ✅ Migrations (after explaining structure)
+- ✅ Boilerplate/scaffolding commands
+- ✅ Documentation updates
+- ❌ NOT policies, tests, components, or business logic
 
-**Note:** Learning mode is paused. See `_docs/LEARNING_MODE.md` if switching back to educational mode.
+**Note:** Full teaching guidelines in `_docs/LEARNING_MODE.md`
 
 ---
 
