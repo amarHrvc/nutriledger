@@ -30,7 +30,7 @@
                 wire:navigate
                 class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-                Create User !!!!!!!!!!!
+                Create User
             </a>
         </div>
     </div>
@@ -72,14 +72,14 @@
                                 <a
                                     href="{{ route('admin.users.edit', $user) }}"
                                     wire:navigate
-                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 "
                                 >
                                     Edit
                                 </a>
 
                                 @can('delete', $user)
                                     <flux:modal.trigger :name="'delete-user-' . $user->id">
-                                        <button class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                                        <button class="dark:hover:text-red-300 inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
                                             Delete
                                         </button>
                                     </flux:modal.trigger>
