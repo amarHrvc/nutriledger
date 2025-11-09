@@ -49,4 +49,22 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     })->name('users.edit');
 });
 
+
+// Patient routes - List and Create restricted by role
+Route::middleware(['auth'])->group(function () {
+    Route::get('/patients', \App\Livewire\Patient\PatientList::class)
+        ->can('viewAny', \App\Models\Patient::class)
+        ->name('patients.index');
+
+    Route::get('/patients/create', \App\Livewire\Patient\CreatePatient::class)
+        ->can('create', \App\Models\Patient::class)
+        ->name('patients.create');
+
+    Route::get('/patients/{patient}', \App\Livewire\Patient\ViewPatient::class)
+        ->name('patients.show');
+
+    Route::post('/patients/{patient}/edit', \App\Livewire\Patient\EditPatient::class)
+        ->name('patients.edit');
+});
+
 require __DIR__.'/auth.php';
