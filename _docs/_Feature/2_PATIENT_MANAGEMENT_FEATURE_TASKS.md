@@ -38,6 +38,8 @@ Build a complete Patient Management system where:
 ## ✅ COMPLETED TASKS
 
 - ✅ TASK 1: Patient Database Migration (created, pending run)
+- ✅ Patient Model & Relationships
+- ✅ Patient Factory
 
 ---
 
