@@ -107,7 +107,27 @@ This application is a Laravel application and its main Laravel ecosystems packag
 === boost rules ===
 
 ## Laravel Boost
-- Laravel Boost is an MCP server that comes with powerful tools designed specifically for this application. Use them.
+- Laravel Boost is an MCP server that comes with powerful tools designed specifically for this application. **Always prioritize Laravel Boost tools over generic PowerShell/shell commands.**
+
+## Tool Priority (CRITICAL)
+**Always use Laravel Boost tools as your PRIMARY approach:**
+1. **`laravel-boost-tinker`** - For executing PHP code, creating test data, debugging, querying models
+   - ✅ USE: `laravel-boost-tinker` with code like `App\Models\Patient::factory()->count(10)->create()`
+   - ❌ AVOID: `php artisan tinker --execute="..."`
+2. **`laravel-boost-database-query`** - For read-only database queries
+   - ✅ USE: `laravel-boost-database-query` with SQL queries
+   - ❌ AVOID: Raw SQL via tinker or shell
+3. **`laravel-boost-list-artisan-commands`** - Before running any artisan command
+4. **`laravel-boost-search-docs`** - Before implementing any Laravel feature
+5. **`laravel-boost-get-absolute-url`** - For generating project URLs
+6. **`laravel-boost-browser-logs`** - For frontend debugging
+7. **`laravel-boost-last-error`** - For backend error debugging
+
+**Only fall back to PowerShell commands when:**
+- Running tests (`php artisan test`)
+- Running Pint (`vendor/bin/pint`)
+- Building frontend assets (`npm run build`)
+- Git operations
 
 ## Artisan
 - Use the `list-artisan-commands` tool when you need to call an Artisan command to double check the available parameters.
@@ -116,8 +136,9 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - Whenever you share a project URL with the user you should use the `get-absolute-url` tool to ensure you're using the correct scheme, domain / IP, and port.
 
 ## Tinker / Debugging
-- You should use the `tinker` tool when you need to execute PHP to debug code or query Eloquent models directly.
-- Use the `database-query` tool when you only need to read from the database.
+- **ALWAYS use the `laravel-boost-tinker` tool** when you need to execute PHP to debug code or query Eloquent models directly.
+- Use the `laravel-boost-database-query` tool when you only need to read from the database.
+- Never use `php artisan tinker --execute` when `laravel-boost-tinker` is available.
 
 ## Reading Browser Logs With the `browser-logs` Tool
 - You can read browser logs, errors, and exceptions using the `browser-logs` tool from Boost.
