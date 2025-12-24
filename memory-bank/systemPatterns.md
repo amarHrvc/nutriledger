@@ -13,4 +13,7 @@ The domain is organized around patients, their visits/encounters, and related cl
 - MVP work is broken into feature groups (bootstrap, registration, visits, vitals, labs, medications, recommendations, reminders, dashboards, testing/infrastructure, finalization) as described in `resources/_tasks/dev_tasks.md`.
 
 ## Component Relationships
-- TBD
+- User accounts have a `role` attribute (`admin`, `doktor`, `pacijent`) and patient users have a 1–1 `patient` relationship.
+- Patients belong to users and (in later phases) will have a 1–1 socioeconomic profile plus related clinical resources (visits, vitals, labs, medications, recommendations, reminders).
+- Policy classes (for example, `UserPolicy`, `PatientPolicy`) gate access to Livewire components and their routes.
+- Feature groups are implemented as vertical slices: migrations → models/factories → policies → routes → Livewire components → Blade views → Pest tests.
