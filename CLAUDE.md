@@ -5,64 +5,6 @@
 
 The Laravel Boost guidelines are specifically curated by Laravel maintainers for this application. These guidelines should be followed closely to enhance the user's satisfaction building Laravel applications.
 
-## ⚡ LEARNING MODE - ACTIVE (Hands-On TDD)
-**This application is in HANDS-ON LEARNING mode with TDD approach.**
-
-### Primary Goal
-The developer wants **to LEARN by implementing code themselves with AI providing guidance and specifications.**
-
-### AI Behavior Rules
-1. **"question:" prefix** = Explain concepts in detail before proceeding
-2. **Default mode** = Provide specifications and examples, NOT full implementations
-3. **TDD GUIDANCE** = Show 2-3 example tests with TODO comments for remaining tests
-4. **SPECIFICATIONS** = Describe what code should do, let developer write it
-5. **LEARNING FOCUS** = Help developer practice Pest, Laravel, Livewire patterns
-
-### Test Writing Approach (Pest)
-**DON'T write all tests. Instead:**
-- ✅ Provide 2-3 example tests showing the pattern
-- ✅ Add TODO comments for remaining test cases
-- ✅ Group tests logically with section comments
-- ❌ Don't write every single test case
-
-**Example:**
-```php
-// === viewAny() Authorization Tests ===
-test('admin can view any patients', function () { ... });
-// TODO: Test doktor can view any patients  
-// TODO: Test pacijent cannot view all patients
-```
-
-### Class Implementation Approach
-**DON'T write full classes. Instead:**
-- ✅ Provide method specifications describing logic
-- ✅ Include file paths and artisan commands
-- ✅ Explain the "why" behind the approach
-- ❌ Don't write complete implementations
-
-**Example:**
-```
-Method: viewAny(User $user): bool
-Purpose: Determine if user can access patient list
-Logic: Return true if user is Admin OR Doktor, false for Pacijent
-```
-
-### Development Approach
-- **Feature-by-Feature**: Complete vertical slices (Patient fully, then Socioeconomic)
-- **TDD Workflow**: Example tests → Developer completes tests → Developer implements code
-- **Clarifications Welcome**: Developer asks when specification is unclear
-- **No New MD Files**: Only update existing documentation files
-
-### When AI Should Provide Full Code
-- ✅ Migrations (after explaining structure)
-- ✅ Boilerplate/scaffolding commands
-- ✅ Documentation updates
-- ❌ NOT policies, tests, components, or business logic
-
-**Note:** Full teaching guidelines in `_docs/LEARNING_MODE.md`
-
----
-
 ## Foundational Context
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
@@ -80,7 +22,6 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - pestphp/pest (PEST) - v4
 - phpunit/phpunit (PHPUNIT) - v12
 - tailwindcss (TAILWINDCSS) - v4
-
 
 ## Conventions
 - You must follow all existing code conventions used in this application. When creating or editing a file, check sibling files for the correct structure, approach, naming.
@@ -107,27 +48,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 === boost rules ===
 
 ## Laravel Boost
-- Laravel Boost is an MCP server that comes with powerful tools designed specifically for this application. **Always prioritize Laravel Boost tools over generic PowerShell/shell commands.**
-
-## Tool Priority (CRITICAL)
-**Always use Laravel Boost tools as your PRIMARY approach:**
-1. **`laravel-boost-tinker`** - For executing PHP code, creating test data, debugging, querying models
-   - ✅ USE: `laravel-boost-tinker` with code like `App\Models\Patient::factory()->count(10)->create()`
-   - ❌ AVOID: `php artisan tinker --execute="..."`
-2. **`laravel-boost-database-query`** - For read-only database queries
-   - ✅ USE: `laravel-boost-database-query` with SQL queries
-   - ❌ AVOID: Raw SQL via tinker or shell
-3. **`laravel-boost-list-artisan-commands`** - Before running any artisan command
-4. **`laravel-boost-search-docs`** - Before implementing any Laravel feature
-5. **`laravel-boost-get-absolute-url`** - For generating project URLs
-6. **`laravel-boost-browser-logs`** - For frontend debugging
-7. **`laravel-boost-last-error`** - For backend error debugging
-
-**Only fall back to PowerShell commands when:**
-- Running tests (`php artisan test`)
-- Running Pint (`vendor/bin/pint`)
-- Building frontend assets (`npm run build`)
-- Git operations
+- Laravel Boost is an MCP server that comes with powerful tools designed specifically for this application. Use them.
 
 ## Artisan
 - Use the `list-artisan-commands` tool when you need to call an Artisan command to double check the available parameters.
@@ -136,9 +57,8 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - Whenever you share a project URL with the user you should use the `get-absolute-url` tool to ensure you're using the correct scheme, domain / IP, and port.
 
 ## Tinker / Debugging
-- **ALWAYS use the `laravel-boost-tinker` tool** when you need to execute PHP to debug code or query Eloquent models directly.
-- Use the `laravel-boost-database-query` tool when you only need to read from the database.
-- Never use `php artisan tinker --execute` when `laravel-boost-tinker` is available.
+- You should use the `tinker` tool when you need to execute PHP to debug code or query Eloquent models directly.
+- Use the `database-query` tool when you only need to read from the database.
 
 ## Reading Browser Logs With the `browser-logs` Tool
 - You can read browser logs, errors, and exceptions using the `browser-logs` tool from Boost.
