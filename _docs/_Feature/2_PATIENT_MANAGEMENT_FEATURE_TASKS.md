@@ -1,9 +1,9 @@
 # 📋 Patient Management Feature - Development Tasks
 
 > **Created:** 2025-11-07  
-> **Updated:** 2025-11-08T14:54:00.000Z  
+> **Updated:** 2025-12-03T03:40:00.000Z  
 > **Feature Group:** 2 - Patient Registration & Management  
-> **Status:** 🚀 IN PROGRESS  
+> **Status:** 🚀 IN PROGRESS (64% Complete)  
 > **Approach:** Feature-by-Feature with TDD (Patient first, Socioeconomic later)
 
 ---
@@ -37,11 +37,13 @@ Build a complete Patient Management system where:
 
 ## ✅ COMPLETED TASKS
 
-- ✅ TASK 1: Patient Database Migration (created, pending run)
-- ✅ Patient Model & Relationships
-- ✅ Patient Factory
-- ✅ Patient Policy (Authorization)
-- ✅  Patient Routes
+- ✅ TASK 1: Patient Database Migration (created, migrated)
+- ✅ TASK 2: Patient Model & Relationships (7 tests passing)
+- ✅ TASK 3: Patient Factory (working, 13 patients in DB)
+- ✅ TASK 4: Patient Policy (26 tests passing)
+- ✅ TASK 5: Patient Routes (8 tests passing)
+- ✅ TASK 6: List Patients Component (pagination, search working)
+- ✅ TASK 7: Create Patient Component (11 tests passing)
 
 ---
 
@@ -1453,16 +1455,762 @@ php artisan test --filter=CreatePatientComponent
 
 ---
 
-## 🚧 UPCOMING TASKS (Not Yet Expanded)
+---
 
-- ⏳ TASK 8: View Patient Profile Component
-- ⏳ TASK 9: Edit Patient Component
-- ⏳ TASK 10: Delete Patient Component
-- ⏳ TASK 11: Navigation Integration
+## 📝 TASK 8: View Patient Profile Component
+
+### 🎯 Goal
+Display complete patient information in a clean, organized, read-only format with proper authorization.
+
+### 📚 Key Concepts
+- **Route Model Binding**: Automatic Patient model injection from URL
+- **Authorization in mount()**: Check permissions before rendering
+- **Read-only Display**: Organized sections showing all patient data
+- **Conditional Rendering**: Show/hide edit button based on permissions
+- **Null Handling**: Display "N/A" or "-" for empty fields
+
+### 📝 TDD Approach
+
+#### Step 1: Write Tests First (RED)
+
+**File:** `tests/Feature/ViewPatientComponentTest.php`
+
+**Command to create:**
+```bash
+php artisan make:test ViewPatientComponentTest
+```
+
+**Example Tests (you write remaining):**
+
+```php
+<?php
+
+use App\Models\Patient;
+use App\Models\User;
+use Livewire\Livewire;
+
+beforeEach(function () {
+    $this->admin = User::factory()->create(['role' => 'admin']);
+    $this->doktor = User::factory()->create(['role' => 'doktor']);
+    $this->patientUser = User::factory()->create(['role' => 'pacijent']);
+    $this->patient = Patient::factory()->create(['user_id' => $this->patientUser->id]);
+});
+
+// === Authorization Tests ===
+
+test('admin can view patient profile', function () {
+    $this->actingAs($this->admin)
+        ->get("/patients/{$this->patient->id}")
+        ->assertOk()
+        ->assertSeeLivewire('patient.view-patient');
+});
+
+// TODO: Test doktor can view patient profile
+// TODO: Test pacijent can view own profile
+// TODO: Test pacijent cannot view other patient profile
+
+// === Component Tests ===
+
+test('displays patient personal information', function () {
+    Livewire::actingAs($this->admin)
+        ->test(\App\Livewire\Patient\ViewPatient::class, ['patient' => $this->patient])
+        ->assertSee($this->patient->first_name)
+        ->assertSee($this->patient->last_name)
+        ->assertSee($this->patient->full_name);
+});
+
+// TODO: Test displays patient contact information
+// TODO: Test displays patient medical information
+// TODO: Test displays patient emergency contact
+// TODO: Test shows edit button for authorized users
+// TODO: Test hides edit button for unauthorized users
+// TODO: Test shows 'N/A' for empty optional fields
+```
+
+**Run tests (should FAIL):**
+```bash
+php artisan test --filter=ViewPatientComponent
+```
+
+#### Step 2: Implement Component (GREEN)
+
+**Command:**
+```bash
+php artisan make:livewire Patient/ViewPatient
+```
+
+**Component Specification:**
+
+**File:** `app/Livewire/Patient/ViewPatient.php`
+
+**Properties:**
+- `public Patient $patient` - Injected via route model binding
+
+**Method: mount(Patient $patient)**
+- Purpose: Initialize component and check authorization
+- Logic:
+  - Store patient in property
+  - Call `$this->authorize('view', $patient)`
+  - If unauthorized → 403 Forbidden
+
+**Method: render()**
+- Purpose: Return view with patient data
+- Logic: `return view('livewire.patient.view-patient')`
+
+#### Step 3: Create View (GREEN)
+
+**File:** `resources/views/livewire/patient/view-patient.blade.php`
+
+**View Structure:**
+
+```blade
+<div class="p-6">
+    <div class="max-w-4xl mx-auto">
+        
+        {{-- Header with Edit Button --}}
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-2xl font-semibold text-gray-800">
+                    {{ $patient->full_name }}
+                </h2>
+                <p class="text-gray-600">Patient Profile</p>
+            </div>
+            
+            @can('update', $patient)
+                <a href="{{ route('patients.edit', $patient) }}" 
+                   class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    Edit Profile
+                </a>
+            @endcan
+        </div>
+
+        {{-- Information Cards --}}
+        <div class="space-y-6">
+            
+            {{-- Personal Information Section --}}
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="text-lg font-semibold mb-4 text-gray-900">Personal Information</h3>
+                <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">Full Name</dt>
+                        <dd class="mt-1 text-sm text-gray-900">{{ $patient->full_name }}</dd>
+                    </div>
+                    <!-- TODO: Add more fields: Gender, Date of Birth, Age, Phone -->
+                </dl>
+            </div>
+
+            {{-- TODO: Add sections for: --}}
+            {{-- Address Information --}}
+            {{-- Emergency Contact --}}
+            {{-- Medical Information --}}
+        </div>
+
+        {{-- Back Button --}}
+        <div class="mt-6">
+            <a href="{{ route('patients.index') }}" 
+               class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                Back to List
+            </a>
+        </div>
+    </div>
+</div>
+```
+
+**What to display in each section:**
+
+**Personal Information:**
+- Full Name, Gender (M → Male, F → Female), Date of Birth, Age, Phone, Blood Type
+
+**Address Information:**
+- Street Address, City, Postal Code (or "No address provided")
+
+**Emergency Contact:**
+- Contact Name, Contact Phone (or "No emergency contact")
+
+**Medical Information:**
+- Allergies (or "None reported"), Medical Notes (or "No notes")
+
+#### Step 4: Run Tests (should PASS)
+
+```bash
+php artisan test --filter=ViewPatientComponent
+```
+
+### 🧠 Why This Way?
+- **Authorization in mount()**: Prevents unauthorized access before any data loads
+- **Route model binding**: Cleaner URLs and automatic 404 if patient not found
+- **Organized sections**: Easy to read, matches create/edit form structure
+- **@can directive**: Shows edit button only to authorized users
+- **Null handling**: Professional display when data is missing
+
+### ✅ Verification
+```bash
+# Run tests
+php artisan test --filter=ViewPatientComponent
+
+# Manual test
+# 1. Login as admin
+# 2. Visit: /patients
+# 3. Click on a patient name
+# 4. Verify all information displays correctly
+# 5. Verify edit button shows for admin/doktor
+```
 
 ---
 
-*Complete Tasks 6-7 before expanding Tasks 8-11!*
+## 📝 TASK 9: Edit Patient Component
+
+### 🎯 Goal
+Build a form to update existing patient information with pre-filled data and validation.
+
+### 📚 Key Concepts
+- **Pre-filling Form Fields**: Load patient data in `mount()`
+- **Validation**: Same rules as create, except email unique rule
+- **Update vs Create**: Different logic for existing records
+- **Authorization**: Only Admin/Doktor/Own profile can edit
+- **No User Email Change**: Patient's email cannot be changed (belongs to User model)
+
+### 📝 TDD Approach
+
+#### Step 1: Write Tests First (RED)
+
+**File:** `tests/Feature/EditPatientComponentTest.php`
+
+**Example Tests:**
+
+```php
+<?php
+
+use App\Models\Patient;
+use App\Models\User;
+use Livewire\Livewire;
+
+beforeEach(function () {
+    $this->admin = User::factory()->create(['role' => 'admin']);
+    $this->doktor = User::factory()->create(['role' => 'doktor']);
+    $this->patientUser = User::factory()->create(['role' => 'pacijent']);
+    $this->patient = Patient::factory()->create([
+        'user_id' => $this->patientUser->id,
+        'first_name' => 'John',
+        'last_name' => 'Doe'
+    ]);
+});
+
+// === Authorization Tests ===
+
+test('admin can access edit form', function () {
+    $this->actingAs($this->admin)
+        ->get("/patients/{$this->patient->id}/edit")
+        ->assertOk()
+        ->assertSeeLivewire('patient.edit-patient');
+});
+
+// TODO: Test doktor can access edit form
+// TODO: Test pacijent can edit own profile
+// TODO: Test pacijent cannot edit other profiles
+
+// === Pre-fill Tests ===
+
+test('form is pre-filled with patient data', function () {
+    Livewire::actingAs($this->admin)
+        ->test(\App\Livewire\Patient\EditPatient::class, ['patient' => $this->patient])
+        ->assertSet('first_name', 'John')
+        ->assertSet('last_name', 'Doe');
+});
+
+// TODO: Test all fields are pre-filled correctly
+
+// === Update Tests ===
+
+test('can update patient with valid data', function () {
+    Livewire::actingAs($this->admin)
+        ->test(\App\Livewire\Patient\EditPatient::class, ['patient' => $this->patient])
+        ->set('first_name', 'Jane')
+        ->set('last_name', 'Smith')
+        ->call('updatePatient')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('patients.show', $this->patient));
+    
+    $this->patient->refresh();
+    expect($this->patient->first_name)->toBe('Jane')
+        ->and($this->patient->last_name)->toBe('Smith');
+});
+
+// TODO: Test validation rules (first_name required, etc.)
+// TODO: Test patient email is readonly (not editable)
+// TODO: Test redirect after successful update
+// TODO: Test flash message after update
+```
+
+**Run tests (should FAIL):**
+```bash
+php artisan test --filter=EditPatientComponent
+```
+
+#### Step 2: Implement Component (GREEN)
+
+**Fix Route First** (currently POST, should be GET):
+
+**File:** `routes/web.php`
+```php
+Route::get('/patients/{patient}/edit', \App\Livewire\Patient\EditPatient::class)
+    ->name('patients.edit');
+```
+
+**Component Specification:**
+
+**File:** `app/Livewire/Patient/EditPatient.php`
+
+**Properties:**
+- Same as CreatePatient EXCEPT:
+  - `public Patient $patient` - Injected patient
+  - NO `$email` property (email cannot be changed)
+
+**Method: mount(Patient $patient)**
+- Purpose: Pre-fill form fields and check authorization
+- Logic:
+  - Authorize: `$this->authorize('update', $patient)`
+  - Pre-fill ALL properties from `$patient` model:
+    ```php
+    $this->first_name = $patient->first_name;
+    $this->last_name = $patient->last_name;
+    $this->date_of_birth = $patient->date_of_birth->format('Y-m-d');
+    // ... continue for all fields
+    ```
+
+**Method: rules()**
+- Purpose: Define validation rules
+- Logic: Same as CreatePatient EXCEPT:
+  - NO email validation (email is readonly)
+  - All other rules same
+
+**Method: updatePatient()**
+- Purpose: Update patient record
+- Logic:
+  - Validate: `$validated = $this->validate()`
+  - Update patient: `$this->patient->update($validated)`
+  - Flash message: `session()->flash('success', 'Patient updated successfully.')`
+  - Redirect: `return $this->redirect(route('patients.show', $this->patient))`
+
+#### Step 3: Create View (GREEN)
+
+**File:** `resources/views/livewire/patient/edit-patient.blade.php`
+
+**View Structure:**
+- COPY from `create-patient.blade.php`
+- **Changes:**
+  - Title: "Edit Patient" instead of "Create New Patient"
+  - Show email as **readonly field**:
+    ```blade
+    <input type="email" value="{{ $patient->user->email }}" disabled
+           class="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed">
+    <p class="text-sm text-gray-500">Email cannot be changed</p>
+    ```
+  - Submit button: "Update Patient" instead of "Create Patient"
+  - Form action: `wire:submit.prevent="updatePatient"`
+  - Cancel returns to: `route('patients.show', $patient)`
+
+#### Step 4: Run Tests (should PASS)
+
+```bash
+php artisan test --filter=EditPatientComponent
+```
+
+### 🧠 Why This Way?
+- **Pre-fill in mount()**: User sees current data, knows what they're editing
+- **Email readonly**: Email belongs to User account, shouldn't change via patient edit
+- **Redirect to view**: After update, user sees updated profile (not list)
+- **Same validation**: Consistent rules between create/edit
+- **Authorization check**: Prevents unauthorized edits
+
+### ✅ Verification
+```bash
+# Run tests
+php artisan test --filter=EditPatientComponent
+
+# Manual test
+# 1. Login as admin
+# 2. View a patient profile
+# 3. Click "Edit Profile"
+# 4. Verify all fields are pre-filled
+# 5. Change some data
+# 6. Submit and verify update
+```
+
+---
+
+## 📝 TASK 10: Delete Patient Component
+
+### 🎯 Goal
+Add soft delete functionality with confirmation modal to PatientList component.
+
+### 📚 Key Concepts
+- **Soft Delete**: Patient marked as deleted, not removed from database
+- **Confirmation Modal**: Prevent accidental deletion
+- **Livewire Events**: Modal trigger via wire:click
+- **Flash Messages**: Success feedback after deletion
+- **Authorization**: Only Admin/Doktor can delete
+
+### 📝 TDD Approach
+
+#### Step 1: Write Tests First (RED)
+
+**File:** `tests/Feature/DeletePatientComponentTest.php`
+
+**Example Tests:**
+
+```php
+<?php
+
+use App\Models\Patient;
+use App\Models\User;
+use Livewire\Livewire;
+
+beforeEach(function () {
+    $this->admin = User::factory()->create(['role' => 'admin']);
+    $this->doktor = User::factory()->create(['role' => 'doktor']);
+    $this->patientUser = User::factory()->create(['role' => 'pacijent']);
+    $this->patient = Patient::factory()->create(['user_id' => $this->patientUser->id]);
+});
+
+// === Authorization Tests ===
+
+test('admin can delete patient', function () {
+    Livewire::actingAs($this->admin)
+        ->test(\App\Livewire\Patient\PatientList::class)
+        ->call('deletePatient', $this->patient->id)
+        ->assertHasNoErrors();
+    
+    expect($this->patient->fresh()->trashed())->toBeTrue();
+});
+
+// TODO: Test doktor can delete patient
+// TODO: Test pacijent cannot delete patients
+// TODO: Test 404 if patient doesn't exist
+
+// === Soft Delete Tests ===
+
+test('patient is soft deleted not permanently deleted', function () {
+    Livewire::actingAs($this->admin)
+        ->test(\App\Livewire\Patient\PatientList::class)
+        ->call('deletePatient', $this->patient->id);
+    
+    // Still in database
+    $this->assertDatabaseHas('patients', ['id' => $this->patient->id]);
+    
+    // But marked as deleted
+    expect($this->patient->fresh()->trashed())->toBeTrue();
+});
+
+// === Flash Message Test ===
+
+test('shows success message after deletion', function () {
+    Livewire::actingAs($this->admin)
+        ->test(\App\Livewire\Patient\PatientList::class)
+        ->call('deletePatient', $this->patient->id)
+        ->assertDispatched('patient-deleted');
+});
+
+// TODO: Test deleted patient removed from list
+```
+
+**Run tests (should FAIL):**
+```bash
+php artisan test --filter=DeletePatientComponent
+```
+
+#### Step 2: Add Delete Method to PatientList (GREEN)
+
+**File:** `app/Livewire/Patient/PatientList.php`
+
+**Add Method:**
+
+```php
+public function deletePatient($patientId)
+{
+    $patient = Patient::findOrFail($patientId);
+    
+    $this->authorize('delete', $patient);
+    
+    $patient->delete(); // Soft delete
+    
+    session()->flash('success', 'Patient deleted successfully.');
+    
+    $this->dispatch('patient-deleted');
+}
+```
+
+#### Step 3: Update PatientList View (GREEN)
+
+**File:** `resources/views/livewire/patient/patient-list.blade.php`
+
+**Add delete button to actions column:**
+
+```blade
+@can('delete', $patient)
+    <button 
+        wire:click="$dispatch('confirm-delete', { patientId: {{ $patient->id }} })"
+        class="text-red-600 hover:text-red-900 ml-3">
+        Delete
+    </button>
+@endcan
+```
+
+**Add confirmation modal at end of view:**
+
+```blade
+{{-- Delete Confirmation Modal --}}
+<div x-data="{ 
+    open: false, 
+    patientId: null,
+    showModal(event) {
+        this.patientId = event.detail.patientId;
+        this.open = true;
+    }
+}" 
+     @confirm-delete.window="showModal($event)"
+     x-show="open" 
+     x-cloak
+     class="fixed inset-0 z-50 overflow-y-auto"
+     style="display: none;">
+    
+    {{-- Backdrop --}}
+    <div class="fixed inset-0 bg-black bg-opacity-50" @click="open = false"></div>
+    
+    {{-- Modal --}}
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+        <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                Delete Patient
+            </h3>
+            <p class="text-gray-600 mb-6">
+                Are you sure you want to delete this patient? This action can be undone later.
+            </p>
+            
+            <div class="flex justify-end space-x-3">
+                <button @click="open = false"
+                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                    Cancel
+                </button>
+                <button @click="$wire.deletePatient(patientId); open = false"
+                        class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+#### Step 4: Run Tests (should PASS)
+
+```bash
+php artisan test --filter=DeletePatientComponent
+```
+
+### 🧠 Why This Way?
+- **Soft delete**: Can restore patients if deleted by mistake
+- **Confirmation modal**: Prevents accidental deletions (user must confirm)
+- **Alpine.js**: Lightweight modal without extra dependencies
+- **Livewire events**: Clean communication between button and modal
+- **Flash message**: User feedback that action succeeded
+
+### ✅ Verification
+```bash
+# Run tests
+php artisan test --filter=DeletePatientComponent
+
+# Manual test
+# 1. Login as admin
+# 2. Visit patient list
+# 3. Click delete button
+# 4. Verify modal appears
+# 5. Click delete in modal
+# 6. Verify patient removed from list
+# 7. Check database - patient still exists but deleted_at is set
+```
+
+---
+
+## 📝 TASK 11: Navigation Integration
+
+### 🎯 Goal
+Add "Patients" menu item to sidebar navigation so users can easily access patient management.
+
+### 📚 Key Concepts
+- **Flux Navlist**: Using Flux UI components for navigation
+- **Authorization in Blade**: Show menu only to authorized users
+- **Active State**: Highlight menu when on patient pages
+- **Wire Navigate**: SPA-like navigation without full page reload
+
+### 📝 TDD Approach
+
+#### Step 1: Write Tests First (RED)
+
+**File:** `tests/Feature/PatientNavigationTest.php`
+
+**Example Tests:**
+
+```php
+<?php
+
+use App\Models\User;
+
+beforeEach(function () {
+    $this->admin = User::factory()->create(['role' => 'admin']);
+    $this->doktor = User::factory()->create(['role' => 'doktor']);
+    $this->pacijent = User::factory()->create(['role' => 'pacijent']);
+});
+
+// === Menu Visibility Tests ===
+
+test('admin sees patients menu item', function () {
+    $this->actingAs($this->admin)
+        ->get('/dashboard')
+        ->assertSee('Patients')
+        ->assertSee(route('patients.index'));
+});
+
+// TODO: Test doktor sees patients menu item
+// TODO: Test pacijent does not see patients menu item
+
+// === Active State Tests ===
+
+test('patients menu is active when on patient pages', function () {
+    $this->actingAs($this->admin)
+        ->get('/patients')
+        ->assertSee('Patients')
+        ->assertSee('current'); // Flux UI adds 'current' class to active items
+});
+
+// TODO: Test patients menu not active on other pages
+```
+
+**Run tests (should FAIL):**
+```bash
+php artisan test --filter=PatientNavigation
+```
+
+#### Step 2: Update Sidebar Navigation (GREEN)
+
+**File:** `resources/views/components/layouts/app/sidebar.blade.php`
+
+**Location:** After line 16 (Dashboard item), add new navlist item
+
+```blade
+<flux:navlist variant="outline">
+    <flux:navlist.group :heading="__('Platform')" class="grid">
+        <flux:navlist.item 
+            icon="home" 
+            :href="route('dashboard')" 
+            :current="request()->routeIs('dashboard')" 
+            wire:navigate>
+            {{ __('Dashboard') }}
+        </flux:navlist.item>
+        
+        {{-- ADD THIS PATIENTS MENU ITEM --}}
+        @can('viewAny', \App\Models\Patient::class)
+            <flux:navlist.item 
+                icon="users" 
+                :href="route('patients.index')" 
+                :current="request()->routeIs('patients*')" 
+                wire:navigate>
+                {{ __('Patients') }}
+            </flux:navlist.item>
+        @endcan
+    </flux:navlist.group>
+    
+    {{-- Rest of navigation... --}}
+```
+
+**Icon Note:** Using `icon="users"` (Flux UI has built-in icons from Heroicons)
+
+**Alternative Icons:**
+- `user-group` - Multiple user silhouettes
+- `identification` - ID card icon
+- `clipboard-document-list` - Medical records feel
+
+#### Step 3: Update Header Navigation (Mobile/Tablet)
+
+**File:** `resources/views/components/layouts/app/header.blade.php`
+
+**Location:** Around line 15 (navbar items)
+
+```blade
+<flux:navbar class="-mb-px max-lg:hidden">
+    <flux:navbar.item 
+        icon="layout-grid" 
+        :href="route('dashboard')" 
+        :current="request()->routeIs('dashboard')" 
+        wire:navigate>
+        Dashboard
+    </flux:navbar.item>
+    
+    {{-- ADD THIS PATIENTS MENU ITEM --}}
+    @can('viewAny', \App\Models\Patient::class)
+        <flux:navbar.item 
+            icon="users" 
+            :href="route('patients.index')" 
+            :current="request()->routeIs('patients*')" 
+            wire:navigate>
+            Patients
+        </flux:navbar.item>
+    @endcan
+</flux:navbar>
+```
+
+#### Step 4: Run Tests (should PASS)
+
+```bash
+php artisan test --filter=PatientNavigation
+```
+
+### 🧠 Why This Way?
+- **@can directive**: Menu only shows to Admin/Doktor (patients can't see it)
+- **:current prop**: Automatically highlights menu when on patient pages
+- **wire:navigate**: Faster navigation, SPA-like feel
+- **Consistent placement**: In Platform section with Dashboard (not Admin section)
+- **Mobile responsive**: Added to both sidebar and header
+
+### ✅ Verification
+```bash
+# Run tests
+php artisan test --filter=PatientNavigation
+
+# Manual test
+# 1. Login as admin - should see "Patients" menu
+# 2. Login as doktor - should see "Patients" menu
+# 3. Login as pacijent - should NOT see "Patients" menu
+# 4. Click Patients menu - should navigate to list
+# 5. Verify menu is highlighted when on patient pages
+# 6. Test on mobile viewport - menu should show in mobile nav
+```
+
+---
+
+## 🎉 Phase 1 Completion Checklist
+
+After completing Tasks 8-11, verify:
+
+- [ ] **Task 8:** View Patient component displays all info correctly
+- [ ] **Task 9:** Edit Patient form pre-fills and updates successfully
+- [ ] **Task 10:** Delete confirmation modal works, soft delete functions
+- [ ] **Task 11:** Navigation menu shows for authorized users
+- [ ] All tests passing: `php artisan test --filter=Patient`
+- [ ] Manual testing of full workflow:
+  - [ ] Create new patient
+  - [ ] View patient profile
+  - [ ] Edit patient information
+  - [ ] Delete patient
+  - [ ] Navigation works on all pages
+- [ ] Code formatted: `vendor/bin/pint`
+- [ ] Update `_CURRENT_STATE.md` marking Phase 1 complete
+
+**🎉 Phase 1 Complete!** Ready for Phase 2: Socioeconomic Data Feature
+
+---
+
+*Remember: Write tests first, implement to make tests pass, then refactor if needed (TDD: Red → Green → Refactor)*
 
 ---
 ---
