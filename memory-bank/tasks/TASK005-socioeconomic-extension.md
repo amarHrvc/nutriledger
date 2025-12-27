@@ -30,6 +30,88 @@ The `_docs` file already provides detailed TDD specs and example tests; this tas
 | 5.3 | Create Livewire components and views and integrate with patient profile | Not Started | 2025-12-24 | Reuse layout patterns from Patient components |
 | 5.4 | Add full test coverage and update docs/Memory Bank | Not Started | 2025-12-24 | Use TDD examples from `_docs` |
 
+## 📝 Expanded Task Specification
+
+### 🎯 Goal
+Add a 1-to-1 socioeconomic profile for each patient, with rich data fields, strict authorization, and seamless integration into patient management.
+
+### 📚 Key Concepts
+- Eloquent relationships (1-to-1)
+- Socioeconomic data modeling
+- Authorization (view-only for patients, manage for admin/doktor)
+- Livewire components
+- Blade templating
+- TDD with Pest
+- Migration, factory, policy, routes
+
+### 📝 TDD Approach
+#### Step 1: Write Tests First (RED)
+**File:** `tests/Feature/SocioeconomicExtensionTest.php`
+**Command to create:**
+```bash
+php artisan make:test SocioeconomicExtensionTest
+```
+**Example Tests:**
+```php
+<?php
+use App\Models\Patient;
+use App\Models\User;
+use App\Models\SocioeconomicProfile;
+beforeEach(function () {
+    $this->admin = User::factory()->create(['role' => 'admin']);
+    $this->doktor = User::factory()->create(['role' => 'doktor']);
+    $this->patientUser = User::factory()->create(['role' => 'pacijent']);
+    $this->patient = Patient::factory()->create(['user_id' => $this->patientUser->id]);
+});
+test('admin can create socioeconomic profile', function () {
+    $this->actingAs($this->admin)
+        ->post("/patients/{$this->patient->id}/socioeconomic", [
+            // TODO: Add socioeconomic fields
+        ])
+        ->assertRedirect()
+        ->assertSessionHas('status', 'Socioeconomic profile created');
+});
+// TODO: Test doktor can manage profile
+// TODO: Test patient can view but not edit
+// TODO: Test validation and required fields
+// TODO: Test integration with patient profile view
+```
+**Run tests (should FAIL):**
+```bash
+php artisan test --filter=SocioeconomicExtension
+```
+
+#### Step 2: Implement Feature (GREEN)
+- Migration: database/migrations/create_socioeconomic_profiles_table.php
+- Model: app/Models/SocioeconomicProfile.php
+- Factory: database/factories/SocioeconomicProfileFactory.php
+- Policy: app/Policies/SocioeconomicProfilePolicy.php
+- Routes: patients.socioeconomic.*
+- Livewire: app/Livewire/Patient/SocioeconomicProfile.php
+- Blade: resources/views/livewire/patient/socioeconomic-profile.blade.php
+
+#### Step 3: Run and Refactor (REFACTOR)
+- Run: php artisan test --filter=SocioeconomicExtension
+- Manual: Create/view/edit socioeconomic profile, check integration and authorization
+
+### 🧠 Why This Way?
+- 1-to-1 relationship keeps data organized
+- Strict authorization protects sensitive info
+- TDD ensures reliability and coverage
+- Integration with patient profile improves UX
+
+### ✅ Verification
+```bash
+# Run tests
+php artisan test --filter=SocioeconomicExtension
+# Manual test
+# 1. Login as admin/doktor/pacijent
+# 2. Create/view/edit socioeconomic profile
+# 3. Confirm patients can only view
+# 4. Confirm admin/doktor can manage
+# 5. Check integration with patient profile
+```
+
 ## Progress Log
 ### 2025-12-24
 - Created TASK005 to track implementation of Patient Socioeconomic Extension (Phase 2) as a follow-up to Phase 1 core patient features.

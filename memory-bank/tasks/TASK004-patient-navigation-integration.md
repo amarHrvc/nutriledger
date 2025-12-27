@@ -30,6 +30,69 @@ This task is about wiring routes into layouts, ensuring role-based visibility, a
 | 4.3 | Add basic tests (or later browser tests) for navigation behavior | Not Started | 2025-12-24 | Ensure routes reachable only when authorized |
 | 4.4 | Sync docs and Memory Bank to reflect integrated navigation | Not Started | 2025-12-24 | Update `_docs/_CURRENT_STATE.md` summary |
 
+## 📝 Expanded Task Specification
+
+### 🎯 Goal
+Integrate patient management screens into the app’s navigation, ensuring discoverability and role-based access for all patient features.
+
+### 📚 Key Concepts
+- Navigation layouts (sidebar, dashboard, menus)
+- Role-based visibility (admin/doktor only)
+- Route integration
+- UX consistency
+- TDD with Pest (smoke/browser tests)
+
+### 📝 TDD Approach
+#### Step 1: Write Tests First (RED)
+**File:** `tests/Feature/PatientNavigationTest.php`
+**Command to create:**
+```bash
+php artisan make:test PatientNavigationTest
+```
+**Example Tests:**
+```php
+test('admin sees patient navigation links', function () {
+    $this->actingAs(User::factory()->create(['role' => 'admin']))
+        ->get('/dashboard')
+        ->assertSee('Patients')
+        ->assertSee('Add Patient');
+});
+// TODO: Test doktor sees links
+// TODO: Test pacijent does not see links
+// TODO: Test navigation highlights active section
+// TODO: Test links route to correct screens
+```
+**Run tests (should FAIL):**
+```bash
+php artisan test --filter=PatientNavigation
+```
+
+#### Step 2: Implement Navigation (GREEN)
+- Audit: resources/views/layouts/* for navigation structure
+- Add: patient links for admin/doktor in sidebar/menu/dashboard
+- Hide: links for pacijent users
+- Ensure: active highlighting and UX consistency
+
+#### Step 3: Run and Refactor (REFACTOR)
+- Run: php artisan test --filter=PatientNavigation
+- Manual: Login as each role, verify navigation and access
+
+### 🧠 Why This Way?
+- Role-based navigation improves security and UX
+- Consistent patterns make features discoverable
+- Tests prevent regressions in navigation
+
+### ✅ Verification
+```bash
+# Run tests
+php artisan test --filter=PatientNavigation
+# Manual test
+# 1. Login as admin/doktor/pacijent
+# 2. Check sidebar/menu/dashboard for patient links
+# 3. Confirm links route to correct screens
+# 4. Confirm links hidden for unauthorized roles
+```
+
 ## Progress Log
 ### 2025-12-24
 - Created TASK004 to track implementation of Patient Management Phase 1 Task 11 (navigation integration for patient features).
