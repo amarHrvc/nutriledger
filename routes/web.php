@@ -63,7 +63,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/patients/{patient}', \App\Livewire\Patient\ViewPatient::class)
         ->name('patients.show');
 
-    Route::post('/patients/{patient}/edit', \App\Livewire\Patient\EditPatient::class)
+    Route::get('/patients/{patient}/edit', \App\Livewire\Patient\EditPatient::class)
         ->name('patients.edit');
 });
 

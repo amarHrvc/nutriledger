@@ -54,7 +54,7 @@ test('edit patient route exists', function () {
     $patient = Patient::factory()->create();
 
     $this->actingAs($admin)
-        ->post("/patients/{$patient->id}/edit")
+        ->get("/patients/{$patient->id}/edit")
         ->assertOk();
 });
 
