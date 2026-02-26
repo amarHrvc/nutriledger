@@ -8,7 +8,7 @@
         </div>
 
         {{--Form--}}
-        <form wire:submit.prevent="save" class="space-y-6 bg-white p-6 rounded-lg shadow-md">
+        <form wire:submit="createPatient" class="space-y-6 bg-white p-6 rounded-lg shadow-md">
 
             {{-- User Account Section --}}
             <div>
