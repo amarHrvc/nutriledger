@@ -14,6 +14,12 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+
+                    @can('viewAny', \App\Models\Patient::class)
+                        <flux:navlist.item icon="users" :href="route('patients.index')" :current="request()->routeIs('patients*')" wire:navigate>
+                            {{ __('Patients') }}
+                        </flux:navlist.item>
+                    @endcan
                 </flux:navlist.group>
 
                 @if(auth()->user()->isAdmin())
