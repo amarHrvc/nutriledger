@@ -1,69 +1,122 @@
-# CLAUDE.md
+# Copilot Instructions
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Stack
+
+- **PHP 8.3 / Laravel 12** + **Livewire 3** (full-page components) + **Flux UI free v2**
+- **Tailwind CSS v4** — use `@import "tailwindcss"` syntax (not `@tailwind` directives)
+- **Pest v4** for all tests, **Larastan level 5**, **Laravel Pint** for formatting
 
 ## Commands
 
 ```bash
-# Development (runs PHP server + queue + Vite concurrently)
+# Dev server (PHP + queue + Vite concurrently)
 composer run dev
 
 # Run all tests
-composer run test
 php artisan test
 
 # Run a single test file
-php artisan test tests/Feature/PatientListTest.php
+php artisan test tests/Feature/PatientListComponent.php
 
-# Run a single test by name
+# Run tests matching a name
 php artisan test --filter="test name here"
 
 # Static analysis
 composer run analyse
 
-# Auto-format (changed files only)
+# Format changed files only
 vendor/bin/pint --dirty
-
-# Frontend
-npm run dev
-npm run build
 ```
 
 ## Architecture
 
-### Stack
-- Laravel 12 + Livewire 3 (full-page components, not Volt functional API) + Flux UI free v2.1.1
-- Tailwind CSS v4 (use `@import` syntax, no deprecated utilities)
-- Pest 4 (Feature + Unit tests, SQLite in-memory for tests)
-- Larastan level 5, Laravel Pint for code style
+### Livewire-First UI
 
-### Livewire-First Pattern
-All interactive pages are Livewire full-page components — no traditional controllers for UI. Components live in `app/Livewire/` (class) and `resources/views/livewire/` (view). Routes point directly to Livewire component classes.
+All interactive pages are **Livewire full-page components** — no traditional controllers for UI.
 
-### Authorization Model
-- Three roles: `admin`, `doktor`, `pacijent` (stored as string on `users.role`, no Enum class)
+- Classes: `app/Livewire/{Admin,Patient,Settings}/`
+- Views: `resources/views/livewire/`
+- Routes point directly to Livewire component classes (see `routes/web.php`)
+- Use the **class-based** Livewire API, not Volt functional API
+
+### Authorization
+
+Three roles stored as plain strings on `users.role` — no Enum class:
+
+| String | Helper |
+|---|---|
+| `admin` | `isAdmin()` |
+| `doktor` | `isDoctor()` |
+| `pacijent` | `isPatient()` |
+
 - `RoleMiddleware` registered as `role:admin` in `bootstrap/app.php`
-- Gates/policies (`PatientPolicy`, `UserPolicy`) enforce fine-grained access — always use `can:` middleware or `$this->authorize()` in Livewire
-- Soft deletes on `users` and `patients` — use `forceDelete()` only for admin
-
-### Form Validation
-Use dedicated Form Request classes (`StorePatientRequest`, `UpdatePatientRequest`) in `app/Http/Requests/` — do not inline validation in Livewire components.
+- `PatientPolicy` and `UserPolicy` control fine-grained access
+- Always use `can:` route middleware or `$this->authorize()` in Livewire — never skip authorization
+- `users` and `patients` have soft deletes; `forceDelete()` is admin-only
 
 ### Auth
-Laravel Fortify manages auth (login, register, password reset, email verification, 2FA). Auth routes are in `routes/auth.php`. Do not rewrite auth logic — extend Fortify actions if needed.
 
-### Key Models
-- `User`: `isAdmin()`, `isDoctor()`, `isPatient()`, `initials()` helpers; includes `TwoFactorAuthenticatable`, `SoftDeletes`
-- `Patient`: one-to-one with `User`, computed `fullName` accessor, medical metadata fields (blood type, allergies, emergency contact, medical notes)
+Laravel **Fortify** owns all auth flows (login, register, password reset, 2FA, email verification). Auth routes live in `routes/auth.php`. Extend Fortify actions rather than rewriting auth logic.
+
+### Form Validation
+
+Use dedicated Form Request classes in `app/Http/Requests/` — do not inline validation in Livewire components.
+
+## Key Conventions
+
+### Creating Files
+
+Use `php artisan make:` commands with `--no-interaction`:
+
+```bash
+php artisan make:livewire Patient/SomeComponent --no-interaction
+php artisan make:test --pest tests/Feature/SomeTest --no-interaction
+php artisan make:request StoreSomethingRequest --no-interaction
+```
 
 ### UI Components
-Use Flux UI free components (`<flux:button>`, `<flux:input>`, `<flux:modal>`, `<flux:badge>`, etc.) for all UI elements. Layouts: `layouts.app` (authenticated) and `layouts.auth` (guest).
 
-### Testing Conventions
-- Feature tests use `RefreshDatabase` and Pest's `actingAs()` helper
-- Test files mirror the feature: `tests/Feature/Patient/`, `tests/Feature/Admin/`, etc.
-- Policies, routes, Livewire component rendering, and middleware all have separate test coverage
-- Write tests before or alongside implementation (TDD encouraged)
+Use **Flux UI** components for all UI — `<flux:button>`, `<flux:input>`, `<flux:modal>`, `<flux:badge>`, etc.
+
+Layouts: `layouts.app` (authenticated), `layouts.auth` (guest).
+
+Available free components: `avatar`, `badge`, `brand`, `breadcrumbs`, `button`, `callout`, `checkbox`, `dropdown`, `field`, `heading`, `icon`, `input`, `modal`, `navbar`, `profile`, `radio`, `select`, `separator`, `switch`, `text`, `textarea`, `tooltip`.
+
+### Tests
+
+- All tests use **Pest** with `RefreshDatabase` and `actingAs()`
+- Test files mirror features: `tests/Feature/Patient/`, `tests/Feature/Admin/`, etc.
+- Use specific assertion methods: `assertForbidden()`, `assertNotFound()` (not `assertStatus(403)`)
+- Use `Livewire::test(ComponentClass::class)` for component tests
+- Never remove test files without approval
+
+### PHP Style
+
+- Always use explicit return type declarations
+- Use PHP 8 constructor property promotion
+- Use curly braces for all control structures
+- Prefer PHPDoc blocks over inline comments
+- Use `Model::query()` over `DB::` for database operations
+- Prevent N+1 with eager loading
+
+### Database / Models
+
+- Casts defined in a `casts()` method (not `$casts` property) — see `User` model
+- Use Eloquent relationships with return type hints
+- When modifying a column in a migration, re-declare all previously defined attributes
+
+### Tailwind v4 Removed Utilities
+
+| Removed | Use Instead |
+|---|---|
+| `bg-opacity-*` | `bg-black/*` |
+| `flex-shrink-*` | `shrink-*` |
+| `flex-grow-*` | `grow-*` |
+| `overflow-ellipsis` | `text-ellipsis` |
+
+### Config & Env
+
+Never call `env()` outside of config files — always use `config('key')` in application code.
 
 ===
 
