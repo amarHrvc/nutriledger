@@ -119,3 +119,19 @@ test('patient_id is a foreign key referencing patients table', function () {
     expect($fk)->not->toBeNull()
         ->and($fk->table)->toBe('patients');
 });
+
+test('patient_id has a unique constraint enforcing one-to-one relationship', function () {
+    $indexes = \Illuminate\Support\Facades\DB::select("PRAGMA index_list('patient_socioeconomic')");
+
+    $uniqueOnPatientId = collect($indexes)->filter(function ($index) {
+        if (! $index->unique) {
+            return false;
+        }
+        $indexName = addslashes((string) $index->name);
+        $indexInfo = \Illuminate\Support\Facades\DB::select("PRAGMA index_info('{$indexName}')");
+
+        return collect($indexInfo)->contains('name', 'patient_id');
+    });
+
+    expect($uniqueOnPatientId)->not->toBeEmpty();
+});
