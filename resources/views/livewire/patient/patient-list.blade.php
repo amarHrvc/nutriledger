@@ -1,4 +1,11 @@
 <div class="p-6">
+    {{-- Flash Message --}}
+    @if (session('success'))
+        <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+            {{ session('success') }}
+        </div>
+    @endif
+
     {{-- Header --}}
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Patients</h1>
@@ -58,11 +65,25 @@
                         @endcan
 
                         @can('delete', $patient)
-                            <button
-                                wire:click="$dispatch('delete-patient', { id: {{ $patient->id }} })"
-                                class="text-red-600 hover:text-red-900 inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 ">
-                                Delete
-                            </button>
+                            <flux:modal.trigger name="delete-patient-{{ $patient->id }}">
+                                <flux:button size="sm" variant="danger">Delete</flux:button>
+                            </flux:modal.trigger>
+                            <flux:modal name="delete-patient-{{ $patient->id }}" class="md:w-96">
+                                <div class="space-y-6">
+                                    <div>
+                                        <flux:heading size="lg">Delete Patient</flux:heading>
+                                        <flux:text class="mt-2">Are you sure you want to delete {{ $patient->full_name }}? This action can be undone by an administrator.</flux:text>
+                                    </div>
+                                    <div class="flex justify-end gap-3">
+                                        <flux:modal.close>
+                                            <flux:button variant="ghost">Cancel</flux:button>
+                                        </flux:modal.close>
+                                        <flux:button wire:click="deletePatient({{ $patient->id }})" variant="danger">
+                                            Delete Patient
+                                        </flux:button>
+                                    </div>
+                                </div>
+                            </flux:modal>
                         @endcan
                     </td>
                 </tr>
