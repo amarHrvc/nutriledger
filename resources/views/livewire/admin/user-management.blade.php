@@ -79,7 +79,7 @@
 
                                 @can('delete', $user)
                                     <flux:modal.trigger :name="'delete-user-' . $user->id">
-                                        <button class="dark:hover:text-red-300 inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                        <button class="cursor-pointer dark:hover:text-red-300 inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
                                             Delete
                                         </button>
                                     </flux:modal.trigger>

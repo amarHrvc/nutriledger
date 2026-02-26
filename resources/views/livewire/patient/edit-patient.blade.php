@@ -139,7 +139,7 @@
                 <flux:button href="{{ route('patients.show', $patient) }}" wire:navigate variant="ghost">
                     Cancel
                 </flux:button>
-                <flux:button type="submit" variant="primary">
+                <flux:button type="submit" variant="primary" class="cursor-pointer">
                     Update Patient
                 </flux:button>
             </div>

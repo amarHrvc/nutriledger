@@ -61,12 +61,12 @@
                         @endcan
 
                         @can('update', $patient)
-                            <a href="{{ route('patients.edit', $patient) }}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 ">Edit</a>
+                            <a href="{{ route('patients.edit', $patient) }}" class="cursor-pointer text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 ">Edit</a>
                         @endcan
 
                         @can('delete', $patient)
                             <flux:modal.trigger name="delete-patient-{{ $patient->id }}">
-                                <flux:button size="sm" variant="danger">Delete</flux:button>
+                                <flux:button size="sm" variant="danger" class="cursor-pointer">Delete</flux:button>
                             </flux:modal.trigger>
                             <flux:modal name="delete-patient-{{ $patient->id }}" class="md:w-96">
                                 <div class="space-y-6">
