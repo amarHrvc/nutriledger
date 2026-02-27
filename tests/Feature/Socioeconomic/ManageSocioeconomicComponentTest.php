@@ -48,7 +48,7 @@ test('guest is redirected to login for create page', function (): void {
 test('admin can access edit page for patient with existing socioeconomic data', function (): void {
     $admin = User::factory()->create(['role' => 'admin']);
     $patient = Patient::factory()->create();
-    PatientSocioeconomic::factory()->create(['patient_id' => $patient->id]);
+    PatientSocioeconomic::create(['patient_id' => $patient->id]);
 
     $this->actingAs($admin)
         ->get(route('patients.socioeconomic.edit', $patient))
@@ -58,7 +58,7 @@ test('admin can access edit page for patient with existing socioeconomic data', 
 test('doktor can access edit page for patient with existing socioeconomic data', function (): void {
     $doktor = User::factory()->create(['role' => 'doktor']);
     $patient = Patient::factory()->create();
-    PatientSocioeconomic::factory()->create(['patient_id' => $patient->id]);
+    PatientSocioeconomic::create(['patient_id' => $patient->id]);
 
     $this->actingAs($doktor)
         ->get(route('patients.socioeconomic.edit', $patient))
@@ -68,7 +68,7 @@ test('doktor can access edit page for patient with existing socioeconomic data',
 test('pacijent cannot access edit page', function (): void {
     $user = User::factory()->create(['role' => 'pacijent']);
     $patient = Patient::factory()->create(['user_id' => $user->id]);
-    PatientSocioeconomic::factory()->create(['patient_id' => $patient->id]);
+    PatientSocioeconomic::create(['patient_id' => $patient->id]);
 
     $this->actingAs($user)
         ->get(route('patients.socioeconomic.edit', $patient))
@@ -90,7 +90,7 @@ test('component renders create form when no existing record', function (): void 
 test('component renders edit form with pre-filled values when record exists', function (): void {
     $admin = User::factory()->create(['role' => 'admin']);
     $patient = Patient::factory()->create();
-    PatientSocioeconomic::factory()->create([
+    PatientSocioeconomic::create([
         'patient_id' => $patient->id,
         'employment_status' => 'employed_full_time',
         'income_level' => 'middle',
@@ -121,7 +121,7 @@ test('admin can successfully create socioeconomic record', function (): void {
         ->call('save')
         ->assertHasNoErrors();
 
-    $this->assertDatabaseHas('patient_socioeconomic', [
+    test()->assertDatabaseHas('patient_socioeconomic', [
         'patient_id' => $patient->id,
         'marital_status' => 'married',
         'employment_status' => 'employed_full_time',
@@ -133,10 +133,13 @@ test('admin can successfully create socioeconomic record', function (): void {
 test('admin can successfully update existing socioeconomic record', function (): void {
     $admin = User::factory()->create(['role' => 'admin']);
     $patient = Patient::factory()->create();
-    PatientSocioeconomic::factory()->create([
+    PatientSocioeconomic::create([
         'patient_id' => $patient->id,
         'employment_status' => 'unemployed',
         'income_level' => 'low',
+        'marital_status' => 'single',
+        'living_arrangement' => 'alone',
+        'food_security_status' => 'food_secure',
     ]);
 
     Livewire::actingAs($admin)
@@ -146,7 +149,7 @@ test('admin can successfully update existing socioeconomic record', function ():
         ->call('save')
         ->assertHasNoErrors();
 
-    $this->assertDatabaseHas('patient_socioeconomic', [
+    test()->assertDatabaseHas('patient_socioeconomic', [
         'patient_id' => $patient->id,
         'employment_status' => 'employed_full_time',
         'income_level' => 'middle',
@@ -215,7 +218,11 @@ test('after successful create redirects to patients.socioeconomic.show', functio
 test('after successful update redirects to patients.socioeconomic.show', function (): void {
     $admin = User::factory()->create(['role' => 'admin']);
     $patient = Patient::factory()->create();
-    PatientSocioeconomic::factory()->create(['patient_id' => $patient->id]);
+    PatientSocioeconomic::create([
+        'patient_id' => $patient->id,
+        'employment_status' => 'unemployed',
+        'marital_status' => 'single',
+    ]);
 
     Livewire::actingAs($admin)
         ->test(ManageSocioeconomic::class, ['patient' => $patient])
@@ -232,21 +239,21 @@ test('component has all required form fields', function (): void {
 
     Livewire::actingAs($admin)
         ->test(ManageSocioeconomic::class, ['patient' => $patient])
-        ->assertPropertyWired('marital_status')
-        ->assertPropertyWired('employment_status')
-        ->assertPropertyWired('income_level')
-        ->assertPropertyWired('number_of_dependents')
-        ->assertPropertyWired('living_arrangement')
-        ->assertPropertyWired('occupation')
-        ->assertPropertyWired('has_health_insurance')
-        ->assertPropertyWired('education_level')
-        ->assertPropertyWired('smoking_status')
-        ->assertPropertyWired('alcohol_consumption')
-        ->assertPropertyWired('physical_activity_level')
-        ->assertPropertyWired('has_family_support')
-        ->assertPropertyWired('has_caregiver')
-        ->assertPropertyWired('transportation_access')
-        ->assertPropertyWired('food_security_status')
-        ->assertPropertyWired('dietary_restrictions_cultural')
-        ->assertPropertyWired('additional_notes');
+        ->assertSeeHtml('wire:model="marital_status"')
+        ->assertSeeHtml('wire:model="employment_status"')
+        ->assertSeeHtml('wire:model="income_level"')
+        ->assertSeeHtml('wire:model="number_of_dependents"')
+        ->assertSeeHtml('wire:model="living_arrangement"')
+        ->assertSeeHtml('wire:model="occupation"')
+        ->assertSeeHtml('wire:model="has_health_insurance"')
+        ->assertSeeHtml('wire:model="education_level"')
+        ->assertSeeHtml('wire:model="smoking_status"')
+        ->assertSeeHtml('wire:model="alcohol_consumption"')
+        ->assertSeeHtml('wire:model="physical_activity_level"')
+        ->assertSeeHtml('wire:model="has_family_support"')
+        ->assertSeeHtml('wire:model="has_caregiver"')
+        ->assertSeeHtml('wire:model="transportation_access"')
+        ->assertSeeHtml('wire:model="food_security_status"')
+        ->assertSeeHtml('wire:model="dietary_restrictions_cultural"')
+        ->assertSeeHtml('wire:model="additional_notes"');
 });
