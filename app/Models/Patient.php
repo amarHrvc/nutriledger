@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use PhpParser\Node\Expr\Array_;
 
 class Patient extends Model
 {
@@ -33,7 +32,6 @@ class Patient extends Model
 
     ];
 
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -46,6 +44,10 @@ class Patient extends Model
         );
     }
 
+    public function socioeconomic(): HasOne
+    {
+        return $this->hasOne(PatientSocioeconomic::class);
+    }
 
     protected function casts(): array
     {
