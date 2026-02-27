@@ -74,6 +74,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/patients/{patient}/socioeconomic/edit', \App\Livewire\Patient\Socioeconomic\ManageSocioeconomic::class)
         ->name('patients.socioeconomic.edit');
+
+    Route::get('/patients/{patient}/socioeconomic/delete', \App\Livewire\Patient\Socioeconomic\DeleteSocioeconomic::class)
+        ->name('patients.socioeconomic.delete');
 });
 
 require __DIR__.'/auth.php';
