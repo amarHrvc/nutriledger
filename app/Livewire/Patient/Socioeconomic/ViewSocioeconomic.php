@@ -13,6 +13,8 @@ class ViewSocioeconomic extends Component
 
     public Patient $patient;
 
+    public ?PatientSocioeconomic $socioeconomic = null;
+
     public function mount(Patient $patient): void
     {
         $socioeconomic = PatientSocioeconomic::where('patient_id', $patient->id)->first();
@@ -24,10 +26,13 @@ class ViewSocioeconomic extends Component
         }
 
         $this->patient = $patient;
+        $this->socioeconomic = $socioeconomic;
     }
 
     public function render(): \Illuminate\View\View
     {
-        return view('livewire.patient.socioeconomic.view-socioeconomic');
+        return view('livewire.patient.socioeconomic.view-socioeconomic', [
+            'socioeconomic' => $this->socioeconomic,
+        ]);
     }
 }
