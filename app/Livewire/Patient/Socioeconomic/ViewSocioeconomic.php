@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Livewire\Patient;
+namespace App\Livewire\Patient\Socioeconomic;
 
 use App\Models\Patient;
 use App\Models\PatientSocioeconomic;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
-class ViewPatient extends Component
+class ViewSocioeconomic extends Component
 {
     use AuthorizesRequests;
 
@@ -17,14 +17,21 @@ class ViewPatient extends Component
 
     public function mount(Patient $patient): void
     {
-        $this->authorize('view', $patient);
+        $socioeconomic = $patient->socioeconomic;
+
+        if ($socioeconomic) {
+            $this->authorize('view', $socioeconomic);
+        } else {
+            $this->authorize('view', $patient);
+        }
+
         $this->patient = $patient;
-        $this->socioeconomic = $patient->socioeconomic;
+        $this->socioeconomic = $socioeconomic;
     }
 
     public function render(): \Illuminate\View\View
     {
-        return view('livewire.patient.view-patient', [
+        return view('livewire.patient.socioeconomic.view-socioeconomic', [
             'socioeconomic' => $this->socioeconomic,
         ]);
     }

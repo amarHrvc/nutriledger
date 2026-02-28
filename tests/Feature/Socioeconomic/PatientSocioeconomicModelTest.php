@@ -11,7 +11,7 @@ uses(RefreshDatabase::class);
 test('socioeconomic record can be created with minimal data', function (): void {
     $patient = Patient::factory()->create();
 
-    $socio = PatientSocioeconomic::create(['patient_id' => $patient->id]);
+    $socio = $patient->socioeconomic()->create([]);
 
     expect($socio->id)->not->toBeNull()
         ->and($socio->patient_id)->toBe($patient->id);
@@ -20,8 +20,7 @@ test('socioeconomic record can be created with minimal data', function (): void 
 test('socioeconomic record can be created with all fields', function (): void {
     $patient = Patient::factory()->create();
 
-    $socio = PatientSocioeconomic::create([
-        'patient_id' => $patient->id,
+    $socio = $patient->socioeconomic()->create([
         'marital_status' => 'married',
         'number_of_dependents' => 2,
         'living_arrangement' => 'with_family',
@@ -59,8 +58,7 @@ test('socioeconomic patient_id is required', function (): void {
 test('all expected fields are mass assignable', function (): void {
     $patient = Patient::factory()->create();
 
-    $socio = PatientSocioeconomic::create([
-        'patient_id' => $patient->id,
+    $socio = $patient->socioeconomic()->create([
         'marital_status' => 'single',
         'number_of_dependents' => 0,
         'living_arrangement' => 'alone',
@@ -97,28 +95,28 @@ test('all expected fields are mass assignable', function (): void {
 
 test('has_health_insurance is cast to boolean', function (): void {
     $patient = Patient::factory()->create();
-    $socio = PatientSocioeconomic::create(['patient_id' => $patient->id, 'has_health_insurance' => 1]);
+    $socio = $patient->socioeconomic()->create(['has_health_insurance' => 1]);
 
     expect($socio->has_health_insurance)->toBeBool()->toBeTrue();
 });
 
 test('has_family_support is cast to boolean', function (): void {
     $patient = Patient::factory()->create();
-    $socio = PatientSocioeconomic::create(['patient_id' => $patient->id, 'has_family_support' => 0]);
+    $socio = $patient->socioeconomic()->create(['has_family_support' => 0]);
 
     expect($socio->has_family_support)->toBeBool()->toBeFalse();
 });
 
 test('has_caregiver is cast to boolean', function (): void {
     $patient = Patient::factory()->create();
-    $socio = PatientSocioeconomic::create(['patient_id' => $patient->id, 'has_caregiver' => 1]);
+    $socio = $patient->socioeconomic()->create(['has_caregiver' => 1]);
 
     expect($socio->has_caregiver)->toBeBool()->toBeTrue();
 });
 
 test('number_of_dependents is cast to integer', function (): void {
     $patient = Patient::factory()->create();
-    $socio = PatientSocioeconomic::create(['patient_id' => $patient->id, 'number_of_dependents' => '3']);
+    $socio = $patient->socioeconomic()->create(['number_of_dependents' => '3']);
 
     expect($socio->number_of_dependents)->toBeInt()->toBe(3);
 });
@@ -127,7 +125,7 @@ test('number_of_dependents is cast to integer', function (): void {
 
 test('socioeconomic data belongs to patient', function (): void {
     $patient = Patient::factory()->create();
-    $socio = PatientSocioeconomic::create(['patient_id' => $patient->id]);
+    $socio = $patient->socioeconomic()->create([]);
 
     expect($socio->patient)->toBeInstanceOf(Patient::class)
         ->and($socio->patient->id)->toBe($patient->id);
@@ -135,7 +133,7 @@ test('socioeconomic data belongs to patient', function (): void {
 
 test('patient has one socioeconomic record', function (): void {
     $patient = Patient::factory()->create();
-    PatientSocioeconomic::create(['patient_id' => $patient->id, 'marital_status' => 'single']);
+    $patient->socioeconomic()->create(['marital_status' => 'single']);
 
     $patient->refresh();
 
@@ -153,16 +151,16 @@ test('patient socioeconomic returns null when no record exists', function (): vo
 
 test('patient can only have one socioeconomic record', function (): void {
     $patient = Patient::factory()->create();
-    PatientSocioeconomic::create(['patient_id' => $patient->id]);
+    $patient->socioeconomic()->create([]);
 
-    expect(fn () => PatientSocioeconomic::create(['patient_id' => $patient->id]))->toThrow(\Exception::class);
+    expect(fn () => $patient->socioeconomic()->create([]))->toThrow(\Exception::class);
 });
 
 // --- Cascade delete ---
 
 test('socioeconomic record is deleted when patient is force deleted', function (): void {
     $patient = Patient::factory()->create();
-    $socio = PatientSocioeconomic::create(['patient_id' => $patient->id]);
+    $socio = $patient->socioeconomic()->create([]);
 
     $patient->forceDelete();
 
@@ -174,8 +172,7 @@ test('socioeconomic record is deleted when patient is force deleted', function (
 test('all nullable fields accept null values', function (): void {
     $patient = Patient::factory()->create();
 
-    $socio = PatientSocioeconomic::create([
-        'patient_id' => $patient->id,
+    $socio = $patient->socioeconomic()->create([
         'marital_status' => null,
         'number_of_dependents' => null,
         'living_arrangement' => null,
