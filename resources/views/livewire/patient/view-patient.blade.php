@@ -106,6 +106,62 @@
                     </div>
                 </dl>
             </div>
+
+            {{-- Socioeconomic Data --}}
+            <div class="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-3">
+                        <flux:heading size="lg">Socioeconomic Data</flux:heading>
+                        @if($socioeconomic)
+                            <flux:badge color="green">Recorded</flux:badge>
+                        @else
+                            <flux:badge color="zinc">Not recorded</flux:badge>
+                        @endif
+                    </div>
+                    <div class="flex gap-2">
+                        @if($socioeconomic)
+                            <flux:button href="{{ route('patients.socioeconomic.show', $patient) }}" wire:navigate variant="ghost" size="sm">
+                                View Details
+                            </flux:button>
+                            @can('update', $socioeconomic)
+                                <flux:button href="{{ route('patients.socioeconomic.edit', $patient) }}" wire:navigate variant="ghost" size="sm">
+                                    Edit
+                                </flux:button>
+                            @endcan
+                        @else
+                            @can('create', App\Models\PatientSocioeconomic::class)
+                                <flux:button href="{{ route('patients.socioeconomic.create', $patient) }}" wire:navigate variant="primary" size="sm">
+                                    Add Socioeconomic Data
+                                </flux:button>
+                            @endcan
+                        @endif
+                    </div>
+                </div>
+                @if($socioeconomic)
+                    <dl class="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-4">
+                        <div>
+                            <dt class="text-sm font-medium text-zinc-500">Employment</dt>
+                            <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
+                                {{ $socioeconomic->employment_status ? ucwords(str_replace('_', ' ', $socioeconomic->employment_status)) : 'N/A' }}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-zinc-500">Income Level</dt>
+                            <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
+                                {{ $socioeconomic->income_level ? ucwords(str_replace('_', ' ', $socioeconomic->income_level)) : 'N/A' }}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-zinc-500">Food Security</dt>
+                            <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
+                                {{ $socioeconomic->food_security_status ? ucwords(str_replace('_', ' ', $socioeconomic->food_security_status)) : 'N/A' }}
+                            </dd>
+                        </div>
+                    </dl>
+                @else
+                    <flux:text class="text-zinc-500 text-sm">No socioeconomic data has been recorded for this patient yet.</flux:text>
+                @endif
+            </div>
         </div>
     </div>
 </div>
