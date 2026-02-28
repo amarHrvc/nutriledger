@@ -17,7 +17,7 @@ class ViewSocioeconomic extends Component
 
     public function mount(Patient $patient): void
     {
-        $socioeconomic = PatientSocioeconomic::where('patient_id', $patient->id)->first();
+        $socioeconomic = $patient->socioeconomic;
 
         if ($socioeconomic) {
             $this->authorize('view', $socioeconomic);

@@ -39,7 +39,7 @@
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Marital Status</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->marital_status ? ucwords(str_replace('_', ' ', $socioeconomic->marital_status)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->marital_status) }}
                             </dd>
                         </div>
                         <div>
@@ -51,7 +51,7 @@
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Living Arrangement</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->living_arrangement ? ucwords(str_replace('_', ' ', $socioeconomic->living_arrangement)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->living_arrangement) }}
                             </dd>
                         </div>
                     </dl>
@@ -64,7 +64,7 @@
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Employment Status</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->employment_status ? ucwords(str_replace('_', ' ', $socioeconomic->employment_status)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->employment_status) }}
                             </dd>
                         </div>
                         <div>
@@ -76,7 +76,7 @@
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Income Level</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->income_level ? ucwords(str_replace('_', ' ', $socioeconomic->income_level)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->income_level) }}
                             </dd>
                         </div>
                         <div>
@@ -99,25 +99,25 @@
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Education Level</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->education_level ? ucwords(str_replace('_', ' ', $socioeconomic->education_level)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->education_level) }}
                             </dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Smoking Status</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->smoking_status ? ucwords(str_replace('_', ' ', $socioeconomic->smoking_status)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->smoking_status) }}
                             </dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Alcohol Consumption</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->alcohol_consumption ? ucwords(str_replace('_', ' ', $socioeconomic->alcohol_consumption)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->alcohol_consumption) }}
                             </dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Physical Activity Level</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->physical_activity_level ? ucwords(str_replace('_', ' ', $socioeconomic->physical_activity_level)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->physical_activity_level) }}
                             </dd>
                         </div>
                     </dl>
@@ -150,7 +150,7 @@
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Transportation Access</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->transportation_access ? ucwords(str_replace('_', ' ', $socioeconomic->transportation_access)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->transportation_access) }}
                             </dd>
                         </div>
                     </dl>
@@ -163,7 +163,7 @@
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Food Security Status</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->food_security_status ? ucwords(str_replace('_', ' ', $socioeconomic->food_security_status)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->food_security_status) }}
                             </dd>
                         </div>
                         <div>
