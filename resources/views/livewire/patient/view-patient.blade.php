@@ -142,19 +142,19 @@
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Employment</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->employment_status ? ucwords(str_replace('_', ' ', $socioeconomic->employment_status)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->employment_status) }}
                             </dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Income Level</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->income_level ? ucwords(str_replace('_', ' ', $socioeconomic->income_level)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->income_level) }}
                             </dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500">Food Security</dt>
                             <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $socioeconomic->food_security_status ? ucwords(str_replace('_', ' ', $socioeconomic->food_security_status)) : 'N/A' }}
+                                {{ format_enum_label($socioeconomic->food_security_status) }}
                             </dd>
                         </div>
                     </dl>
