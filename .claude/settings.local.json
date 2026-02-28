@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__airis-mcp-gateway__airis-find",
+      "mcp__airis-mcp-gateway__airis-schema",
+      "mcp__airis-mcp-gateway__airis-exec",
+      "Bash(php artisan:*)"
+    ]
+  }
+}

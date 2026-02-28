@@ -3,7 +3,7 @@
 **Last Updated:** 2025-12-24
 
 ## Overview
-Nutri Ledger is a Laravel-based clinical nutrition record system for tracking patients, visits, vitals, labs, labs, medications, recommendations, and reminders.
+Nutri Ledger is a Laravel-based clinical nutrition record system for tracking patients, visits, vitals, labs, medications, recommendations, and reminders.
 
 ## Goals
 - Provide a focused MVP for small clinics and nutrition practices to manage patients and their encounters.

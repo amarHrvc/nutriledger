@@ -4,6 +4,7 @@
         "copilot"
     ],
     "editors": [
+        "claude_code",
         "phpstorm",
         "vscode"
     ],

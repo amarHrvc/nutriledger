@@ -13,4 +13,6 @@
 - Development roadmap and high-level requirements captured in `resources/_tasks/dev_tasks.md` and `resources/_tasks/auth.md`.
 
 ## Constraints and Dependencies
-- TBD
+- "Learning mode" is active: AI should provide specifications and a few example tests, not full classes or complete test suites; the developer implements the code using TDD.
+- New features must use Laravel policies, Livewire components, and Pest feature tests consistently for authorization and behavior.
+- Patient Management Phase 1 should be completed before starting the Socioeconomic extension defined in `_docs/_Feature/2_PATIENT_MANAGEMENT_FEATURE_TASKS.md`.

@@ -3,18 +3,20 @@
 **Last Updated:** 2025-12-24
 
 ## Current Focus
-- Defining the MVP feature roadmap and authentication/role requirements for Nutri Ledger.
-- Wiring up schema, roles, and initial tooling (Boost, Larastan, IDE helper, Debugbar, Memory Bank).
+- Working on branch `feature/patient_management`, focusing on Feature Group 2 (Patient Management) Phase 1.
+- Implementing and wiring up the remaining patient Livewire components (view, edit, delete, navigation) with policies and tests.
 
 ## Recent Changes
-- Added Laravel Boost integration and local development tools (Larastan, IDE helper, Debugbar).
-- Created `resources/_tasks/dev_tasks.md` and `resources/_tasks/auth.md` to capture the MVP roadmap and auth tasks.
-- Introduced the Memory Bank structure and started populating it with real project context.
+- Completed Feature Group 1 (User Management) including full CRUD, authorization policies, UI, and tests.
+- Implemented Patient Phase 1 tasks 1–7: migration, model/relationships, factory, policy, routes, patient list component (pagination + search), and create-patient component.
+- Documented detailed state and learning-mode guidelines in `_docs/_CURRENT_STATE.md` and `_docs/_Feature/2_PATIENT_MANAGEMENT_FEATURE_TASKS.md`.
 
 ## Next Steps
-- Implement role-based authentication and middleware according to `resources/_tasks/auth.md`.
-- Start building MVP feature groups from `resources/_tasks/dev_tasks.md`, beginning with system bootstrap, user/patient registration, and visits.
-- Add or update tests, factories, and seeders for core domain entities (patients, visits, labs, vitals, medications, recommendations, reminders).
+- Complete Patient Management Phase 1 tasks 8–11: ViewPatient component, EditPatient component, delete flow, and navigation integration.
+- After Phase 1, implement the Socioeconomic extension (Phase 2) using the specs in `2_PATIENT_MANAGEMENT_FEATURE_TASKS.md`.
+- Later, build the remaining clinical MVP feature groups (visits, vitals, labs, medications, recommendations, reminders, dashboards) once patient management is stable.
 
 ## Active Decisions
-- TBD
+- Use a vertical-slice, TDD workflow (DB → model/factory → policy → routes → Livewire → view → tests) for each patient-related feature.
+- Honor the learning-mode rules from `_docs/_CURRENT_STATE.md` and `_docs/LEARNING_MODE.md`: AI acts as a teacher/spec writer while the developer writes the main code and remaining tests.
+- Keep documentation in `_docs` and the Memory Bank synchronized at the end of each working session.

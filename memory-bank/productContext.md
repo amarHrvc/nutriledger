@@ -16,4 +16,6 @@ Nutri Ledger centralizes patient nutrition-related data (visits, labs, vitals, m
 - Difficulty getting a quick overview of a patient’s status or the clinic’s workload (upcoming reminders, active medications, recent labs).
 
 ## User Experience Goals
-- TBD
+- Keep everyday flows (user management, patient creation, viewing/editing profiles) simple enough for non-technical clinic staff.
+- Prefer feature-complete vertical slices (DB → model/factory → policy → routes → Livewire → view → tests) that behave consistently across the app.
+- Present patient and user information clearly, separating admin tooling from day-to-day clinical views.

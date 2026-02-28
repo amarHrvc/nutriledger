@@ -3,8 +3,10 @@
 namespace App\Livewire\Admin;
 
 use App\Models\User;
+use Flux\Flux;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Log;
 
 class UserManagement extends Component
 {
@@ -45,5 +47,29 @@ class UserManagement extends Component
     public function updatingRoleFilter()
     {
         $this->resetPage();
+    }
+
+
+    public function updatedRoleFilter()
+    {
+        Log::debug('Role filter updated', ['role' => $this->roleFilter]);
+    }
+
+    /**
+     * Delete a user.
+     */
+    public function deleteUser(int $userId)
+    {
+        $user = User::findOrFail($userId);
+
+        $this->authorize('delete', $user);
+
+        $user->delete();
+
+        session()->flash('success', 'User deleted successfully.');
+
+        $this->resetPage();
+
+        FLUX::modal('delete-user-' . $user->id)->close();
     }
 }

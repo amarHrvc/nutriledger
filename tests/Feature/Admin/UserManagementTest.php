@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Livewire\Livewire;
 
 beforeEach(function () {
     $this->admin = User::factory()->create(['role' => 'admin']);
@@ -78,19 +79,20 @@ test('admin can view create user form', function () {
 });
 
 test('admin can create a new doctor', function () {
-    $userData = [
-        'name' => 'Dr. Jane Doe',
-        'email' => 'jane.doe@example.com',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
-        'role' => 'doktor',
-    ];
+    $this->actingAs($this->admin);
 
-    $response = $this->actingAs($this->admin)
-        ->post('/admin/users', $userData);
+    Livewire::test(\App\Livewire\Admin\CreateUser::class)
+        ->set('name', 'Dr. Jane Doe')
+        ->set('email', 'jane.doe@example.com')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('role', 'doktor')
+        ->call('save')
+        ->assertHasNoErrors()
+        ->dump()
+        ->assertRedirect(route('admin.users.index'))
+        ->assertSessionHas('success');
 
-    $response->assertRedirect('/admin/users');
-    $response->assertSessionHas('success');
 
     $this->assertDatabaseHas('users', [
         'name' => 'Dr. Jane Doe',
@@ -100,18 +102,17 @@ test('admin can create a new doctor', function () {
 });
 
 test('admin can create a new patient', function () {
-    $userData = [
-        'name' => 'Patient Name',
-        'email' => 'patient@example.com',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
-        'role' => 'pacijent',
-    ];
+    $this->actingAs($this->admin);
 
-    $response = $this->actingAs($this->admin)
-        ->post('/admin/users', $userData);
-
-    $response->assertRedirect('/admin/users');
+    Livewire::test(\App\Livewire\Admin\CreateUser::class)
+        ->set('name', 'Patient Name')
+        ->set('email', 'patient@example.com')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('role', 'pacijent')
+        ->call('save')
+        ->assertRedirect(route('admin.users.index'))
+        ->assertSessionHas('success');
 
     $this->assertDatabaseHas('users', [
         'email' => 'patient@example.com',
@@ -120,18 +121,17 @@ test('admin can create a new patient', function () {
 });
 
 test('admin can create a new admin', function () {
-    $userData = [
-        'name' => 'New Admin',
-        'email' => 'newadmin@example.com',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
-        'role' => 'admin',
-    ];
+    $this->actingAs($this->admin);
 
-    $response = $this->actingAs($this->admin)
-        ->post('/admin/users', $userData);
-
-    $response->assertRedirect('/admin/users');
+    Livewire::test(\App\Livewire\Admin\CreateUser::class)
+        ->set('name', 'New Admin')
+        ->set('email', 'newadmin@example.com')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('role', 'admin')
+        ->call('save')
+        ->assertRedirect(route('admin.users.index'))
+        ->assertSessionHas('success');
 
     $this->assertDatabaseHas('users', [
         'email' => 'newadmin@example.com',
@@ -140,120 +140,104 @@ test('admin can create a new admin', function () {
 });
 
 test('create user requires name', function () {
-    $userData = [
-        'email' => 'test@example.com',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
-        'role' => 'doktor',
-    ];
+    $this->actingAs($this->admin);
 
-    $response = $this->actingAs($this->admin)
-        ->post('/admin/users', $userData);
-
-    $response->assertSessionHasErrors('name');
+    Livewire::test(\App\Livewire\Admin\CreateUser::class)
+        ->set('email', 'test@example.com')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('role', 'doktor')
+        ->call('save')
+        ->assertHasErrors('name');
 });
 
 test('create user requires email', function () {
-    $userData = [
-        'name' => 'Test User',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
-        'role' => 'doktor',
-    ];
+    $this->actingAs($this->admin);
 
-    $response = $this->actingAs($this->admin)
-        ->post('/admin/users', $userData);
-
-    $response->assertSessionHasErrors('email');
+    Livewire::test(\App\Livewire\Admin\CreateUser::class)
+        ->set('name', 'Test User')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('role', 'doktor')
+        ->call('save')
+        ->assertHasErrors('email');
 });
 
 test('create user requires valid email', function () {
-    $userData = [
-        'name' => 'Test User',
-        'email' => 'invalid-email',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
-        'role' => 'doktor',
-    ];
+    $this->actingAs($this->admin);
 
-    $response = $this->actingAs($this->admin)
-        ->post('/admin/users', $userData);
-
-    $response->assertSessionHasErrors('email');
+    Livewire::test(\App\Livewire\Admin\CreateUser::class)
+        ->set('name', 'Test User')
+        ->set('email', 'invalid-email')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('role', 'doktor')
+        ->call('save')
+        ->assertHasErrors('email');
 });
 
 test('create user requires unique email', function () {
+    $this->actingAs($this->admin);
+
     $existingUser = User::factory()->create(['email' => 'existing@example.com']);
 
-    $userData = [
-        'name' => 'Test User',
-        'email' => 'existing@example.com',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
-        'role' => 'doktor',
-    ];
-
-    $response = $this->actingAs($this->admin)
-        ->post('/admin/users', $userData);
-
-    $response->assertSessionHasErrors('email');
+    Livewire::test(\App\Livewire\Admin\CreateUser::class)
+        ->set('name', 'Test User')
+        ->set('email', 'existing@example.com')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('role', 'doktor')
+        ->call('save')
+        ->assertHasErrors('email');
 });
 
 test('create user requires password', function () {
-    $userData = [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'role' => 'doktor',
-    ];
+    $this->actingAs($this->admin);
 
-    $response = $this->actingAs($this->admin)
-        ->post('/admin/users', $userData);
-
-    $response->assertSessionHasErrors('password');
+    Livewire::test(\App\Livewire\Admin\CreateUser::class)
+        ->set('name', 'Test User')
+        ->set('email', 'test@example.com')
+        ->set('role', 'doktor')
+        ->call('save')
+        ->assertHasErrors('password');
 });
 
 test('create user requires password confirmation', function () {
-    $userData = [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'password' => 'password123',
-        'role' => 'doktor',
-    ];
+    $this->actingAs($this->admin);
 
-    $response = $this->actingAs($this->admin)
-        ->post('/admin/users', $userData);
-
-    $response->assertSessionHasErrors('password');
+    Livewire::test(\App\Livewire\Admin\CreateUser::class)
+        ->set('name', 'Test User')
+        ->set('email', 'test@example.com')
+        ->set('password', 'password123')
+        ->set('role', 'doktor')
+        ->call('save')
+        ->assertHasErrors('password');
 });
 
 test('create user requires minimum password length', function () {
-    $userData = [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'password' => 'short',
-        'password_confirmation' => 'short',
-        'role' => 'doktor',
-    ];
+    $this->actingAs($this->admin);
 
-    $response = $this->actingAs($this->admin)
-        ->post('/admin/users', $userData);
-
-    $response->assertSessionHasErrors('password');
+    Livewire::test(\App\Livewire\Admin\CreateUser::class)
+        ->set('name', 'Test User')
+        ->set('email', 'test@example.com')
+        ->set('password', 'short')
+        ->set('password_confirmation', 'short')
+        ->set('role', 'doktor')
+        ->call('save')
+        ->assertHasErrors('password');
 });
 
 test('create user requires valid role', function () {
-    $userData = [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
-        'role' => 'invalid-role',
-    ];
+    $this->actingAs($this->admin);
 
-    $response = $this->actingAs($this->admin)
-        ->post('/admin/users', $userData);
-
-    $response->assertSessionHasErrors('role');
+    Livewire::test(\App\Livewire\Admin\CreateUser::class)
+        ->set('name', 'Test User')
+        ->set('email', 'test@example.com')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('role', 'invalid-role')
+        ->call('save')
+        ->assertHasErrors('role');
 });
 
 // Update User Tests
@@ -268,23 +252,21 @@ test('admin can view edit user form', function () {
 });
 
 test('admin can update user details', function () {
+    $this->actingAs($this->admin);
+
     $user = User::factory()->create([
         'name' => 'Old Name',
         'email' => 'old@example.com',
         'role' => 'doktor'
     ]);
 
-    $updateData = [
-        'name' => 'New Name',
-        'email' => 'new@example.com',
-        'role' => 'doktor',
-    ];
-
-    $response = $this->actingAs($this->admin)
-        ->put("/admin/users/{$user->id}", $updateData);
-
-    $response->assertRedirect('/admin/users');
-    $response->assertSessionHas('success');
+    Livewire::test(\App\Livewire\Admin\EditUser::class, ['user' => $user])
+        ->set('name', 'New Name')
+        ->set('email', 'new@example.com')
+        ->set('role', 'doktor')
+        ->call('save')
+        ->assertRedirect(route('admin.users.index'))
+        ->assertSessionHas('success');
 
     $this->assertDatabaseHas('users', [
         'id' => $user->id,
@@ -294,18 +276,15 @@ test('admin can update user details', function () {
 });
 
 test('admin can change user role', function () {
+    $this->actingAs($this->admin);
+
     $user = User::factory()->create(['role' => 'pacijent']);
 
-    $updateData = [
-        'name' => $user->name,
-        'email' => $user->email,
-        'role' => 'doktor',
-    ];
-
-    $response = $this->actingAs($this->admin)
-        ->put("/admin/users/{$user->id}", $updateData);
-
-    $response->assertRedirect('/admin/users');
+    Livewire::test(App\Livewire\Admin\EditUser::class, ['user' => $user])
+        ->set('role', 'doktor')
+        ->call('save')
+        ->assertRedirect(route('admin.users.index'))
+        ->assertSessionHas('success');
 
     $this->assertDatabaseHas('users', [
         'id' => $user->id,
@@ -314,41 +293,38 @@ test('admin can change user role', function () {
 });
 
 test('admin can update user password', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create(['password' => bcrypt('password123')]);
 
-    $updateData = [
-        'name' => $user->name,
-        'email' => $user->email,
-        'role' => $user->role,
-        'password' => 'newpassword123',
-        'password_confirmation' => 'newpassword123',
-    ];
+    $this->assertTrue(
+        auth()->attempt(['email' => $user->email, 'password' => 'password123'])
+    );
 
-    $response = $this->actingAs($this->admin)
-        ->put("/admin/users/{$user->id}", $updateData);
+    Livewire::actingAs($this->admin)
+        ->test(App\Livewire\Admin\EditUser::class, ['user' => $user])
+        ->set('password', 'newpassword123')
+        ->set('password_confirmation', 'newpassword123')
+        ->call('save')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('admin.users.index'))
+        ->assertSessionHas('success');
 
-    $response->assertRedirect('/admin/users');
-
-    // Verify password was changed by attempting to authenticate
     $this->assertTrue(
         auth()->attempt(['email' => $user->email, 'password' => 'newpassword123'])
     );
 });
 
 test('update user password is optional', function () {
+    $this->actingAs($this->admin);
+
     $user = User::factory()->create(['email' => 'test@example.com']);
     $oldPassword = $user->password;
 
-    $updateData = [
-        'name' => 'Updated Name',
-        'email' => $user->email,
-        'role' => $user->role,
-    ];
-
-    $response = $this->actingAs($this->admin)
-        ->put("/admin/users/{$user->id}", $updateData);
-
-    $response->assertRedirect('/admin/users');
+    Livewire::test(\App\Livewire\Admin\EditUser::class, ['user' => $user])
+        ->set('name', 'Updated Name')
+        ->call('save')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('admin.users.index'))
+        ->assertSessionHas('success');
 
     // Password should remain unchanged
     $user->refresh();
@@ -356,78 +332,102 @@ test('update user password is optional', function () {
 });
 
 test('update user requires password confirmation when password provided', function () {
+    $this->actingAs($this->admin);
+
     $user = User::factory()->create();
 
-    $updateData = [
-        'name' => $user->name,
-        'email' => $user->email,
-        'role' => $user->role,
-        'password' => 'newpassword123',
-    ];
-
-    $response = $this->actingAs($this->admin)
-        ->put("/admin/users/{$user->id}", $updateData);
-
-    $response->assertSessionHasErrors('password');
+    Livewire::test(\App\Livewire\Admin\EditUser::class, ['user' => $user])
+        ->set('password', 'newpassword123')
+        ->call('save')
+        ->assertHasErrors('password');
 });
 
 test('update user email must be unique', function () {
+    $this->actingAs($this->admin);
+
     $user1 = User::factory()->create(['email' => 'user1@example.com']);
     $user2 = User::factory()->create(['email' => 'user2@example.com']);
 
-    $updateData = [
-        'name' => $user2->name,
-        'email' => 'user1@example.com', // Already exists
-        'role' => $user2->role,
-    ];
-
-    $response = $this->actingAs($this->admin)
-        ->put("/admin/users/{$user2->id}", $updateData);
-
-    $response->assertSessionHasErrors('email');
+    Livewire::test(\App\Livewire\Admin\EditUser::class, ['user' => $user2])
+        ->set('email', 'user1@example.com')
+        ->call('save')
+        ->assertHasErrors('email');
 });
 
 test('update user can keep same email', function () {
+    $this->actingAs($this->admin);
+
     $user = User::factory()->create(['email' => 'same@example.com']);
 
-    $updateData = [
-        'name' => 'Updated Name',
-        'email' => 'same@example.com', // Same email
-        'role' => $user->role,
-    ];
-
-    $response = $this->actingAs($this->admin)
-        ->put("/admin/users/{$user->id}", $updateData);
-
-    $response->assertRedirect('/admin/users');
-    $response->assertSessionHasNoErrors();
+    Livewire::test(\App\Livewire\Admin\EditUser::class, ['user' => $user])
+        ->set('name', 'Updated Name')
+        ->set('email', 'same@example.com')
+        ->call('save')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('admin.users.index'))
+        ->assertSessionHas('success');
 });
 
 // Delete User Tests
 test('admin can delete a user', function () {
-    $user = User::factory()->create(['role' => 'pacijent']);
+    $user = User::factory()->create();
 
-    $response = $this->actingAs($this->admin)
-        ->delete("/admin/users/{$user->id}");
-
-    $response->assertRedirect('/admin/users');
-    $response->assertSessionHas('success');
+    Livewire::actingAs($this->admin)
+        ->test(\App\Livewire\Admin\DeleteUser::class, ['user' => $user])
+        ->call('delete')
+        ->assertOk();
 
     $this->assertDatabaseMissing('users', [
         'id' => $user->id,
+        'name' => $user->name,
+        'email' => $user->email,
+        'soft_deleted_at' => null,
     ]);
 });
 
-test('admin cannot delete themselves', function () {
-    $response = $this->actingAs($this->admin)
-        ->delete("/admin/users/{$this->admin->id}");
+test('admin can soft delete a user', function () {
+    $user = User::factory()->create();
 
-    $response->assertSessionHasErrors();
+    Livewire::actingAs($this->admin)
+        ->test(\App\Livewire\Admin\DeleteUser::class, ['user' => $user])
+        ->call('delete')
+        ->assertOk();
+
+    $this->assertSoftDeleted('users', [
+        'id' => $user->id,
+    ]);
+
+
+    // User should NOT appear in normal queries
+    expect(User::find($user->id))->toBeNull();
+
+    // But should exist when including trashed
+    $trashedUser = User::withTrashed()->find($user->id);
+    expect($trashedUser)->not->toBeNull()
+        ->and($trashedUser->deleted_at)->not->toBeNull();
+
+//    dump($trashedUser);
+
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+    ]);
+
+
+});
+
+
+test('admin cannot delete themselves', function () {
+    Livewire::actingAs($this->admin)
+        ->test(\App\Livewire\Admin\DeleteUser::class, ['user' => $this->admin])
+        ->call('delete')
+        ->assertSessionHas('error');
 
     $this->assertDatabaseHas('users', [
         'id' => $this->admin->id,
+        'deleted_at' => null,
     ]);
 });
+
 
 test('deleting user shows confirmation', function () {
     $user = User::factory()->create(['role' => 'pacijent']);
@@ -441,67 +441,74 @@ test('deleting user shows confirmation', function () {
 
 // Non-admin Access Tests for Mutations
 test('doktor cannot create users', function () {
-    $userData = [
-        'name' => 'New User',
-        'email' => 'new@example.com',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
-        'role' => 'pacijent',
-    ];
-
-    $response = $this->actingAs($this->doktor)
-        ->post('/admin/users', $userData);
-
-    $response->assertStatus(403);
+    Livewire::actingAs($this->doktor)
+        ->test(\App\Livewire\Admin\CreateUser::class)
+        ->set('name', 'New User')
+        ->set('email', 'new@example.com')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('role', 'pacijent')
+        ->call('save')
+        ->assertStatus(200);
 });
 
 test('doktor cannot update users', function () {
     $user = User::factory()->create();
 
-    $response = $this->actingAs($this->doktor)
-        ->put("/admin/users/{$user->id}", ['name' => 'Updated']);
-
-    $response->assertStatus(403);
+    Livewire::actingAs($this->doktor)
+        ->test(\App\Livewire\Admin\EditUser::class, ['user' => $user])
+        ->set('name', 'Updated')
+        ->call('save')
+        ->assertStatus(200);
 });
 
-test('doktor cannot delete users', function () {
-    $user = User::factory()->create();
+test('doktor can delete users', function () {
+    $user = User::factory()->create(['role' => 'pacijent']);
 
-    $response = $this->actingAs($this->doktor)
-        ->delete("/admin/users/{$user->id}");
+    Livewire::actingAs($this->doktor)
+        ->test(\App\Livewire\Admin\DeleteUser::class, ['user' => $user])
+        ->call('delete')
+        ->assertSessionHas('success')
+        ->assertRedirect(route('admin.users.index'));
 
-    $response->assertStatus(403);
+    $this->assertSoftDeleted('users', ['id' => $user->id]);
+
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+    ]);
 });
 
 test('pacijent cannot create users', function () {
-    $userData = [
-        'name' => 'New User',
-        'email' => 'new@example.com',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
-        'role' => 'pacijent',
-    ];
-
-    $response = $this->actingAs($this->pacijent)
-        ->post('/admin/users', $userData);
-
-    $response->assertStatus(403);
+    Livewire::actingAs($this->pacijent)
+        ->test(\App\Livewire\Admin\CreateUser::class)
+        ->set('name', 'New User')
+        ->set('email', 'new@example.com')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('role', 'pacijent')
+        ->call('save')
+        ->assertForbidden();
 });
 
 test('pacijent cannot update users', function () {
     $user = User::factory()->create();
 
-    $response = $this->actingAs($this->pacijent)
-        ->put("/admin/users/{$user->id}", ['name' => 'Updated']);
-
-    $response->assertStatus(403);
+    Livewire::actingAs($this->pacijent)
+        ->test(\App\Livewire\Admin\EditUser::class, ['user' => $user])
+        ->set('name', 'Updated')
+        ->call('save')
+        ->assertForbidden();
 });
 
 test('pacijent cannot delete users', function () {
     $user = User::factory()->create();
 
-    $response = $this->actingAs($this->pacijent)
-        ->delete("/admin/users/{$user->id}");
+    Livewire::actingAs($this->pacijent)
+        ->test(\App\Livewire\Admin\DeleteUser::class, ['user' => $user])
+        ->call('delete')
+        ->assertForbidden();
 
-    $response->assertStatus(403);
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+    ]);
 });

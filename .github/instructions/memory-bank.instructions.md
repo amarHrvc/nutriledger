@@ -262,6 +262,45 @@ Each task file follows this format:
 
 These detailed progress updates ensure that after memory resets, I can quickly understand the exact state of each task and continue work without losing context.
 
+---
+
+### Expanded Task Specification (for each task)
+
+Add this section to every task file for deeper context and implementation guidance. This is **non-negotiable**: every task must match the clarity, completeness, and code-level detail of the original _docs/_Feature/2_PATIENT_MANAGEMENT_FEATURE_TASKS.md example.
+
+```markdown
+## 📝 Expanded Task Specification
+
+### 🎯 Goal
+Clear, concise objective for the task (1-2 sentences).
+
+### 📚 Key Concepts
+- List all relevant technical concepts, patterns, and domain rules.
+
+### 📝 TDD Approach
+#### Step 1: Write Tests First (RED)
+- Specify test file and creation command.
+- Provide example Pest (or other) tests covering all key cases (authorization, data rendering, edge cases).
+- List all required TODOs for missing tests.
+
+#### Step 2: Implement Component/Feature (GREEN)
+- Specify all relevant files, classes, and artisan commands.
+- Detail component/class properties, methods, and logic.
+- Provide Blade (or other) view structure with code snippets and TODOs for missing sections.
+
+#### Step 3: Run and Refactor (REFACTOR)
+- Specify test run command and expected results.
+- List manual verification steps for UI/UX and edge cases.
+
+### 🧠 Why This Way?
+- Justify all major design and implementation choices (authorization, model binding, UI structure, null handling, etc).
+
+### ✅ Verification
+- List all automated and manual steps to confirm completion and correctness.
+```
+
+**Every new or expanded task must include this full specification, with code examples, rationale, and verification steps.**
+
 ### Task Commands
 
 When you request **add task** or use the command **create task**, I will:
