@@ -137,7 +137,7 @@ test('pacijent does not see Edit button when record exists', function (): void {
 
     Livewire::actingAs($user)
         ->test(ViewSocioeconomic::class, ['patient' => $patient])
-        ->assertDontSee('Edit');
+        ->assertDontSee(route('patients.socioeconomic.edit', $patient));
 });
 
 test('component renders marital status correctly', function (): void {
@@ -183,16 +183,15 @@ test('component renders boolean fields as Yes or No', function (): void {
     $admin = User::factory()->create(['role' => 'admin']);
     $patient = Patient::factory()->create();
     PatientSocioeconomic::factory()->create([
-        'patient_id' => $patient->id,
+        'patient_id'           => $patient->id,
         'has_health_insurance' => true,
-        'has_family_support' => false,
-        'has_caregiver' => true,
+        'has_family_support'   => false,
+        'has_caregiver'        => true,
     ]);
 
     Livewire::actingAs($admin)
         ->test(ViewSocioeconomic::class, ['patient' => $patient])
-        ->assertSee('Yes')
-        ->assertSee('No');
+        ->assertSeeInOrder(['Health Insurance', 'Yes', 'Family Support', 'No', 'Has Caregiver', 'Yes']);
 });
 
 test('component shows Back to Patient Profile link', function (): void {
