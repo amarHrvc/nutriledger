@@ -13,7 +13,6 @@ class PatientSocioeconomic extends Model
     protected $table = 'patient_socioeconomic';
 
     protected $fillable = [
-        'patient_id',
         'marital_status',
         'number_of_dependents',
         'living_arrangement',

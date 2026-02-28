@@ -73,9 +73,11 @@ Route::middleware(['auth'])->group(function () {
         ->name('patients.socioeconomic.create');
 
     Route::get('/patients/{patient}/socioeconomic/edit', \App\Livewire\Patient\Socioeconomic\ManageSocioeconomic::class)
+        ->can('create', \App\Models\PatientSocioeconomic::class)
         ->name('patients.socioeconomic.edit');
 
     Route::get('/patients/{patient}/socioeconomic/delete', \App\Livewire\Patient\Socioeconomic\DeleteSocioeconomic::class)
+        ->can('create', \App\Models\PatientSocioeconomic::class)
         ->name('patients.socioeconomic.delete');
 });
 

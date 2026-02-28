@@ -6,5 +6,8 @@
       "mcp__airis-mcp-gateway__airis-exec",
       "Bash(php artisan:*)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "laravel-boost"
+  ]
 }

@@ -48,7 +48,7 @@ test('guest is redirected to login for create page', function (): void {
 test('admin can access edit page for patient with existing socioeconomic data', function (): void {
     $admin = User::factory()->create(['role' => 'admin']);
     $patient = Patient::factory()->create();
-    PatientSocioeconomic::create(['patient_id' => $patient->id]);
+    $patient->socioeconomic()->create([]);
 
     $this->actingAs($admin)
         ->get(route('patients.socioeconomic.edit', $patient))
@@ -58,7 +58,7 @@ test('admin can access edit page for patient with existing socioeconomic data', 
 test('doktor can access edit page for patient with existing socioeconomic data', function (): void {
     $doktor = User::factory()->create(['role' => 'doktor']);
     $patient = Patient::factory()->create();
-    PatientSocioeconomic::create(['patient_id' => $patient->id]);
+    $patient->socioeconomic()->create([]);
 
     $this->actingAs($doktor)
         ->get(route('patients.socioeconomic.edit', $patient))
@@ -68,7 +68,7 @@ test('doktor can access edit page for patient with existing socioeconomic data',
 test('pacijent cannot access edit page', function (): void {
     $user = User::factory()->create(['role' => 'pacijent']);
     $patient = Patient::factory()->create(['user_id' => $user->id]);
-    PatientSocioeconomic::create(['patient_id' => $patient->id]);
+    $patient->socioeconomic()->create([]);
 
     $this->actingAs($user)
         ->get(route('patients.socioeconomic.edit', $patient))
@@ -90,8 +90,7 @@ test('component renders create form when no existing record', function (): void 
 test('component renders edit form with pre-filled values when record exists', function (): void {
     $admin = User::factory()->create(['role' => 'admin']);
     $patient = Patient::factory()->create();
-    PatientSocioeconomic::create([
-        'patient_id' => $patient->id,
+    $patient->socioeconomic()->create([
         'employment_status' => 'employed_full_time',
         'income_level' => 'middle',
         'marital_status' => 'married',
@@ -133,8 +132,7 @@ test('admin can successfully create socioeconomic record', function (): void {
 test('admin can successfully update existing socioeconomic record', function (): void {
     $admin = User::factory()->create(['role' => 'admin']);
     $patient = Patient::factory()->create();
-    PatientSocioeconomic::create([
-        'patient_id' => $patient->id,
+    $patient->socioeconomic()->create([
         'employment_status' => 'unemployed',
         'income_level' => 'low',
         'marital_status' => 'single',
@@ -218,8 +216,7 @@ test('after successful create redirects to patients.socioeconomic.show', functio
 test('after successful update redirects to patients.socioeconomic.show', function (): void {
     $admin = User::factory()->create(['role' => 'admin']);
     $patient = Patient::factory()->create();
-    PatientSocioeconomic::create([
-        'patient_id' => $patient->id,
+    $patient->socioeconomic()->create([
         'employment_status' => 'unemployed',
         'marital_status' => 'single',
     ]);

@@ -5,6 +5,7 @@ namespace App\Livewire\Patient\Socioeconomic;
 use App\Models\Patient;
 use App\Models\PatientSocioeconomic;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class ManageSocioeconomic extends Component
@@ -15,6 +16,7 @@ class ManageSocioeconomic extends Component
 
     public ?PatientSocioeconomic $socioeconomic = null;
 
+    #[Locked]
     public bool $isEditing = false;
 
     public ?string $marital_status = null;
@@ -98,6 +100,12 @@ class ManageSocioeconomic extends Component
 
     public function save(): mixed
     {
+        if ($this->isEditing) {
+            $this->authorize('update', $this->socioeconomic);
+        } else {
+            $this->authorize('create', PatientSocioeconomic::class);
+        }
+
         $validated = $this->validate();
 
         if ($this->isEditing) {
