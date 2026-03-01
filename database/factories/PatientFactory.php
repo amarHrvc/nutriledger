@@ -17,11 +17,13 @@ class PatientFactory extends Factory
      */
     public function definition(): array
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'role' => 'pacijent',
+        ]);
         return [
             'user_id' => $user->id,
             'first_name' => $user->name,
-            'last_name' => fake()->name,
+            'last_name' => fake()->lastName(),
             'date_of_birth' => fake()->date(),
             'gender' => fake()->randomElement(['M', 'F']),
             'address' => fake()->streetAddress(),
