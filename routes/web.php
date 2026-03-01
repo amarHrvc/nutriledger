@@ -79,6 +79,27 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/patients/{patient}/socioeconomic/delete', \App\Livewire\Patient\Socioeconomic\DeleteSocioeconomic::class)
         ->can('create', \App\Models\PatientSocioeconomic::class)
         ->name('patients.socioeconomic.delete');
+
+//  ------------------ Visits ------------------
+
+    Route::prefix('patients/{patient}/visits')->name('visits.')->group(function () {
+        Route::get('/', \App\Livewire\Visit\VisitList::class)
+            ->can('viewAny', \App\Models\Visit::class)
+            ->name('index');
+
+        Route::get('/create', \App\Livewire\Visit\CreateVisit::class)
+            ->can('create', \App\Models\Visit::class)
+            ->name('create');
+
+        Route::get('/{visit}', \App\Livewire\Visit\ViewVisit::class)
+            ->name('show');
+
+        Route::get('/{visit}/edit', \App\Livewire\Visit\EditVisit::class)
+            ->can('update', \App\Models\Visit::class)
+            ->name('edit');
+
+        //TODO: Delete for visit !!!!!!!!!!!!
+    });
 });
 
 require __DIR__.'/auth.php';
