@@ -4,6 +4,7 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
+use App\Livewire\Patient\Visit\VisitList;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -82,21 +83,22 @@ Route::middleware(['auth'])->group(function () {
 
 //  ------------------ Visits ------------------
 
-    Route::prefix('patients/{patient}/visits')->name('visits.')->group(function () {
-        Route::get('/', \App\Livewire\Visit\VisitList::class)
+    Route::prefix('patients/{patient}/visits')->name('visit.')->group(function () {
+
+        Route::get('/', VisitList::class)
             ->can('viewAny', \App\Models\Visit::class)
             ->name('index');
 
-        Route::get('/create', \App\Livewire\Visit\CreateVisit::class)
-            ->can('create', \App\Models\Visit::class)
-            ->name('create');
-
-        Route::get('/{visit}', \App\Livewire\Visit\ViewVisit::class)
-            ->name('show');
-
-        Route::get('/{visit}/edit', \App\Livewire\Visit\EditVisit::class)
-            ->can('update', \App\Models\Visit::class)
-            ->name('edit');
+//        Route::get('/create', CreateVisit::class)
+//            ->can('create', \App\Models\Visit::class)
+//            ->name('create');
+//
+//        Route::get('/{visit}', ViewVisit::class)
+//            ->name('show');
+//
+//        Route::get('/{visit}/edit', EditVisit::class)
+//            ->can('update', \App\Models\Visit::class)
+//            ->name('edit');
 
         //TODO: Delete for visit !!!!!!!!!!!!
     });
