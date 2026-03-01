@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -47,6 +48,11 @@ class Patient extends Model
     public function socioeconomic(): HasOne
     {
         return $this->hasOne(PatientSocioeconomic::class);
+    }
+
+    public function visits(): HasMany
+    {
+        return $this->hasMany(Visit::class)->latest('date');
     }
 
     protected function casts(): array
