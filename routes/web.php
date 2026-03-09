@@ -5,6 +5,8 @@ use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
 use App\Livewire\Patient\Visit\VisitList;
+use App\Livewire\Patient\Visit\CreateVisit;
+use App\Livewire\Patient\Visit\ViewVisit;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -89,13 +91,13 @@ Route::middleware(['auth'])->group(function () {
             ->can('viewAny', \App\Models\Visit::class)
             ->name('index');
 
-//        Route::get('/create', CreateVisit::class)
-//            ->can('create', \App\Models\Visit::class)
-//            ->name('create');
-//
-//        Route::get('/{visit}', ViewVisit::class)
-//            ->name('show');
-//
+        Route::get('/create', CreateVisit::class)
+            ->can('create', \App\Models\Visit::class)
+            ->name('create');
+
+        Route::get('/{visit}', ViewVisit::class)
+            ->name('show');
+
 //        Route::get('/{visit}/edit', EditVisit::class)
 //            ->can('update', \App\Models\Visit::class)
 //            ->name('edit');

@@ -4,9 +4,15 @@
       "mcp__airis-mcp-gateway__airis-find",
       "mcp__airis-mcp-gateway__airis-schema",
       "mcp__airis-mcp-gateway__airis-exec",
-      "Bash(php artisan:*)"
+      "Bash(php artisan:*)",
+      "Bash(php:*)",
+      "Bash(where php:*)",
+      "Bash(\"C:\\\\Users\\\\Korisnik\\\\scoop\\\\apps\\\\php8.3\\\\8.3.21\\\\php.exe\":*)",
+      "Read(//c/Users/Korisnik/AppData/Roaming/Claude/logs/**)",
+      "Read(//c/Users/Korisnik/.claude/**)"
     ]
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "laravel-boost"
   ]
