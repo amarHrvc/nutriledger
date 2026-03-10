@@ -1,0 +1,22 @@
+---
+title: Activity 5 - Visit List Access Flow
+---
+flowchart TD
+    A([Start]) --> B[User requests patient visit history]
+    B --> C{Authenticated?}
+    C -- No --> D[401 Unauthorized]
+    D --> Z([End])
+    C -- Yes --> E[Resolve patient record\nfrom route parameter]
+    E --> F{Patient exists?}
+    F -- No --> G[404 Not Found]
+    G --> Z
+    F -- Yes --> H{What is the user role?}
+    H -- admin --> I[Load all visits for patient]
+    H -- doktor --> I
+    H -- pacijent --> J{Requesting own visits?}
+    J -- No --> K[403 Forbidden]
+    K --> Z
+    J -- Yes --> I
+    I --> L[Eager load doctor info per visit]
+    L --> M[Return VisitResource collection]
+    M --> Z

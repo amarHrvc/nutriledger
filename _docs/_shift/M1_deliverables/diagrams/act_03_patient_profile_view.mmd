@@ -1,0 +1,18 @@
+---
+title: Activity 3 - Patient Profile View Flow
+---
+flowchart TD
+    A([Start]) --> B[User navigates to patient profile]
+    B --> C{Authenticated?}
+    C -- No --> D[401 Unauthorized]
+    D --> Z([End])
+    C -- Yes --> E{What is the user role?}
+    E -- admin --> F[Load any patient record]
+    E -- doktor --> F
+    E -- pacijent --> G{Requesting own record?}
+    G -- No --> H[403 Forbidden]
+    H --> Z
+    G -- Yes --> F
+    F --> I[Eager load PatientSocioeconomic]
+    I --> J[Return PatientResource JSON\nwith all fields]
+    J --> Z

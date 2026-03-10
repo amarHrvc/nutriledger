@@ -1,0 +1,30 @@
+---
+title: Sequence 5 - GET /api/patients/{patient}/visits (List Visits)
+---
+sequenceDiagram
+    actor Client as Authenticated Client
+    participant API as Laravel API
+    participant MW as Auth Middleware
+    participant Policy as VisitPolicy
+    participant DB as Database
+
+    Client->>API: GET /api/patients/{patient}/visits Authorization Bearer token
+    API->>MW: Verify Sanctum token
+    MW-->>API: Authenticated
+    API->>API: Resolve Patient via route model binding
+    alt Patient not found
+        API-->>Client: 404 Not Found
+    else Patient found
+        API->>Policy: authorize('viewAny', [Visit, patient])
+        alt admin or doktor
+            Policy-->>API: Allowed
+        else pacijent requesting own visits
+            Policy-->>API: Allowed
+        else pacijent requesting another patient visits
+            Policy-->>API: Denied
+            API-->>Client: 403 Forbidden
+        end
+        API->>DB: SELECT visits WHERE patient_id = ? with doctor eager load
+        DB-->>API: Visit collection with doctors
+        API-->>Client: 200 VisitResource collection JSON
+    end

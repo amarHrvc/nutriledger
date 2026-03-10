@@ -98,10 +98,17 @@ Min 5 tests covering:
 ## Constraints
 - Visit detail scope: date + doctor + notes only — no nested vitals/meds/labs (Groups 4-6)
 - patients.allergies stays as text field (deferred)
-- users.name stays as single field (deferred — migration risk)
-- Role enum values (doktor/pacijent) — document in API responses, keep as-is in DB
-- Do not modify existing migrations
+- users.name which is now as single field (deferred — migration risk) lets resolve this to have first name and last name
+- Role enum values (doktor/pacijent) — document in API responses, keep as-is in DB  just use propper english values doctor/patient in app
+- Do not modify existing migrations (except role values)
 - Do not remove existing Livewire components or tests — they may resume for SD (non-SE) work
 - Run vendor/bin/pint --dirty after every file change
 - Run php artisan test --filter= for the affected tests after each implementation step
+
+## Delivaertable:
+analyze all mentioned changes needed for shift and prepare a detailed implementation plan for the SE pivot, including:
+- Step-by-step tasks with clear goals and deliverables
+- Estimated time for each task
+- Any necessary code snippets or configuration examples to guide the implementation 
+***IMPORTANT:*** make a full plan per milestones. Each task should be clearly defined/expanded as we already have used this term. I should be able to give each tasks to developer for implementation. Tassks should be actionable and include any necessary code snippets or configuration examples to guide the implementation and facilitate education.  Also taask should be splitted to BE and FE parts, so I can assign them to different developers. Save tasks pere milestone in new markdown files in _docs/_shift/ (e.g., SE_MVP_PLAN.md) with the same structure as the original plan but fully expanded with all necessary details for implementation.
 ```
