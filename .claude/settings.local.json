@@ -9,7 +9,9 @@
       "Bash(where php:*)",
       "Bash(\"C:\\\\Users\\\\Korisnik\\\\scoop\\\\apps\\\\php8.3\\\\8.3.21\\\\php.exe\":*)",
       "Read(//c/Users/Korisnik/AppData/Roaming/Claude/logs/**)",
-      "Read(//c/Users/Korisnik/.claude/**)"
+      "Read(//c/Users/Korisnik/.claude/**)",
+      "WebSearch",
+      "WebFetch(domain:github.com)"
     ]
   },
   "enableAllProjectMcpServers": true,
