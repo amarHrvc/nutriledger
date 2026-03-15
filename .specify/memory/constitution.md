@@ -1,25 +1,43 @@
 <!--
   SYNC IMPACT REPORT
   ==================
-  Version change: (blank) → 1.0.0
-  Type: MINOR (initial ratification from blank template)
+  Version change: 1.0.0 → 2.0.1 (cumulative; 1.0.0 → 2.0.0 → 2.0.1)
+  Type (2.0.1): PATCH — Technology Stack clarification: SE frontend locked to React + JavaScript.
 
-  Modified principles: N/A (initial fill — all sections newly populated)
+  ---
 
-  Added sections:
-  - Core Principles (I–V)
-  - Shared Artifacts
-  - Technology Stack
-  - Governance
+  Version change: 1.0.0 → 2.0.0
+  Type: MAJOR — backward-incompatible redefinition of Principle I.
+    The Livewire monolith SD track is retired. Both SE and SD tracks now use the
+    same BE+FE architecture (Laravel REST API + React SPA). Tracks are now
+    differentiated by purpose/scope, not technology.
 
-  Removed sections: N/A
+  Modified principles:
+  - I. Dual-Track Architecture
+      OLD: SE = Laravel REST API + React SPA; SD = Livewire/Volt monolith
+      NEW: SE = MVP implementation (Users + Patients + Visits);
+           SD = MVP design/proposal in same BE+FE architecture.
+           Livewire monolith is archived — not deleted, not actively developed.
+
+  Modified sections:
+  - Shared Artifacts: Removed Livewire-exclusive SD paths; added legacy archive note.
+  - Technology Stack: Collapsed dual-column table into unified stack; added scope row.
+  - Principle V: Fixed stale "FE (frontend / Livewire)" wording.
+  - Governance compliance review: Removed "Livewire components" from trigger list.
+
+  Added sections: None.
+
+  Removed sections: None.
 
   Template consistency review:
-  - .specify/templates/plan-template.md   ✅ "Constitution Check" gate aligns with Principles II–IV
-  - .specify/templates/spec-template.md   ✅ Authorization scenarios align with Principle II
-  - .specify/templates/tasks-template.md  ✅ Test-first ordering aligns with Principle III; task format aligns with Principle V
+  - .specify/templates/plan-template.md   ✅ No Livewire-specific language; no changes needed.
+  - .specify/templates/spec-template.md   ✅ Track-agnostic; no changes needed.
+  - .specify/templates/tasks-template.md  ✅ Path conventions updated to match unified stack.
 
-  Follow-up TODOs: None — all placeholders resolved.
+  Follow-up TODOs:
+  - Livewire/Volt source files in app/Livewire/ and resources/views/livewire/ remain
+    in the repo as archived code. A cleanup PR SHOULD be tracked separately.
+  - Memory file MEMORY.md should reflect the track redefinition (Architecture Pivot note).
 -->
 
 # NutriLedger Constitution
@@ -28,24 +46,27 @@
 
 ### I. Dual-Track Architecture
 
-The repository hosts two parallel tracks that MUST coexist without interference:
+The repository hosts two tracks sharing one architecture. Both tracks use **Laravel REST API
++ React SPA** (Laravel 12 + Sanctum on the backend; React + TypeScript SPA on the frontend).
 
-- **SE track** — Laravel REST API (`api.php` routes, Eloquent Resources, Sanctum auth) + React SPA
-  (separate frontend). Target: university SE project requirement of separated FE/BE.
-- **SD track** — Laravel + Livewire/Volt monolith (`web.php` routes, Flux UI components).
-  Target: software design coursework and production-style monolith practice.
+- **SE track** — Full MVP implementation up to and including the Visits feature
+  (Feature Groups 1: Users, 2: Patients, 3: Visits). Deliverable: working, tested code.
+  Target: university Software Engineering project milestone requirements.
+- **SD track** — Initial MVP release proposal in the same BE+FE architecture. Deliverable:
+  architecture documentation, design patterns, and the proposed MVP scope.
+  Target: university Software Design coursework. The former Livewire/Volt monolith is
+  **retired** — it is archived in the repository and MUST NOT be actively developed or
+  extended. Existing Livewire code MUST NOT be deleted (preserves academic history).
 
 Both tracks MUST share: `app/Models/`, `database/migrations/`, `database/factories/`,
-`app/Policies/`, and `app/Http/Requests/`. Neither track may delete or rename the other
-track's routes, views, Livewire components, API controllers, or resources. When a model or
-migration changes, both tracks are affected — coordinate accordingly.
+`app/Policies/`, and `app/Http/Requests/`. Schema changes MUST be coordinated between tracks
+since both consume the same database layer.
 
 ### II. Authorization at Every Layer (NON-NEGOTIABLE)
 
 Every request that touches protected data MUST pass through all three authorization layers:
 
-1. **Route middleware**: `auth:sanctum` (SE) or `auth` + `role:*` (SD) declared in the
-   route definition.
+1. **Route middleware**: `auth:sanctum` declared in the route definition.
 2. **FormRequest `authorize()`**: MUST call `$this->user()->can(...)` or an explicit policy
    check — never return `true` unconditionally on protected requests.
 3. **Policy method**: A named Policy class (`PatientPolicy`, `UserPolicy`, etc.) with
@@ -92,42 +113,51 @@ fields per task:
 - **Decision rationale**: why this approach over the obvious alternative.
 - **Verification command**: the exact shell command to confirm the task is done.
 
-BE (backend) and FE (frontend / Livewire) tasks MUST always be separate task items.
-No single task may span both tracks or both concerns.
+BE (backend) and FE (frontend / React) tasks MUST always be separate task items.
+No single task may span both the API layer and the React SPA layer.
 
 ## Shared Artifacts
 
-The following directories are owned jointly by both tracks. Changes MUST be backward
-compatible with both, or coordinated with the maintainer of the other track:
+The following directories are shared between SE and SD tracks. Changes MUST be backward
+compatible with both, or explicitly coordinated:
 
 | Artifact | Path | Notes |
 |---|---|---|
-| Eloquent models | `app/Models/` | Shared; both tracks read/write via these |
+| Eloquent models | `app/Models/` | Shared; both tracks depend on these |
 | Migrations | `database/migrations/` | Schema changes affect both tracks |
 | Factories | `database/factories/` | Used by Pest tests in both tracks |
-| Policies | `app/Policies/` | Enforced by both API controllers and Livewire |
-| Form requests | `app/Http/Requests/` | May be reused across tracks where validation rules overlap |
-| Pest feature tests | `tests/Feature/` | Cover shared domain logic; both tracks add tests here |
+| Policies | `app/Policies/` | Enforced by API middleware + FormRequests |
+| Form requests | `app/Http/Requests/` | Shared validation rules |
+| Pest feature tests | `tests/Feature/` | Cover shared domain logic |
 
-Track-exclusive artifacts (SD: `resources/views/livewire/`, `app/Livewire/`;
-SE: `app/Http/Controllers/Api/`, `app/Http/Resources/`) MUST NOT be modified by the
-other track.
+**Archived (legacy) code**: `app/Livewire/`, `resources/views/livewire/`, `routes/web.php`
+Livewire routes and components. These MUST NOT be modified or deleted. They are preserved
+for academic history only. New features MUST NOT be added to this layer.
 
 ## Technology Stack
 
-| Concern | SD Track | SE Track |
-|---|---|---|
-| Framework | Laravel 12 + Livewire 3 | Laravel 12 (API-only) |
-| Auth | Fortify (session) | Sanctum (token) |
-| Frontend | Livewire/Volt + Flux UI v2 + Tailwind v4 | React SPA (separate repo/folder) |
-| Routing | `routes/web.php` | `routes/api.php` |
-| Responses | Blade views | Eloquent API Resources |
-| Testing | Pest 4 + SQLite in-memory | Pest 4 + SQLite in-memory |
-| Static analysis | Larastan level 5 | Larastan level 5 |
-| Code style | Laravel Pint | Laravel Pint |
+Both tracks share a single technology stack:
 
-PHP version: 8.4. Do not introduce dependencies that require PHP < 8.4 or drop
-support for either track's runtime.
+| Concern | Stack |
+|---|---|
+| Backend framework | Laravel 12 (API-only) |
+| Auth | Sanctum (token-based) |
+| Routing | `routes/api.php` |
+| Responses | Eloquent API Resources |
+| Frontend (SE) | React + JavaScript SPA (separate folder/repo) |
+| Frontend (SD) | TBD — React (reuse SE) or Vue 3 (team-dependent); decided at SD frontend spec time |
+| Testing | Pest 4 + SQLite in-memory |
+| Static analysis | Larastan level 5 |
+| Code style | Laravel Pint |
+
+**Track scope differentiation**:
+
+| Track | Scope | Deliverable |
+|---|---|---|
+| SE | Feature Groups 1–3 (Users, Patients, Visits) | Working implementation |
+| SD | MVP proposal: same Feature Groups 1–3 | Design docs + proposed architecture |
+
+PHP version: 8.4. Do not introduce dependencies that require PHP < 8.4.
 
 ## Governance
 
@@ -148,10 +178,10 @@ document wins. To override this document, amend it.
    and update any that reference the changed principle.
 5. Update `LAST_AMENDED_DATE` to the date of the amendment commit.
 
-**Compliance review**: every PR that touches models, routes, controllers, Livewire
-components, or tests MUST include a Constitution Check confirming Principles II, III,
-and IV are satisfied. Use the `plan.md` "Constitution Check" gate for feature work.
+**Compliance review**: every PR that touches models, routes, controllers, or tests MUST
+include a Constitution Check confirming Principles II, III, and IV are satisfied. Use
+the `plan.md` "Constitution Check" gate for feature work.
 
 ---
 
-**Version**: 1.0.0 | **Ratified**: 2026-03-15 | **Last Amended**: 2026-03-15
+**Version**: 2.0.1 | **Ratified**: 2026-03-15 | **Last Amended**: 2026-03-15
