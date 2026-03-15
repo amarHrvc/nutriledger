@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "server",
+  "dolt_database": "nutri_ledger",
+  "project_id": "5af9edbf-01bd-4da5-9349-8c04e73256b0"
+}

@@ -179,3 +179,7 @@ dist
 _ide_helper.php
 _ide_helper_models.php
 .phpstorm.meta.php
+
+# Dolt database files (added by bd init)
+.dolt/
+*.db
