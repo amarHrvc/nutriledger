@@ -1,0 +1,126 @@
+/speckit.constitution
+
+  Project name: NutriLedger
+
+  Project description: Clinical nutrition management platform — multi-role clinical
+  workflow (admin, doctor, patient) for tracking patient records, medical histories,
+  socioeconomic data, and dietary consultations.
+
+  Principles:
+
+  I. Dual-Track Architecture
+  SE track: Laravel REST API + React SPA (separate concerns, JSON only).
+  SD track: Laravel + Livewire monolith (continues independently).
+  Both tracks share models, migrations, policies, and factories. Neither track
+  removes the other's files.
+
+  II. Authorization at Every Layer (NON-NEGOTIABLE)
+  Every request enforced at three points: route middleware (auth:sanctum, role:admin),
+  FormRequest authorize() via policy, and Policy class. Unauthenticated → 401,
+  unauthorized → 403. Patients access only their own records. Skipping any layer is a bug.
+
+  III. Test-First (NON-NEGOTIABLE)
+  Every feature ships with Pest tests covering happy path, validation failure, and
+  role/auth rejection. No feature is done without passing tests.
+
+  IV. Thin Controllers — Service Layer
+  Controllers validate, authorize, delegate, respond. All business logic lives in
+  app/Services/. Controllers never query the database directly.
+
+  V. Repository Abstraction
+  Services access data only through app/Repositories/. No direct Eloquent calls
+  in service methods.
+
+  VI. FormRequest Validation Only
+  All input validation in FormRequest classes. No inline validation in controllers
+  or Livewire actions.
+
+  VII. Eloquent-Only Data Access
+  No raw DB:: queries. Eager-load relationships to prevent N+1. Migrations are
+  the schema source of truth — never modify existing ones.
+
+  VIII. Code Quality Gates (NON-NEGOTIABLE)
+  Every changed file must pass: Pint (style) → Larastan level 5 (types) → affected
+  Pest tests (behaviour). All three before a task is considered done.
+
+  IX. Task Standard — Self-Contained, Developer-Ready
+  Every generated task must be fully actionable by a developer without requiring
+  outside context. Each task must include:
+
+  - ID — prefixed by track and milestone (e.g. BE-M2-03, FE-M3-01)
+  - Goal — one sentence stating what "done" looks like
+  - Inputs — explicit list of files or data the task depends on
+  - Output — explicit list of files produced or modified
+  - Steps — ordered instructions with actual bash commands and full code snippets,
+    not pseudocode. Snippets must be complete and copy-pasteable.
+  - Why — brief explanation of the design decision so the developer understands
+    the intent, not just the mechanics
+  - Verification — a concrete command or observable check that proves the task
+    is complete (e.g. artisan command output, test filter that must pass,
+    curl response)
+  - Expand later — optional note on known future scope that this task intentionally
+    defers
+
+  Tasks must be split by track: BE tasks and FE tasks are separate items, never
+  combined. A task should cover exactly one deliverable — if a step requires
+  a different file or layer, it is a separate task. The goal is that a task can
+  be handed to a developer with zero verbal explanation and they can complete it.
+
+  Governance: Constitution supersedes other conventions for architectural decisions.
+  Amendments require documented justification.
+
+  Version: 1.0.0 | Ratified: 2026-03-15
+
+❯ assess is this prompt to complicated ?
+
+● Yes, it's too complicated for what a constitution prompt should be.
+
+  The speckit.constitution command is meant to capture principles — rules that never change and govern every decision. Principle IX is not a principle, it's a task template
+  specification. That belongs in speckit.tasks input or a tasks template, not the constitution.
+
+  The constitution should answer: what rules does this project always follow?
+  The task format should answer: how do we write tasks? — that's a separate concern.
+
+  Also principles IV, V, VI, VII are implementation patterns, not constitutional rules. They're already documented in CLAUDE.md and the shift docs. A constitution should be short
+  enough that a developer can memorize it.
+
+  Stripped to what actually belongs:
+
+  /speckit.constitution
+
+  Project name: NutriLedger
+
+  Project description: Clinical nutrition management platform — multi-role clinical
+  workflow (admin, doctor, patient) for tracking patient records, medical histories,
+  socioeconomic data, and dietary consultations.
+
+  Principles:
+
+  I. Dual-Track Architecture
+  SE track: Laravel REST API + React SPA. SD track: Laravel + Livewire monolith.
+  Both tracks share models, migrations, policies, and factories.
+  Neither track removes the other's files.
+
+  II. Authorization at Every Layer (NON-NEGOTIABLE)
+  Route middleware → FormRequest authorize() → Policy. All three, on every request.
+  Unauthenticated → 401. Unauthorized → 403. Patients see only their own records.
+
+  III. Test-First (NON-NEGOTIABLE)
+  No feature is done without passing Pest tests covering happy path, validation
+  failure, and role/auth rejection.
+
+  IV. Code Quality Gates (NON-NEGOTIABLE)
+  Every changed file: Pint → Larastan level 5 → affected tests. All three pass
+  before a task is done.
+
+  V. Tasks Are Developer-Ready Specs
+  Every task is self-contained and assignable without verbal explanation. Includes:
+  goal, inputs, outputs, ordered steps with full code snippets, why the decision
+  was made, and a verification command. BE and FE tasks are always separate items.
+
+  Governance: Constitution supersedes other conventions for architectural decisions.
+  Amendments require documented justification.
+
+  Version: 1.0.0 | Ratified: 2026-03-15
+
+  Five principles. Fits on one page. Each one is something you'd actually enforce on every PR.

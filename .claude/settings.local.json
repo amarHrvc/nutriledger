@@ -11,7 +11,8 @@
       "Read(//c/Users/Korisnik/AppData/Roaming/Claude/logs/**)",
       "Read(//c/Users/Korisnik/.claude/**)",
       "WebSearch",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "mcp__laravel-boost__list_directory_tree"
     ]
   },
   "enableAllProjectMcpServers": true,
