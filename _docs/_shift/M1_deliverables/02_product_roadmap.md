@@ -1,24 +1,27 @@
 # Product Roadmap — nutri-ledger
 
-**Project:** nutri-ledger — Clinic Nutrition Management System
+**Project:** Clinic Nutrition Management platform for tracking patient records, medical histories, and dietary consultations across a multi-role clinical workflow (admin,
+doctor, patient).
+
 **Team:** 2 members
+
 **Course:** Software Engineering
-**Period:** March 2026 – June 2026
+
 
 ---
 
 ## Vision
 
-nutri-ledger is a clinic management system designed for nutritionists and general practitioners to track patient health, socioeconomic factors, and visit history. The system exposes a RESTful API (Laravel) consumed by a responsive React SPA, enabling role-based access for admins, doctors, and patients.
+A clinic management system designed for nutritionists and general practitioners to track patient health, socioeconomic factors, and visit history. The system exposes a RESTful API (Laravel) consumed by a responsive React SPA, enabling role-based access for admins, doctors, and patients.
 
 ---
 
 ## Architecture
 
 - **Backend:** Laravel 12 REST API, Sanctum token auth, Service Layer + Repository + Observer patterns
-- **Frontend:** React + Vite + TypeScript, TanStack Query, React Router, shadcn/ui
-- **Database:** MySQL — 4 core entities (Users, Patients, PatientSocioeconomic, Visits)
-- **Deployment:** Railway or Fly.io (public URL)
+- **Frontend:** React + Vite + TypeScript, TanStack Query, React Router, shadcn/ui **still to be discusssed** 
+- **Database:** MySQL/PosstqreSql — 4 core entities (Users, Patients, PatientSocioeconomic, Visits)
+- **Deployment:** **to be decided**
 
 ---
 
@@ -48,7 +51,8 @@ Key deliverables:
 - Patient CRUD API (role-gated via policies)
 - Eloquent Resources: UserResource, PatientResource, PatientSocioeconomicResource
 - Service Layer pattern implemented (UserService, PatientService)
-- React: login page, patient list, create/view/edit patient pages
+- React: login page, 
+- React: patient list, create/view/edit patient pages
 - GitHub repo with collaborators (Ajla115, amilacausevic)
 - ER diagram (4 entities)
 - Project structure documentation
@@ -73,19 +77,3 @@ Key deliverables:
 - Second release merged to main
 
 ---
-
-## Out of Scope (SE timeline)
-
-Feature Groups 4-11 (Vital Signs, Medications, Labs, Reminders, Body Measurements, Food Preferences, Physical Activity, Reporting) are deferred post-June and continue as SD (Software Design) project work.
-
----
-
-## Risk Register
-
-| Risk | Likelihood | Impact | Mitigation |
-|---|---|---|---|
-| Partner availability drops near deadline | Medium | High | Clear task split from M2 start; async collaboration via GitHub PRs |
-| Deployment issues (CORS, env config) | Medium | Medium | Configure CORS early in M2; test deploy before M3 deadline |
-| Scope creep (adding Group 4+ features) | Low | Medium | SE scope strictly Groups 1-3; document boundary explicitly |
-| Schema migration breaks during pivot | Low | High | No destructive migrations during SE; tech debt deferred |
-| React FE falls behind API | Medium | Medium | API-first, partner starts FE from M2 day 1 |

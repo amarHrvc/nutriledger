@@ -1,4 +1,6 @@
-# Release Plan — nutri-ledger
+# Release Plan
+Clinical nutrition management platform for tracking patient records, medical histories, and dietary consultations across a multi-role clinical workflow (admin,
+doctor, patient).
 
 **Two releases** aligned to M2 and M3 milestones. Each release has its own branch merged to main.
 

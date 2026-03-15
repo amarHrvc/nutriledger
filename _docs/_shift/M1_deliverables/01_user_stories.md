@@ -1,7 +1,10 @@
 # User Stories — nutri-ledger
 
-**Project:** nutri-ledger — Clinic Nutrition Management System
+**Project:** Clinic Nutrition Management platform for tracking patient records, medical histories, and dietary consultations across a multi-role clinical workflow (admin,
+doctor, patient).
+
 **Scope:** Feature Groups 1 (Auth/Users), 2 (Patients), 3 (Visits)
+
 **Total:** 27 functional + 3 non-functional = 30 stories
 
 ---
