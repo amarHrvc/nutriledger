@@ -1,0 +1,15 @@
+flowchart TD
+    A([Start]) --> B[Navigate to /patients/id/visits/create]
+    B --> C{Authorized?\nAdmin or Doktor}
+    C -->|No| D[403 Forbidden]
+    D --> Z([End])
+    C -->|Yes| E[Display create visit form]
+    E --> F[Select date and enter notes]
+    F --> G[Submit form]
+    G --> H{Validation passes?}
+    H -->|No| I[Show validation errors inline]
+    I --> F
+    H -->|Yes| J[Visit::create with doctor_id persisted]
+    J --> K[Redirect to /patients/id/visits/visit-id]
+    K --> L[Display visit detail]
+    L --> M([End])

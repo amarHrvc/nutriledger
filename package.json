@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "diagrams": "node _docs_uni/diagrams/build.mjs"
     },
     "dependencies": {
         "@mermaid-js/mermaid-cli": "^11.12.0",

@@ -1,0 +1,71 @@
+graph LR
+    subgraph System ["NutriBase — Full Platform (Groups 1-9)"]
+        subgraph G1_3 ["Groups 1-3: Core"]
+            UC_LOGIN([Login / Logout / 2FA])
+            UC_USERS([Manage Users])
+            UC_PAT_CRUD([Manage Patients])
+            UC_SOCIO([Manage Socioeconomic Data])
+            UC_VISITS([Manage Visits])
+        end
+
+        subgraph G4 ["Group 4: Vital Signs"]
+            UC_VIT_ADD([Record Vitals per Visit])
+            UC_VIT_VIEW([View Vitals History])
+            UC_VIT_BMI([View BMI Trend Chart])
+            UC_VIT_FLAG([See Abnormal Value Flags])
+        end
+
+        subgraph G5 ["Group 5: Medications"]
+            UC_MED_ADD([Add Medication])
+            UC_MED_LIST([View Medications by Status])
+            UC_MED_DETAIL([View Medication Detail])
+        end
+
+        subgraph G6 ["Group 6: Lab Results"]
+            UC_LAB_LOG([Log Lab Result])
+            UC_LAB_VIEW([View Lab Results\nwith Filters])
+            UC_LAB_VISIT([View Labs in Visit Detail])
+        end
+
+        subgraph G7 ["Group 7: Recommendations"]
+            UC_REC_ADD([Add Recommendation to Visit])
+            UC_REC_VIEW([View Active Recommendations])
+            UC_REC_EXPIRE([Auto-expire by Date])
+        end
+
+        subgraph G8 ["Group 8: Reminders"]
+            UC_REM_SCHED([Schedule Reminder])
+            UC_REM_VIEW([View Upcoming Reminders])
+        end
+
+        subgraph G9 ["Group 9: Dashboards"]
+            UC_DASH_CLINIC([View Clinic Dashboard])
+            UC_DASH_PAT([View Patient Overview Widget])
+        end
+    end
+
+    Admin((Admin)) --> UC_LOGIN & UC_USERS & UC_PAT_CRUD & UC_SOCIO & UC_VISITS
+    Admin --> UC_VIT_ADD & UC_VIT_VIEW & UC_VIT_BMI & UC_VIT_FLAG
+    Admin --> UC_MED_ADD & UC_MED_LIST & UC_MED_DETAIL
+    Admin --> UC_LAB_LOG & UC_LAB_VIEW & UC_LAB_VISIT
+    Admin --> UC_REC_ADD & UC_REC_VIEW & UC_REC_EXPIRE
+    Admin --> UC_REM_SCHED & UC_REM_VIEW
+    Admin --> UC_DASH_CLINIC & UC_DASH_PAT
+
+    Doktor((Doktor)) --> UC_LOGIN & UC_USERS & UC_PAT_CRUD & UC_SOCIO & UC_VISITS
+    Doktor --> UC_VIT_ADD & UC_VIT_VIEW & UC_VIT_BMI & UC_VIT_FLAG
+    Doktor --> UC_MED_ADD & UC_MED_LIST & UC_MED_DETAIL
+    Doktor --> UC_LAB_LOG & UC_LAB_VIEW & UC_LAB_VISIT
+    Doktor --> UC_REC_ADD & UC_REC_VIEW
+    Doktor --> UC_REM_SCHED & UC_REM_VIEW
+    Doktor --> UC_DASH_CLINIC & UC_DASH_PAT
+
+    Pacijent((Pacijent)) --> UC_LOGIN
+    Pacijent --> UC_PAT_CRUD
+    Pacijent --> UC_SOCIO
+    Pacijent --> UC_VIT_VIEW & UC_VIT_FLAG
+    Pacijent --> UC_MED_LIST & UC_MED_DETAIL
+    Pacijent --> UC_LAB_VIEW
+    Pacijent --> UC_REC_VIEW
+    Pacijent --> UC_REM_VIEW
+    Pacijent --> UC_DASH_PAT

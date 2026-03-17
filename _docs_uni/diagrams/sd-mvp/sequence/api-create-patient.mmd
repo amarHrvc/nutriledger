@@ -1,0 +1,34 @@
+sequenceDiagram
+    actor Doctor
+    participant SPA as React SPA
+    participant API as Laravel API
+    participant Sanctum
+    participant PatientPolicy
+    participant DB
+
+    Doctor->>SPA: Navigate to /patients/new
+    SPA-->>Doctor: Create patient form (client-side render)
+
+    Doctor->>SPA: Fill form + click Save
+    SPA->>API: POST /api/patients { ...fields }\n Authorization: Bearer <token>
+    API->>Sanctum: Validate Bearer token
+    Sanctum-->>API: User $doctor
+
+    API->>PatientPolicy: can('create', Patient::class)
+    alt Not authorized (pacijent role)
+        PatientPolicy-->>API: false
+        API-->>SPA: 403 { message: "Forbidden" }
+        SPA-->>Doctor: Show error
+    else Authorized
+        PatientPolicy-->>API: true
+        API->>API: StorePatientRequest::validate()
+        alt Validation fails
+            API-->>SPA: 422 { errors: { field: [...] } }
+            SPA-->>Doctor: Highlight invalid fields
+        else Validation passes
+            API->>DB: INSERT INTO patients
+            DB-->>API: Patient $patient
+            API-->>SPA: 201 { data: PatientResource, message: "Patient created" }
+            SPA-->>Doctor: Navigate to /patients/:id
+        end
+    end

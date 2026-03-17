@@ -1,0 +1,29 @@
+sequenceDiagram
+    actor Doctor
+    participant SPA as React SPA
+    participant API as Laravel API
+    participant AIController as AI Controller\n(Laravel AI SDK)
+    participant ClaudeAPI as Claude API\n(claude-sonnet)
+    participant Tools as Tool Handlers
+    participant DB
+
+    Doctor->>SPA: Type question in chatbox\ne.g. "Summarize patient #12 last 3 visits"
+    SPA->>API: POST /api/ai/chat\n{ patient_id, message }\nAuthorization: Bearer token
+    API->>API: Validate token + role check (admin/doktor)
+    API->>AIController: handle(patient_id, message)
+
+    AIController->>ClaudeAPI: messages: [system prompt + user message]\ntools: [get_patient, list_visits, get_visit,\n        get_risk_score, list_labs]
+
+    loop Tool use loop
+        ClaudeAPI-->>AIController: tool_use: { name, input }
+        AIController->>Tools: dispatch(tool_name, input)
+        Tools->>DB: SELECT (patient, visits, labs, etc.)
+        DB-->>Tools: Records
+        Tools-->>AIController: tool_result
+        AIController->>ClaudeAPI: tool_result message
+    end
+
+    ClaudeAPI-->>AIController: text response (stop_reason: end_turn)
+    AIController-->>API: streamed SSE chunks
+    API-->>SPA: SSE stream: data: { chunk }\ndata: [DONE]
+    SPA-->>Doctor: Streamed assistant response rendered

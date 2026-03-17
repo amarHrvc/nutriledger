@@ -1,0 +1,31 @@
+sequenceDiagram
+    actor Doctor
+    participant Browser
+    participant PatientPolicy
+    participant CreatePatient as CreatePatient (Livewire)
+    participant DB
+
+    Doctor->>Browser: GET /patients/create
+    Browser->>PatientPolicy: can('create', Patient::class)
+
+    alt Not authorized
+        PatientPolicy-->>Browser: 403 Forbidden
+        Browser-->>Doctor: Access denied
+    else Authorized
+        PatientPolicy-->>Browser: Allow
+        Browser-->>Doctor: Create patient form
+
+        Doctor->>Browser: Fill form + submit
+        Browser->>CreatePatient: call save()
+        CreatePatient->>CreatePatient: validate(StorePatientRequest rules)
+
+        alt Validation fails
+            CreatePatient-->>Browser: Validation errors
+            Browser-->>Doctor: Errors shown inline
+        else Validation passes
+            CreatePatient->>DB: Patient::create(validated data)
+            DB-->>CreatePatient: Patient $patient
+            CreatePatient-->>Browser: redirect('/patients/' . $patient->id)
+            Browser-->>Doctor: Patient profile page
+        end
+    end

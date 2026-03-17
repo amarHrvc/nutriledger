@@ -1,0 +1,16 @@
+flowchart TD
+    A([Start]) --> B[Navigate to Patient — Lab Results tab\nor Visit detail — Labs section]
+    B --> C{Authorized?\nAdmin or Doktor}
+    C -->|No| D[403 Forbidden]
+    D --> Z([End])
+    C -->|Yes| E[Click Log Lab Result]
+    E --> F[Display form\nparameter, value, unit, category, optional visit link]
+    F --> G[Fill in result details]
+    G --> H[Optionally link to a Visit]
+    H --> I[Submit]
+    I --> J{Validation passes?}
+    J -->|No| K[Show validation errors]
+    K --> G
+    J -->|Yes| L[LabResult::create persisted]
+    L --> M[Appear in patient lab history\nand optionally in visit detail]
+    M --> N([End])

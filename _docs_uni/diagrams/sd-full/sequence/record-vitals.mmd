@@ -1,0 +1,35 @@
+sequenceDiagram
+    actor Doctor
+    participant SPA as React SPA
+    participant API as Laravel API
+    participant VisitPolicy
+    participant DB
+
+    Doctor->>SPA: Navigate to /visits/:id
+    SPA->>API: GET /api/visits/:id
+    API-->>SPA: 200 { data: VisitResource }
+    SPA-->>Doctor: Visit detail — vitals panel empty
+
+    Doctor->>SPA: Click "Record Vitals" + fill form
+    SPA->>API: POST /api/visits/:id/vitals\n{ bp_sys, bp_dia, pulse, temp, weight_kg, height_cm }
+
+    API->>VisitPolicy: can('update', $visit)
+    alt Not authorized
+        VisitPolicy-->>API: false
+        API-->>SPA: 403 Forbidden
+        SPA-->>Doctor: Error message
+    else Authorized
+        VisitPolicy-->>API: true
+        API->>API: validate() — all fields numeric, required
+        alt Validation fails
+            API-->>SPA: 422 { errors: {...} }
+            SPA-->>Doctor: Field errors
+        else Validation passes
+            API->>API: bmi = weight / (height/100)²
+            API->>API: Check normal ranges → set has_abnormal_values
+            API->>DB: INSERT INTO visit_vitals
+            DB-->>API: VisitVital record
+            API-->>SPA: 201 { data: VisitVitalResource }
+            SPA-->>Doctor: Vitals panel updated\nBadge shown if abnormal
+        end
+    end

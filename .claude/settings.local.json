@@ -12,7 +12,14 @@
       "Read(//c/Users/Korisnik/.claude/**)",
       "WebSearch",
       "WebFetch(domain:github.com)",
-      "mcp__laravel-boost__list_directory_tree"
+      "mcp__laravel-boost__list_directory_tree",
+      "Bash(cd:*)",
+      "Bash(find:*)",
+      "Bash(bd list:*)",
+      "Bash(bd ready:*)",
+      "Bash(bd stats:*)",
+      "Bash(bd show:*)",
+      "Bash(bd update:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

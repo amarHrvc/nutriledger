@@ -1,0 +1,35 @@
+graph TB
+    subgraph Browser ["React SPA (Browser)"]
+        direction LR
+        UI[UI Components]
+        AuthStore[Auth Store\ntoken + user]
+        Axios[Axios HTTP Client\nBearer token header]
+    end
+
+    subgraph Laravel ["Laravel 12 API Server"]
+        direction TB
+        Routes[routes/api.php\nauth:sanctum middleware]
+        Controllers[API Controllers]
+        Requests[Form Requests\nauthorize + validate]
+        Policies[Authorization Policies\nPatientPolicy · VisitPolicy]
+        Resources[Eloquent API Resources\nJSON envelope]
+        Models[Eloquent Models\nUser · Patient · Visit\nPatientSocioeconomic]
+    end
+
+    subgraph DB ["Database"]
+        Tables[(MySQL / SQLite\nusers · patients\nvisits · patient_socioeconomic)]
+    end
+
+    UI --> AuthStore
+    AuthStore --> Axios
+    Axios -->|"POST /api/login\nGET /api/patients\nPOST /api/visits\netc."| Routes
+    Routes --> Controllers
+    Controllers --> Requests
+    Requests --> Policies
+    Controllers --> Resources
+    Resources --> Models
+    Models --> Tables
+    Tables --> Models
+    Models --> Resources
+    Resources -->|"{ data, message, errors }"| Axios
+    Axios --> UI
