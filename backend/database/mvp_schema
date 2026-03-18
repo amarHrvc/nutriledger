@@ -1,0 +1,175 @@
+// # =====================================
+// # USERS & PATIENTS
+// # =====================================
+
+Table users {
+  id bigint [pk, increment]
+  first_name varchar
+  last_name varchar
+  email varchar [unique]
+  password varchar
+  role enum('admin', 'doctor', 'user')
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table patients {
+  id bigint [ref: > users.id]
+  first_name varchar
+  last_name varchar
+  date_of_birth date
+  gender enum('male', 'female')
+  phone varchar
+  email varchar
+  address text
+  first_visit_date date
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table socio_economic_data {
+  id bigint [pk, increment]
+  patient_id bigint [ref: > patients.id]
+  marital_status varchar
+  occupation varchar
+  lifestyle text
+  social_support text
+  created_at timestamp
+  updated_at timestamp
+}
+
+// # =====================================
+// # MVP TABLES
+// # =====================================
+
+Table allergies {
+  id bigint [pk, increment]
+  patient_id bigint [ref: > patients.id]
+  type enum('food', 'medication', 'other')
+  description text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table medications {
+  id bigint [pk, increment]
+  patient_id bigint [ref: > patients.id]
+  name varchar
+  dosage varchar
+  frequency varchar
+  duration varchar
+  status enum('active', 'inactive', 'discontinued')
+  date_valid_to date
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table visits {
+  id bigint [pk, increment]
+  doctor_id bigint [ref: > users.id]
+  patient_id bigint [ref: > patients.id]
+  date date
+  notes text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table vital_signs {
+  id bigint [pk, increment]
+  visit_id bigint [ref: > visits.id]
+  date date
+  systolic int
+  diastolic int
+  pulse int
+  temperature decimal
+  spo2 decimal
+  respiratory_rate int
+  body_weight decimal
+  height decimal
+  bmi decimal
+  fat_percentage decimal
+  muscle_mass decimal
+  water_percentage decimal
+  bmr decimal
+  visceral_fat decimal
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table recommendations {
+  id bigint [pk, increment]
+  visit_id bigint [ref: > visits.id]
+  diet_plan text
+  supplements text
+  lifestyle text
+  priority_notes text
+  status enum('active', 'inactive', 'expired')
+  date_valid_to date
+  created_at timestamp
+  updated_at timestamp
+}
+
+
+Table labs {
+id bigint [pk]
+patient_id bigint [ref: > patients.id]
+visit_id bigint [ref: > visits.id, null] // optional: ties to Visit 2, when doctor reviewed
+parameter varchar
+value decimal
+unit varchar
+category enum('hematology', 'biochemistry', 'hormones', 'vitamins_minerals', 'other')
+created_at timestamp // when entry was made
+reviewed_at timestamp [null] // optional — when the result was evaluated
+}
+
+// // # =====================================
+// // # POST-MVP TABLES
+// // # =====================================
+
+Table body_measurements {
+  id bigint [pk, increment]
+  patient_id bigint [ref: > patients.id]
+  date date
+  waist decimal
+  hips decimal
+  upper_arm decimal
+  thigh decimal
+  calf decimal
+  chest decimal
+  shoulders decimal
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table food_preferences {
+  id bigint [pk, increment]
+  patient_id bigint [ref: > patients.id]
+  food_preferences text
+  restrictions text
+  intolerances text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table physical_activity {
+  id bigint [pk, increment]
+  patient_id bigint [ref: > patients.id]
+  activity_type varchar
+  duration int
+  frequency varchar
+  intensity varchar
+  notes text
+  created_at timestamp
+  updated_at timestamp
+}
+
+// check for possibility of standalone recommendations
+Table reminders {
+  id bigint [pk, increment]
+  visit_id bigint [ref: > visits.id]
+  date date
+  type enum('checkup', 'lab', 'measurement', 'other')
+  description text
+  created_at timestamp
+  updated_at timestamp
+}
