@@ -13,9 +13,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/user/{id}', [\App\Http\Controllers\Api\UserController::class, 'show']);
+
 
     Route::middleware(['role:admin'])->group(function () {
         //        Admin Routes

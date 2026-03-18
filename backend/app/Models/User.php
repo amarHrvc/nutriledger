@@ -97,4 +97,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(Patient::class);
     }
+
+    public function toSimpleData():array{
+        return $this->only(['id', 'name', 'email', 'role']);
+    }
 }
