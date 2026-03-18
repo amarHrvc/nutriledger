@@ -18,8 +18,21 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-//        $exceptions->shouldRenderJsonWhen(fn (Request $request) => $request->is('api/*'));
-        $exceptions->render(function (Throwable $e, Request $request) {
+        $apiResponses = new class { use \App\Traits\ApiResponses; };
+
+        $exceptions->render(fn(\Illuminate\Auth\AuthenticationException $e, Request $request) =>
+            $request->is('api/*') ? $apiResponses->error($e->getMessage(), 401) : null
+        );
+
+        $exceptions->render(function (\Illuminate\Validation\ValidationException $e, Request $request) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'status'  => 422,
+                'errors'  => $e->errors(),
+            ], 422);
+        });
+
+        $exceptions->render(function (Throwable $e, Request $request) use ($apiResponses) {
             if (! $request->is('api/*')) {
                 return null;
             }
@@ -27,7 +40,6 @@ return Application::configure(basePath: dirname(__DIR__))
             $code = $e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface
                 ? $e->getStatusCode()
                 : ($e->getCode() ?: 500);
-            $apiResponses = new class { use \App\Traits\ApiResponses; };
             return $apiResponses->error($e->getMessage(), $code);
         });
     })->create();
