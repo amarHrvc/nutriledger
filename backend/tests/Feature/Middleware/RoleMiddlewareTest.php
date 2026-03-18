@@ -100,9 +100,9 @@ test('pacijent cannot access routes allowing admin or doktor', function () {
 });
 
 test('guest users cannot access role-protected routes', function () {
-    $response = $this->get('/admin-only');
+    $response = $this->getJson('/admin-only');
 
-    $response->assertStatus(302); // Redirected to login
+    $response->assertUnauthorized();
 });
 
 test('middleware returns json error for API requests', function () {
