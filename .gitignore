@@ -4,6 +4,8 @@
 ### Composer ###
 composer.phar
 /vendor/
+backend/vendor/
+frontend/node_modules/
 
 # Commit your application's lock file https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control
 # You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
@@ -174,6 +176,11 @@ dist
 # End of https://www.toptal.com/developers/gitignore/api/node,laravel,composer
 
 .idea/**
+.claude/
+.cursor/
+.junie/
+.specify/
+.full-review/
 
 # IDE Helper files
 _ide_helper.php
@@ -183,3 +190,11 @@ _ide_helper_models.php
 # Dolt database files (added by bd init)
 .dolt/
 *.db
+
+# BD issue tracker
+.beads/db/
+
+# Storage & debugbar in backend
+backend/storage/debugbar/
+backend/public/hot
+backend/public/storage

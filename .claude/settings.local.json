@@ -19,7 +19,10 @@
       "Bash(bd ready:*)",
       "Bash(bd stats:*)",
       "Bash(bd show:*)",
-      "Bash(bd update:*)"
+      "Bash(bd update:*)",
+      "Bash(bd close:*)",
+      "Bash(bd blocked:*)",
+      "Bash(vendor/bin/pint --dirty)"
     ]
   },
   "enableAllProjectMcpServers": true,
