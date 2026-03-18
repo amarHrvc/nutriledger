@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
-    use ApiResponses;
+
     //
     public function login(): JsonResponse
     {

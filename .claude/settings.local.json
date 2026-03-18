@@ -19,7 +19,8 @@
       "Bash(bd ready:*)",
       "Bash(bd stats:*)",
       "Bash(bd show:*)",
-      "Bash(bd update:*)"
+      "Bash(bd update:*)",
+      "Bash(bd close:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
