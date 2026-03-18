@@ -56,12 +56,12 @@ test('doktor can access doktor-only routes', function () {
     $response->assertJson(['message' => 'Doktor access granted']);
 });
 
-test('admin cannot access doktor-only routes', function () {
+test('admin can access doktor-only routes', function () {
     $admin = User::factory()->create(['role' => 'admin']);
 
     $response = $this->actingAs($admin)->get('/doktor-only');
 
-    $response->assertStatus(403);
+    $response->assertOk();
 });
 
 test('pacijent can access pacijent-only routes', function () {

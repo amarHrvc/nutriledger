@@ -1,6 +1,8 @@
 <?php
 
-// === viewAny() Authorization Tests ===
+use App\Models\User;
+
+// === API Routes Tests ===
 
 test('login endpoint responds with 200', function () {
     $this->postJson('/api/login')
@@ -56,7 +58,13 @@ it('register endpoint responds', function () {
         ->assertOk();
 });
 
-it('logout endpoint responds', function () {
+it('logout endpoint requires authentication', function () {
     $this->postJson('/api/logout')
+        ->assertUnauthorized();
+});
+
+it('logout endpoint responds when authenticated', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user)->postJson('/api/logout')
         ->assertOk();
 });

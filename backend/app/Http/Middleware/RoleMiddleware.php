@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Traits\ApiResponses;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
+    use ApiResponses;
     /**
      * Handle an incoming request.
      *
@@ -22,10 +24,11 @@ class RoleMiddleware
         $user = Auth::user();
 
         if (!$user) {
-            if ($request->expectsJson()) {
-                return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
-            }
-            return redirect()->route('login');
+            return $this->error('Unauthorized', Response::HTTP_UNAUTHORIZED);
+        }
+
+        if ($user->isAdmin()){
+            return $next($request);
         }
 
         if (!in_array($user->role, $roles)) {
