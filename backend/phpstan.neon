@@ -12,3 +12,8 @@ parameters:
             - app/Http/Middleware/TrustHosts.php (?)
             - app/Http/Middleware/TrustProxies.php (?)
     tmpDir: storage/phpstan
+    ignoreErrors:
+        # Pest test helper methods not recognized by PHPStan
+        - message: '#Call to an undefined method PHPUnit\\Framework\\TestCase::(getJson|postJson|putJson|deleteJson|patchJson|actingAs|withToken)#'
+          paths:
+              - tests/**
