@@ -12,28 +12,29 @@ use Symfony\Component\HttpFoundation\Response;
 class RoleMiddleware
 {
     use ApiResponses;
+
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        Log::debug("RoleMiddleware role: " . json_encode($roles));
+        Log::debug('RoleMiddleware role: '.json_encode($roles));
 
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return $this->error('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }
 
-        if ($user->isAdmin()){
+        if ($user->isAdmin()) {
             return $next($request);
         }
 
-        if (!in_array($user->role, $roles)) {
+        if (! in_array($user->role, $roles)) {
             if ($request->expectsJson()) {
-                return $this->error('Forbiddnen', Response::HTTP_FORBIDDEN);
+                return $this->error('Forbidden', Response::HTTP_FORBIDDEN);
             }
             abort(Response::HTTP_FORBIDDEN);
         }
