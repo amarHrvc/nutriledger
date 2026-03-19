@@ -15,11 +15,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/{id}', [UserController::class, 'show']);
 
     Route::middleware(['role:admin'])->group(function () {
-        Route::get('/test/admin-only', fn () => response()->json(['status' => 'ok']));
+        Route::get('/test/admin-only', fn () => response()->json(['message' => 'ok', 'status' => 200, 'data' => null]));
     });
 
     Route::middleware(['role:admin,doktor'])->group(function () {
-        Route::get('/test/admin-doktor-only', fn () => response()->json(['status' => 'ok']));
+        Route::get('/test/admin-doktor-only', fn () => response()->json(['message' => 'ok', 'status' => 200, 'data' => null]));
         // Patients + Visits — 002-patients, 003-visits BE
     });
 
