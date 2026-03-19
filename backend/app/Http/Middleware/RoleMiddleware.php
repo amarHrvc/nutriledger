@@ -33,7 +33,7 @@ class RoleMiddleware
 
         if (!in_array($user->role, $roles)) {
             if ($request->expectsJson()) {
-                return response()->json(['message' => 'Unauthorized'], Response::HTTP_FORBIDDEN);
+                return $this->error('Forbiddnen', Response::HTTP_FORBIDDEN);
             }
             abort(Response::HTTP_FORBIDDEN);
         }

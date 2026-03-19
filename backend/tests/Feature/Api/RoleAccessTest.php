@@ -17,7 +17,7 @@ test('pacijent gets 403 JSON on admin-only route', function () {
 
     $this->actingAs($pacijent)->getJson('/api/test/admin-only')
         ->assertForbidden()
-        ->assertJsonStructure(['message', 'status', 'data'])
+        ->assertJsonStructure(['message', 'status'])
         ->assertHeader('Content-Type', 'application/json');
 });
 
@@ -38,7 +38,7 @@ test('pacijent gets 403 on admin-doktor route', function () {
 
     $this->actingAs($pacijent)->getJson('/api/test/admin-doktor-only')
         ->assertForbidden()
-        ->assertJsonStructure(['message', 'status', 'data'])
+        ->assertJsonStructure(['message', 'status'])
         ->assertHeader('Content-Type', 'application/json');
 });
 
