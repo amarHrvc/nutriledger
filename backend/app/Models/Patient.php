@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\PatientFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Patient extends Model
 {
-    /** @use HasFactory<\Database\Factories\PatientFactory> */
+    /** @use HasFactory<PatientFactory> */
     use HasFactory, SoftDeletes;
 
     protected $fillable = [

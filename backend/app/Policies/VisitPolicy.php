@@ -20,7 +20,7 @@ class VisitPolicy
      */
     public function view(User $user, Visit $visit): bool
     {
-        if ($this->adminOrDoctor($user)){
+        if ($this->adminOrDoctor($user)) {
             return true;
         }
 
@@ -45,12 +45,11 @@ class VisitPolicy
      */
     public function update(User $user, Visit $visit): bool
     {
-        if ($user->isAdmin()){
+        if ($user->isAdmin()) {
             return true;
         }
 
         return $user->isDoctor() && $user->id === $visit->doctor_id;
-
 
     }
 
@@ -79,7 +78,6 @@ class VisitPolicy
     }
 
     /**
-     * @param User $user
      * @return true|void
      */
     public function adminOrDoctor(User $user): bool
@@ -87,6 +85,7 @@ class VisitPolicy
         if ($user->isAdmin() || $user->isDoctor()) {
             return true;
         }
+
         return false;
     }
 }

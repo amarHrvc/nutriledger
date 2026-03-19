@@ -1,8 +1,7 @@
 <?php
 
-use App\Models\Visit;
 use App\Models\Patient;
-use App\Models\User;
+use App\Models\Visit;
 
 test('visit factory creates a valid visit', function () {
     $visit = Visit::factory()->create();

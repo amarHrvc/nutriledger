@@ -3,22 +3,22 @@
 use App\Models\Patient;
 use App\Models\User;
 use App\Models\Visit;
+use Illuminate\Support\Carbon;
 
 test('visit can be created with required fields', function () {
     $doctor = User::factory()->create(['role' => 'doktor']);
     $patient = Patient::factory()->create();
 
-    $visit = \App\Models\Visit::factory()->create([
+    $visit = Visit::factory()->create([
         'patient_id' => $patient->id,
         'doctor_id' => $doctor->id,
         'date' => now(),
     ]);
 
-    expect($visit)->toBeInstanceOf(\App\Models\Visit::class)
+    expect($visit)->toBeInstanceOf(Visit::class)
         ->and($visit->id)->toBeInt()
         ->and($visit->patient->id)->toBeInt()->and($visit->patient->id)->toEqual($patient->id)
-        ->and($visit->date)->toBeInstanceOf(\Illuminate\Support\Carbon::class)
-    ;
+        ->and($visit->date)->toBeInstanceOf(Carbon::class);
 });
 
 test('visit belongs to a patient', function () {
@@ -26,7 +26,6 @@ test('visit belongs to a patient', function () {
 
     expect($visit->patient)->toBeInstanceOf(Patient::class);
 });
-
 
 test('visit belongs to a doctor', function () {
     $visit = Visit::factory()->create();
@@ -44,10 +43,10 @@ test('visit can have notes', function () {
 test('visit can have date', function () {
     $visit = Visit::factory()->create(['date' => now()]);
 
-    expect($visit->date)->toBeInstanceOf(\Illuminate\Support\Carbon::class)
+    expect($visit->date)->toBeInstanceOf(Carbon::class)
         ->and($visit->date->isToday())->toBeTrue()
         ->and($visit->date->toDateString())->toEqual(now()->toDateString());
-    ;
+
 });
 
 test('Patient can have many visits', function () {

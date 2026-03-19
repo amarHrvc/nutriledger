@@ -18,9 +18,8 @@ use Laravel\Sanctum\HasApiTokens;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes, HasApiTokens;
+    /** @use HasFactory<UserFactory> */
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -98,7 +97,8 @@ class User extends Authenticatable
         return $this->hasOne(Patient::class);
     }
 
-    public function toSimpleData():array{
+    public function toSimpleData(): array
+    {
         return $this->only(['id', 'name', 'email', 'role']);
     }
 }

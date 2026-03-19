@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserController extends ApiController
@@ -35,7 +35,7 @@ class UserController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(string $id): \Illuminate\Http\JsonResponse
+    public function show(string $id): JsonResponse
     {
         return $this->ok('OK')->setData(['data' => ['user' => User::where('id', $id)->first()->toSimpleData()]]);
     }

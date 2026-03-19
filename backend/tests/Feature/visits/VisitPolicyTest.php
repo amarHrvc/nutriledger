@@ -1,40 +1,39 @@
 <?php
 
-use App\Models\User;
 use App\Models\Patient;
+use App\Models\User;
 use App\Models\Visit;
 
 test('admin can view any visit', function () {
     $admin = User::factory()->create(['role' => 'admin']);
-    $visit = \App\Models\Visit::factory()->create();
+    $visit = Visit::factory()->create();
 
     expect($admin->can('view', $visit))->toBeTrue();
 });
 
 test('doctor can view their own visit', function () {
     $doctor = User::factory()->create(['role' => 'doktor']);
-    $visit = \App\Models\Visit::factory()->create(['doctor_id' => $doctor->id]);
+    $visit = Visit::factory()->create(['doctor_id' => $doctor->id]);
 
     expect($doctor->can('view', $visit))->toBeTrue();
 });
 
 test('patient can view their own visit', function () {
-    $patient = \App\Models\Patient::factory()->create();
-    $visit = \App\Models\Visit::factory()->create(['patient_id' => $patient->id]);
-
+    $patient = Patient::factory()->create();
+    $visit = Visit::factory()->create(['patient_id' => $patient->id]);
 
     expect($patient->user->can('view', $visit))->toBeTrue();
 
-//    dump($patient->toArray());
-//    dump($patient->user->toArray());
-//    dd($visit->toArray());
+    //    dump($patient->toArray());
+    //    dump($patient->user->toArray());
+    //    dd($visit->toArray());
 
 });
 
 test('patient cannot view other patients visits', function () {
-    $patient1 = \App\Models\Patient::factory()->create();
-    $patient2 = \App\Models\Patient::factory()->create();
-    $visit = \App\Models\Visit::factory()->create(['patient_id' => $patient2->id]);
+    $patient1 = Patient::factory()->create();
+    $patient2 = Patient::factory()->create();
+    $visit = Visit::factory()->create(['patient_id' => $patient2->id]);
 
     expect($patient1->user->can('view', $visit))->toBeFalse();
 });
@@ -42,21 +41,20 @@ test('patient cannot view other patients visits', function () {
 test('admin can create a visit', function () {
     $admin = User::factory()->create(['role' => 'admin']);
 
-    expect($admin->can('create', \App\Models\Visit::class))->toBeTrue();
+    expect($admin->can('create', Visit::class))->toBeTrue();
 });
 
 test('doctor can create a visit', function () {
     $doctor = User::factory()->create(['role' => 'doktor']);
 
-    expect($doctor->can('create', \App\Models\Visit::class))->toBeTrue();
+    expect($doctor->can('create', Visit::class))->toBeTrue();
 });
 
 test('patient can not create a visit', function () {
-    $patient = \App\Models\Patient::factory()->create();
+    $patient = Patient::factory()->create();
 
-    expect($patient->user->can('create', \App\Models\Visit::class))->toBeFalse();
+    expect($patient->user->can('create', Visit::class))->toBeFalse();
 });
-
 
 // update
 test('admin can update any visit', function () {

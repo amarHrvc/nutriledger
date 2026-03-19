@@ -2,6 +2,7 @@
 
 use App\Models\Patient;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 
 // === Basic Model Tests ===
 
@@ -14,9 +15,8 @@ test('patient can be created with required fields', function () {
         ->and($patient->first_name)->toBe($user->name)
         ->and($patient->last_name)->toBeString()
         ->and($patient->user_id)->toBe($user->id)
-        ->and($patient->gender)->toBeIn(["M", "F"])
-        ->and($patient->blood_type)->toBeIn(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    ;
+        ->and($patient->gender)->toBeIn(['M', 'F'])
+        ->and($patient->blood_type)->toBeIn(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']);
 });
 
 // TODO: Write test for patient belongs to user relationship
@@ -41,7 +41,6 @@ test('patient full_name accessor returns combined name', function () {
     expect($patient->full_name)->toBe('Jane Smith');
 });
 
-
 // === Soft Delete Tests ===
 
 test('patient can be soft deleted', function () {
@@ -63,21 +62,19 @@ test('patient can be restored after soft delete', function () {
     expect($patient->trashed())->toBeFalse();
 });
 
-
-//write test for patient date_of_birth is cast to date
+// write test for patient date_of_birth is cast to date
 test('patient date_of_birth is cast to date', function () {
     $patient = Patient::factory()->create([
         'date_of_birth' => '1990-05-15',
     ]);
-    expect($patient->date_of_birth)->toBeInstanceOf(\Illuminate\Support\Carbon::class)
+    expect($patient->date_of_birth)->toBeInstanceOf(Carbon::class)
         ->and($patient->date_of_birth->format('Y-m-d'))->toBe('1990-05-15');
 });
 
-//test  that user  has patient relationship
+// test  that user  has patient relationship
 test('user has patient relationship', function () {
     $patient = Patient::factory()->create();
     $user = $patient->user;
-
 
     expect($user->patient->id)->toBe($patient->id)
         ->and($user->patient)->toBeInstanceOf(Patient::class)
