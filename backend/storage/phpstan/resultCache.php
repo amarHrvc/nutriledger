@@ -2311,6 +2311,94 @@ return [
        'fixedErrorDiff' => NULL,
     )),
   ),
+  'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php' => 
+  array (
+    0 => 
+    \PHPStan\Analyser\Error::__set_state(array(
+       'message' => 'Call to an undefined method PHPUnit\\Framework\\TestCase::getJson().',
+       'file' => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php',
+       'line' => 9,
+       'canBeIgnored' => true,
+       'filePath' => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php',
+       'traitFilePath' => NULL,
+       'tip' => NULL,
+       'nodeLine' => 9,
+       'nodeType' => 'PhpParser\\Node\\Expr\\MethodCall',
+       'identifier' => 'method.notFound',
+       'metadata' => 
+      array (
+      ),
+       'fixedErrorDiff' => NULL,
+    )),
+    1 => 
+    \PHPStan\Analyser\Error::__set_state(array(
+       'message' => 'Call to an undefined method PHPUnit\\Framework\\TestCase::postJson().',
+       'file' => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php',
+       'line' => 15,
+       'canBeIgnored' => true,
+       'filePath' => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php',
+       'traitFilePath' => NULL,
+       'tip' => NULL,
+       'nodeLine' => 15,
+       'nodeType' => 'PhpParser\\Node\\Expr\\MethodCall',
+       'identifier' => 'method.notFound',
+       'metadata' => 
+      array (
+      ),
+       'fixedErrorDiff' => NULL,
+    )),
+    2 => 
+    \PHPStan\Analyser\Error::__set_state(array(
+       'message' => 'Call to an undefined method PHPUnit\\Framework\\TestCase::getJson().',
+       'file' => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php',
+       'line' => 22,
+       'canBeIgnored' => true,
+       'filePath' => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php',
+       'traitFilePath' => NULL,
+       'tip' => NULL,
+       'nodeLine' => 22,
+       'nodeType' => 'PhpParser\\Node\\Expr\\MethodCall',
+       'identifier' => 'method.notFound',
+       'metadata' => 
+      array (
+      ),
+       'fixedErrorDiff' => NULL,
+    )),
+    3 => 
+    \PHPStan\Analyser\Error::__set_state(array(
+       'message' => 'Call to an undefined method PHPUnit\\Framework\\TestCase::actingAs().',
+       'file' => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php',
+       'line' => 30,
+       'canBeIgnored' => true,
+       'filePath' => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php',
+       'traitFilePath' => NULL,
+       'tip' => NULL,
+       'nodeLine' => 30,
+       'nodeType' => 'PhpParser\\Node\\Expr\\MethodCall',
+       'identifier' => 'method.notFound',
+       'metadata' => 
+      array (
+      ),
+       'fixedErrorDiff' => NULL,
+    )),
+    4 => 
+    \PHPStan\Analyser\Error::__set_state(array(
+       'message' => 'Call to an undefined method PHPUnit\\Framework\\TestCase::getJson().',
+       'file' => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php',
+       'line' => 37,
+       'canBeIgnored' => true,
+       'filePath' => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php',
+       'traitFilePath' => NULL,
+       'tip' => NULL,
+       'nodeLine' => 37,
+       'nodeType' => 'PhpParser\\Node\\Expr\\MethodCall',
+       'identifier' => 'method.notFound',
+       'metadata' => 
+      array (
+      ),
+       'fixedErrorDiff' => NULL,
+    )),
+  ),
   'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\RoleAccessTest.php' => 
   array (
     0 => 
@@ -4005,6 +4093,42 @@ return [
       array (
         0 => 'test',
         1 => 74,
+      ),
+    ),
+  ),
+  'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php' => 
+  array (
+    'PHPStan\\Rules\\DeadCode\\PossiblyPureFuncCallCollector' => 
+    array (
+      0 => 
+      array (
+        0 => 'uses',
+        1 => 6,
+      ),
+      1 => 
+      array (
+        0 => 'test',
+        1 => 8,
+      ),
+      2 => 
+      array (
+        0 => 'test',
+        1 => 14,
+      ),
+      3 => 
+      array (
+        0 => 'test',
+        1 => 21,
+      ),
+      4 => 
+      array (
+        0 => 'test',
+        1 => 27,
+      ),
+      5 => 
+      array (
+        0 => 'test',
+        1 => 36,
       ),
     ),
   ),
@@ -6282,13 +6406,14 @@ return [
       9 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\app\\Policies\\VisitPolicy.php',
       10 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ApiRoutesTest.php',
       11 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\AuthTest.php',
-      12 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\RoleAccessTest.php',
-      13 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Middleware\\RoleMiddlewareTest.php',
-      14 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\PatientModelTest.php',
-      15 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\PatientPolicyTest.php',
-      16 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Socioeconomic\\PatientSocioeconomicPolicyTest.php',
-      17 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\visits\\VisitPolicyTest.php',
-      18 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\visits\\VisitsModelTest.php',
+      12 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php',
+      13 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\RoleAccessTest.php',
+      14 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Middleware\\RoleMiddlewareTest.php',
+      15 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\PatientModelTest.php',
+      16 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\PatientPolicyTest.php',
+      17 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Socioeconomic\\PatientSocioeconomicPolicyTest.php',
+      18 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\visits\\VisitPolicyTest.php',
+      19 => 'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\visits\\VisitsModelTest.php',
     ),
   ),
   'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\app\\Models\\Visit.php' => 
@@ -6369,7 +6494,7 @@ return [
   ),
   'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\routes\\api.php' => 
   array (
-    'fileHash' => '5b461fc669d3dfb3519ebe7da5b8fd82638ec2a0a1626df7e4bd358bc5531fa1',
+    'fileHash' => 'f71ab38a0248913df721f54955dbbb6405c3675bca8ddf02b375e6050364a431',
     'dependentFiles' => 
     array (
     ),
@@ -6398,6 +6523,13 @@ return [
   'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\AuthTest.php' => 
   array (
     'fileHash' => 'e98e18e624ad3091ea1b29e6caaa198cd9d716566d9572dd06e98fbe6f09c13c',
+    'dependentFiles' => 
+    array (
+    ),
+  ),
+  'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php' => 
+  array (
+    'fileHash' => '59dffada82760c689640a956368f6c13a2910705c6992b56b1bc0c88005692ee',
     'dependentFiles' => 
     array (
     ),

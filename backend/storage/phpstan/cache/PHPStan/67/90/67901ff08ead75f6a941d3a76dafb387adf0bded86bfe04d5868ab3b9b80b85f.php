@@ -7,7 +7,7 @@ return \PHPStan\Cache\CacheItem::__set_state(array(
   array (
     'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\routes\\api.php' => 
     array (
-      0 => '5b461fc669d3dfb3519ebe7da5b8fd82638ec2a0a1626df7e4bd358bc5531fa1',
+      0 => 'f71ab38a0248913df721f54955dbbb6405c3675bca8ddf02b375e6050364a431',
       1 => 
       array (
       ),

@@ -217,5 +217,18 @@ return \PHPStan\Cache\CacheItem::__set_state(array(
       array (
       ),
     ),
+    'D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\backend\\tests\\Feature\\Api\\ResponseContractTest.php' => 
+    array (
+      0 => '59dffada82760c689640a956368f6c13a2910705c6992b56b1bc0c88005692ee',
+      1 => 
+      array (
+      ),
+      2 => 
+      array (
+      ),
+      3 => 
+      array (
+      ),
+    ),
   ),
 ));
