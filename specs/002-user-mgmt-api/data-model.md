@@ -15,8 +15,8 @@
 | `email` | string(255) | NOT NULL, UNIQUE | Case-insensitive identifier |
 | `email_verified_at` | timestamp | NULL | Managed by Fortify — not exposed in API |
 | `password` | string(255) | NOT NULL | Hashed (bcrypt); never in responses |
-| `remember_token` | string(100) | NULL | Livewire session use — not exposed in API |
-| `role` | string | NOT NULL, default: `pacijent` | Enum-like: `admin`, `doktor`, `pacijent` |
+| `remember_token` | string(100) | NULL | Web auth "remember me" token — not used by Sanctum; not exposed in API |
+| `role` | string | NOT NULL | Enum-like: `admin`, `doktor`, `pacijent`. No DB-level default — application sets `pacijent` during registration |
 | `deleted_at` | timestamp | NULL | Soft-delete — NULL = active, set = deactivated |
 | `created_at` | timestamp | NOT NULL | |
 | `updated_at` | timestamp | NOT NULL | |
@@ -54,16 +54,15 @@ active (deleted_at = NULL)
 
 **Update (UpdateUserRequest)**:
 - `name`: sometimes, string, max:255
-- `email`: sometimes, email, unique:users,email,{current_user_id}
+- `email`: sometimes, email, `Rule::unique('users', 'email')->ignore($this->route('user'))` — excludes the current user from the uniqueness check
 - `password`: sometimes, string, min:8
 - `role`: sometimes, in:admin,doktor,pacijent
 
 **Registration (RegisterRequest)**:
 - `name`: required, string, max:255
 - `email`: required, email, unique:users,email
-- `password`: required, string, min:8, confirmed
-- `password_confirmation`: required_with:password
-- `role`: sometimes, in:admin,doktor,pacijent (defaults to `pacijent` if omitted)
+- `password`: required, string, min:8, confirmed (the `confirmed` rule automatically validates the `password_confirmation` request field — no separate rule needed)
+- `role`: sometimes, in:admin,doktor,pacijent (application defaults to `pacijent` if omitted)
 
 **Login (LoginRequest — existing)**:
 - `email`: required, email
@@ -128,7 +127,7 @@ active (deleted_at = NULL)
 - `type` is always `"user"`
 - `id` is the integer primary key
 - All attribute keys are camelCase
-- `relationships.patient` is only included when the `patient` relationship is loaded
+- `relationships.patient` is included only when the `patient` relationship is eager-loaded (`$user->load('patient')`). When loaded and the user has no linked patient (e.g., role is `admin` or `doktor`), the value is `{ "data": null }`. When not loaded at all (e.g., index listing), the key is absent entirely via `whenLoaded()`
 - `password`, `remember_token`, `email_verified_at` are NEVER included
 - `deletedAt` is included (may be null for active users) — allows admin to identify deactivated accounts
 
@@ -160,7 +159,7 @@ All controller responses use the standard envelope via `ApiResponses` trait (upd
 |------|------|
 | 200 | Successful read or update |
 | 201 | New resource created (register, store) |
-| 204 | Successful deletion (no body) |
+| 204 | Successful deletion or logout (no body) |
 | 401 | Unauthenticated (no token, invalid token, expired token, deactivated user login, wrong credentials) |
 | 403 | Authenticated but forbidden (wrong role, self-deactivation attempt) |
 | 404 | Resource not found |

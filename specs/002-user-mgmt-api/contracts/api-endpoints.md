@@ -65,7 +65,12 @@
   "status": 200,
   "data": {
     "token": "1|plaintext...",
-    "user": { "id": 1, "name": "...", "email": "...", "role": "pacijent" }
+    "user": {
+      "type": "user",
+      "id": 1,
+      "attributes": { "name": "...", "email": "...", "role": "pacijent", "deletedAt": null, "createdAt": "...", "updatedAt": "..." },
+      "links": { "self": "http://localhost/api/users/1" }
+    }
   }
 }
 ```
@@ -111,12 +116,14 @@
   "data": {
     "type": "user",
     "id": 1,
-    "attributes": { "name": "...", "email": "...", "role": "...", "createdAt": "...", "updatedAt": "..." },
+    "attributes": { "name": "...", "email": "...", "role": "...", "deletedAt": null, "createdAt": "...", "updatedAt": "..." },
     "relationships": { "patient": { "data": null } },
     "links": { "self": "http://localhost/api/users/1" }
   }
 }
 ```
+
+**Note**: `relationships.patient.data` is `null` when the user has no linked patient record (e.g., role is `admin` or `doktor`). The `links.self` always points to the canonical `/api/users/{id}` URL regardless of which endpoint returned this resource.
 
 **Failure 401**: Token missing or invalid.
 
@@ -142,7 +149,7 @@ All endpoints below require:
   "message": "OK",
   "status": 200,
   "data": {
-    "items": [
+    "data": [
       {
         "type": "user", "id": 1,
         "attributes": { "name": "...", "email": "...", "role": "admin", "deletedAt": null, "createdAt": "...", "updatedAt": "..." },
@@ -154,6 +161,9 @@ All endpoints below require:
   }
 }
 ```
+
+**Note**: The outer `data` key comes from the `ApiResponses` envelope. The inner `data` array, `meta`, and `links` are produced by Laravel's paginated `ResourceCollection` (`UserResource::collection($paginator)`). This double-`data` nesting is the expected shape when wrapping a paginated collection in the standard envelope.
+
 
 **Failure 401/403**: Unauthenticated or non-admin.
 
@@ -232,9 +242,9 @@ All endpoints below require:
 
 **Success 204**: No content.
 
+**Failure 401**: Unauthenticated.
 **Failure 403**: Attempting to deactivate own account.
 **Failure 404**: User not found.
-**Failure 401**: Unauthenticated.
 
 ---
 
@@ -242,7 +252,7 @@ All endpoints below require:
 **Middleware**: `auth:sanctum`, `role:admin`
 **Purpose**: Restore a previously deactivated (soft-deleted) user account.
 
-**Note**: `{id}` must reference a soft-deleted user — resolved via `User::withTrashed()->findOrFail($id)`.
+**Note**: Resolved via `User::withTrashed()->findOrFail($id)` — finds both active and soft-deleted users. Calling restore on an already-active user is a no-op (no error, returns the user unchanged). Returns 404 only for permanently deleted or non-existent IDs.
 
 **Success 200**:
 ```json
@@ -253,7 +263,7 @@ All endpoints below require:
 }
 ```
 
-**Failure 404**: User not found (active or permanently deleted).
+**Failure 404**: User not found (permanently deleted or non-existent ID).
 **Failure 401/403**: Unauthenticated or non-admin.
 
 ---
@@ -262,7 +272,7 @@ All endpoints below require:
 **Middleware**: `auth:sanctum`, `role:admin`
 **Purpose**: Permanently and irreversibly delete a user account. Releases their email for re-registration.
 
-**Note**: `{id}` must support both active and soft-deleted users — resolved via `User::withTrashed()->findOrFail($id)`.
+**Note**: Resolved via `User::withTrashed()->findOrFail($id)` — permanently deletes regardless of whether the user is currently active or deactivated. Returns 404 only for non-existent IDs.
 
 **Success 204**: No content.
 

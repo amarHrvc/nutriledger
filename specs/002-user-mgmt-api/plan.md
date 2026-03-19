@@ -14,7 +14,7 @@ Complete the Auth & User Management REST API for NutriLedger SE track. Builds on
 **Storage**: MySQL (production), SQLite in-memory (tests)
 **Testing**: Pest 4, `php artisan test`, SQLite in-memory via `RefreshDatabase`
 **Target Platform**: Linux server, API-only backend
-**Project Type**: web-service (REST API, unversioned Level 0)
+**Project Type**: web-service (REST API, unversioned)
 **Performance Goals**: Standard web response times; no explicit latency targets for MVP scope
 **Constraints**: Rate-limited login (5/min per IP), token absolute expiry via `config('sanctum.expiration')`, passwords never in any response payload
 **Scale/Scope**: University MVP, SE Feature Groups 1-3, ~25+ automated tests
@@ -83,7 +83,7 @@ backend/
 │   │   ├── Controllers/Api/
 │   │   │   ├── ApiController.php            [EXISTS — no changes]
 │   │   │   ├── AuthController.php           [MODIFY: register(), me()]
-│   │   │   └── UserController.php           [REBUILD: index, store, show, update, destroy, restore, forceDelete]
+│   │   │   └── UserController.php           [REWRITE: remove create/edit stubs; implement index, store, show, update, destroy; add restore, forceDelete]
 │   │   ├── Requests/Api/
 │   │   │   ├── LoginRequest.php             [EXISTS — no changes]
 │   │   │   ├── RegisterRequest.php          [CREATE]
@@ -102,7 +102,7 @@ backend/
 ├── routes/
 │   └── api.php                              [UPDATE: replace manual route, add apiResource + restore/forceDelete/me]
 └── tests/Feature/Api/
-    ├── AuthTest.php                         [UPDATE: fix envelope assertions, add new scenarios]
+    ├── AuthTest.php                         [UPDATE: fix envelope assertions, fix logout to use noContent(), add new scenarios]
     ├── UserManagementTest.php               [CREATE: 20+ CRUD + auth + validation tests]
     └── UserPolicyTest.php                   [CREATE: policy unit tests]
 ```
@@ -120,7 +120,7 @@ All unknowns resolved. See [research.md](research.md) for full decisions and rat
 | Route model binding for soft-deleted records | Explicit `User::withTrashed()->findOrFail($id)` in `restore()` and `forceDelete()` controllers |
 | ApiResponses trait data envelope | Update `ok()` and `created()` to accept optional `$data` param; update existing auth tests |
 | Deactivated user login blocking | No code needed — SoftDeletes global scope excludes them from `auth()->attempt()` query; verify via test |
-| Security logging | `Log::warning()` calls in controllers for 4 events; no PII; deferred to `stack` channel |
+| Security logging | `Log::warning()` calls in controllers for 4 events; no PII; written to `stack` channel |
 
 ## Phase 1: Design Summary
 
@@ -144,7 +144,9 @@ All design artifacts complete. See linked files for details.
 
 5. **Register response**: Returns 201 with `{message, status, data: {token, user: UserResource}}`. Token is created immediately on registration.
 
-6. **Sanctum expiration config**: `config/sanctum.php` `expiration` changes from `null` to `env('SANCTUM_EXPIRATION', 1440)`. This also means the global Sanctum expiry matches the per-token expiry set in `createToken()`. Existing login code uses `Carbon::now()->addDays(1)` — refactor to `Carbon::now()->addMinutes(config('sanctum.expiration'))`.
+6. **Sanctum expiration config**: `config/sanctum.php` `expiration` changes from `null` to `env('SANCTUM_EXPIRATION', 1440)`. Existing login code uses `Carbon::now()->addDays(1)` hardcoded — refactor to `Carbon::now()->addMinutes(config('sanctum.expiration'))`. Both the global `expiration` config and the per-token `expires_at` value are checked by Sanctum independently; keeping them consistent prevents subtle token lifetime drift.
+
+7. **AuthController logout bug**: The current `logout()` calls `$this->success('Logged out', Response::HTTP_NO_CONTENT)`. `success()` returns a JSON-body response regardless of status code — a 204 response MUST have no body. Fix: replace with `$this->noContent()`. The existing `noContent()` method in `ApiResponses` already returns `response()->json(null, 204)` correctly.
 
 ## Constitution Check (Post-Design)
 
