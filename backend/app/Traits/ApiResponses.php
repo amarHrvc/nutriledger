@@ -6,22 +6,28 @@ use Illuminate\Http\JsonResponse;
 
 trait ApiResponses
 {
-    protected function success(string $message, int $statusCode = 200): JsonResponse
+    protected function success(string $message, int $statusCode = 200, ?array $data = null): JsonResponse
     {
-        return response()->json([
+        $response = [
             'message' => $message,
             'status' => $statusCode,
-        ], $statusCode);
+        ];
+
+        if ($data !== null) {
+            $response['data'] = $data;
+        }
+
+        return response()->json($response, $statusCode);
     }
 
-    protected function ok(string $message): JsonResponse
+    protected function ok(string $message, ?array $data = null): JsonResponse
     {
-        return $this->success($message);
+        return $this->success($message, 200, $data);
     }
 
-    protected function created(string $message): JsonResponse
+    protected function created(string $message, ?array $data = null): JsonResponse
     {
-        return $this->success($message, 201);
+        return $this->success($message, 201, $data);
     }
 
     protected function noContent(): JsonResponse
@@ -33,7 +39,7 @@ trait ApiResponses
     {
         return response()->json([
             'message' => $message,
-            'status'  => $statusCode,
+            'status' => $statusCode,
         ], $statusCode);
     }
 }
