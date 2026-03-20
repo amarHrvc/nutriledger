@@ -87,14 +87,17 @@ test('GET /api/user returns UserResource shape', function () {
     $user = User::factory()->create();
 
     $json = $this->actingAs($user)->getJson('/api/user');
+
+    dump($json->json());
+
     $json
         ->assertOk()
         ->assertJsonStructure([
-            'data' => [
+            'data' => ['user' => [
                 'type',
                 'id',
                 'attributes',
-            ],
+            ]],
         ]);
 });
 

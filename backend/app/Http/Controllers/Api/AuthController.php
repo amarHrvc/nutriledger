@@ -45,11 +45,13 @@ class AuthController extends ApiController
 
     public function me(Request $request): JsonResponse
     {
-        return response()->json([
-            'message' => 'User profile',
-            'status' => 200,
-            'data' => new UserResource($request->user()),
-        ]);
+
+        $user = $request->user();
+        $user->load('patient');
+
+        return $this->ok(
+            'Profile retrieved', ['user' => new UserResource($user)]
+        );
     }
 
 }

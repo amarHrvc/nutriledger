@@ -8,7 +8,12 @@
       "Bash(powershell.exe -Command \"Test-Path .specify/extensions.yml\")",
       "Bash(powershell.exe -Command \".specify/scripts/powershell/check-prerequisites.ps1 -Json\")",
       "Bash(git:*)",
-      "Bash(php artisan:*)"
+      "Bash(php artisan:*)",
+      "Read(//c/Users/Korisnik/.claude/skills/**)",
+      "Read(//c/Users/Korisnik/.claude/**)",
+      "Bash(find ~/.claude -name settings*.json)",
+      "Bash(gh api:*)",
+      "Bash(curl -s https://raw.githubusercontent.com/steveyegge/beads/main/cmd/bd/import.go)"
     ]
   },
   "enableAllProjectMcpServers": true,
