@@ -185,16 +185,13 @@ php artisan make:controller Api/AuthController --no-interaction
 ```
 
 2. Fill the file:
+
 ```php
 <?php
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;use App\Http\Resources\Api\UserResource;use Illuminate\Http\JsonResponse;use Illuminate\Http\Request;use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -391,18 +388,13 @@ php artisan make:controller Api/UserController --api --no-interaction
 ```
 
 2. Fill the file:
+
 ```php
 <?php
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
-use App\Models\User;
-use App\Services\UserService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Http\Controllers\Controller;use App\Http\Resources\Api\UserResource;use App\Models\User;use App\Services\UserService;use Illuminate\Http\JsonResponse;use Illuminate\Http\Request;use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
 {

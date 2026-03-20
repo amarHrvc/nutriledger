@@ -12,7 +12,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::get('/user/{id}', [UserController::class, 'show']);
+    Route::get('/user/{id}', [UserController::class, 'show'])->name('user.show');
 
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/test/admin-only', fn () => response()->json(['message' => 'ok', 'status' => 200, 'data' => null]));
