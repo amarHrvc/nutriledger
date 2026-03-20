@@ -42,7 +42,7 @@ class UserResource extends JsonResource
                 'patient' => $this->whenLoaded('patient', fn () => $this->patient),
             ],
             'links' => [
-                'self' => route('user.show', $this->id),
+                'self' => route('user.me'),
             ],
         ];
     }

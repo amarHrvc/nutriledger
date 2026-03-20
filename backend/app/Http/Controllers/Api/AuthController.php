@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\LoginRequest;
+use App\Http\Resources\Api\UserResource;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -13,15 +14,22 @@ class AuthController extends ApiController
     //
     public function login(LoginRequest $request): JsonResponse
     {
+        if (!auth()->attempt($request->only('email', 'password'))) {
+            return $this->error('Invalid credentials', 401);
+        }
 
-        $request->validate($request->rules());
+        $user = auth()->user();
 
-        return auth()->attempt($request->only('email', 'password'))
-            ? $this->ok('Authenticated')->setData(
-                ['token' => auth()->user()->createToken('api-token', ['*'], Carbon::now()->addMinutes(config('sanctum.expiration')))->plainTextToken, 'user' => auth()->user()->toSimpleData()]
-            )
-            : $this->error('Invalid credentials', 401);
+        // Check if user is deactivated
+        if ($user->deactivated_at) {
+            auth()->logout();
+            return $this->error('Account is deactivated', 401);
+        }
 
+        return $this->ok('Authenticated', [
+            'token' => $user->createToken('api-token', ['*'], Carbon::now()->addMinutes(config('sanctum.expiration')))->plainTextToken,
+            'user' => new UserResource($user),
+        ]);
     }
 
     public function register(): JsonResponse
@@ -31,10 +39,17 @@ class AuthController extends ApiController
 
     public function logout(Request $request): JsonResponse
     {
-
-        //      $request->user()->tokens()->where('id', $request->user()->currentAccessToken()->id)->delete();
         $request->user()->currentAccessToken()->delete();
-
         return $this->noContent();
     }
+
+    public function me(Request $request): JsonResponse
+    {
+        return response()->json([
+            'message' => 'User profile',
+            'status' => 200,
+            'data' => new UserResource($request->user()),
+        ]);
+    }
+
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\Api\UserResource;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -13,7 +15,11 @@ class UserController extends ApiController
      */
     public function index()
     {
-        //
+        $users = User::withTrashed()->get();
+
+        return $this->ok('OK', [
+            'users' => UserResource::collection($users),
+        ]);
     }
 
     /**
@@ -37,7 +43,13 @@ class UserController extends ApiController
      */
     public function show(string $id): JsonResponse
     {
-        return $this->ok('OK')->setData(['data' => ['user' => User::where('id', $id)->first()->toSimpleData()]]);
+        $user = User::where('id', $id)->first();
+
+        if (!$user) return $this->notFound();
+
+        return $this->ok('OK', [
+            'user' => new UserResource($user),
+        ]);
     }
 
     /**

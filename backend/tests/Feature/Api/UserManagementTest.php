@@ -9,12 +9,18 @@ test('admin can list all users', function () {
     $admin = User::factory()->create(['role' => 'admin']);
     User::factory(3)->create(['role' => 'pacijent']);
 
-    $this->actingAs($admin)
-        ->getJson('/api/users')
+    $users = $this->actingAs($admin)
+        ->getJson('/api/users');
+
+    dump($users->json());
+
+    $users
         ->assertOk()
         ->assertJsonStructure([
             'data' => [
-                '*' => ['type', 'id', 'attributes'],
+                'users' => [
+                    '*' => ['type', 'id', 'attributes'],
+                ]
             ],
         ]);
 });
@@ -28,7 +34,8 @@ test('list users includes soft-deleted users', function () {
 
     $response->assertOk();
     // Verify soft-deleted user is in list
-    $ids = collect($response->json('data.*.id'))->map('intval');
+    $ids = collect($response->json('data.users'))->pluck('id')->map('intval');
+
     expect($ids)->toContain($user->id);
 });
 
@@ -48,11 +55,13 @@ test('admin can view specific user', function () {
     $admin = User::factory()->create(['role' => 'admin']);
     $user = User::factory()->create(['role' => 'pacijent']);
 
-    $this->actingAs($admin)
-        ->getJson("/api/users/{$user->id}")
+    $response = $this->actingAs($admin)
+        ->getJson("/api/users/{$user->id}");
+    dump($response->json());
+    $response
         ->assertOk()
         ->assertJsonStructure([
-            'data' => ['type', 'id', 'attributes'],
+            'data' => ['user' => ['type', 'id', 'attributes']],
         ]);
 });
 

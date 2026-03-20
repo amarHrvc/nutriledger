@@ -34,6 +34,10 @@ trait ApiResponses
     {
         return response()->json(null, 204);
     }
+    protected function notFound(): JsonResponse
+    {
+        return response()->json(null, 404);
+    }
 
     public function error(string $message, int $statusCode): JsonResponse
     {
