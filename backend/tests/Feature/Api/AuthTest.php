@@ -6,18 +6,32 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('login should return valid token', function () {
+test('login should return valid token envelope', function () {
     $user = User::factory()->create(['password' => bcrypt('password')]);
     $this->postJson('/api/login', [
         'email' => $user->email,
         'password' => 'password',
     ])
         ->assertOk()
-        ->assertJsonStructure(['token', 'user'])
+        ->assertJsonStructure([
+            'message',
+            'status',
+            'data' => [
+                'token',
+                'user' => [
+                    'type',
+                    'id',
+                    'attributes',
+                ],
+            ],
+        ])
         ->assertJson([
-            'user' => [
-                'id' => $user->id,
-                'email' => $user->email,
+            'status' => 200,
+            'data' => [
+                'user' => [
+                    'type' => 'users',
+                    'id' => (string) $user->id,
+                ],
             ],
         ]);
 });
@@ -33,7 +47,7 @@ test('logout revokes token', function () {
 
     $this->app['auth']->forgetGuards();
 
-    $this->withToken($token)->getJson("/api/user/{$user->id}")
+    $this->withToken($token)->getJson('/api/user')
         ->assertUnauthorized();
 });
 
@@ -69,18 +83,35 @@ test('missing email returns 422 with field errors', function () {
         ->assertJsonValidationErrors(['email', 'password']);
 });
 
-test('GET /api/user returns id name email role', function () {
+test('GET /api/user returns UserResource shape', function () {
     $user = User::factory()->create();
 
-    $json = $this->actingAs($user)->getJson("/api/user/{$user->id}");
-    //    dd($json);
+    $json = $this->actingAs($user)->getJson('/api/user');
     $json
         ->assertOk()
-        ->assertJsonStructure(['data']);
+        ->assertJsonStructure([
+            'data' => [
+                'type',
+                'id',
+                'attributes',
+            ],
+        ]);
 });
 
-test('GET /api/user without token returns 401 not redirect', function () {
-    $this->getJson('/api/user/1')->assertUnauthorized();
+test('login with deactivated account returns 401', function () {
+    $user = User::factory()->create([
+        'password' => bcrypt('password'),
+        'deactivated_at' => now(),
+    ]);
+
+    $this->postJson('/api/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ])->assertUnauthorized();
+});
+
+test('GET /api/user without token returns 401', function () {
+    $this->getJson('/api/user')->assertUnauthorized();
 });
 
 test('login token expiration uses config sanctum.expiration', function () {
