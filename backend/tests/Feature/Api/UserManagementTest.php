@@ -54,6 +54,8 @@ test('admin can view specific user', function () {
     $response = $this->actingAs($admin)
         ->getJson("/api/users/{$user->id}");
 
+
+
     $response
         ->assertOk()
         ->assertJsonStructure([
@@ -136,3 +138,58 @@ test('empty user list returns 200 with pagination', function () {
         $response->assertOk()
             ->assertJsonPath('meta.total', 1); // Only admin exists
     });
+
+test('admin can view soft-deleted user', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+    $user->delete(); // soft delete
+
+    $response = $this->actingAs($admin)
+        ->getJson("/api/users/{$user->id}");
+
+    $response->assertOk()
+        ->assertJsonPath('data.user.id', $user->id);
+});
+
+test('doctor can view other doctor', function () {
+    $doctor1 = User::factory()->create(['role' => 'doktor']);
+    $doctor2 = User::factory()->create(['role' => 'doktor']);
+
+    $response = $this->actingAs($doctor1)
+        ->getJson("/api/users/{$doctor2->id}");
+
+    $response->assertOk()
+        ->assertJsonPath('data.user.id', $doctor2->id);
+});
+
+test('doctor cannot view soft-deleted user', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+    $user->delete(); // soft delete
+
+    $this->actingAs($doctor)
+        ->getJson("/api/users/{$user->id}")
+        ->assertNotFound();
+});
+
+test('patient can view own profile', function () {
+    $patient = User::factory()->create(['role' =>
+        'pacijent']);
+
+    $response = $this->actingAs($patient)
+        ->getJson("/api/users/{$patient->id}");
+
+    $response->assertOk()
+        ->assertJsonPath('data.user.id', $patient->id);
+});
+
+test('patient cannot view other user', function () {
+    $patient1 = User::factory()->create(['role' =>
+        'pacijent']);
+    $patient2 = User::factory()->create(['role' =>
+        'pacijent']);
+
+    $this->actingAs($patient1)
+        ->getJson("/api/users/{$patient2->id}")
+        ->assertForbidden();
+});

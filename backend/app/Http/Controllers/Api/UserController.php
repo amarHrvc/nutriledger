@@ -51,11 +51,13 @@ class UserController extends ApiController
      */
     public function show(string $id): JsonResponse
     {
-        $user = User::where('id', $id)->first();
+        $user = auth()->user()->isAdmin() ? User::withTrashed()->findOrFail($id) : User::findOrFail($id);
+        $user->load('patient');
 
-        if (!$user) return $this->notFound();
+        $this->authorize('view', $user);
 
-        return $this->ok('OK', [
+
+        return $this->ok('User retrieved', [
             'user' => new UserResource($user),
         ]);
     }

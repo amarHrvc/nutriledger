@@ -19,7 +19,11 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return $user->isAdmin();
+        if ($user->isPatient()) {
+            return $user->id === $model->id;
+        }
+
+        return true;
     }
 
     /**
