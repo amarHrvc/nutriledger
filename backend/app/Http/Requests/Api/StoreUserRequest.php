@@ -25,8 +25,16 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|confirmed',
             'role' => 'required|in:admin,doktor,pacijent',
+        ];
+    }
+    
+    public function messages(): array
+    {
+        return [
+            'password.confirmed' => 'The password confirmation does not match.',
+            'role.in' => 'The role field must be admin, doktor, or pacijent.',
         ];
     }
 }

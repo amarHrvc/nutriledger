@@ -204,6 +204,8 @@ test('admin can create new user', function () {
 
     $response = $this->actingAs($admin)->postJson('/api/users', $payload);
 
+
+
     $response->assertCreated()
         ->assertJsonStructure([
             'data' => ['user' => ['type', 'id', 'attributes']],
@@ -236,8 +238,7 @@ test('missing required fields returns 422', function () {
         ]);
 
     $response->assertUnprocessable()
-        ->assertJsonPath('errors.password.0', 'The password
-  field is required.');
+        ->assertJsonPath('errors.password.0', 'The password field is required.');
 });
 
 

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Api\StoreUserRequest;
 use App\Http\Resources\Api\UserResource;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class UserController extends ApiController
 {
@@ -41,9 +43,16 @@ class UserController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request): JsonResponse
     {
-        //
+        $this->authorize('create', User::class);
+
+        $user = User::create($request->validated());
+
+        return $this->created('User created successfully.', [
+            'user' => new UserResource($user),
+        ]);
+
     }
 
     /**
