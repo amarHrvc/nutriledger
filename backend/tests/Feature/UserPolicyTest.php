@@ -10,10 +10,10 @@ test('admin can view any users', function () {
     expect($admin->can('viewAny', User::class))->toBeTrue();
 });
 
-test('doctor cannot view any users', function () {
+test('doctor can view any users', function () {
     $doktor = User::factory()->create(['role' => 'doktor']);
 
-    expect($doktor->can('viewAny', User::class))->toBeFalse();
+    expect($doktor->can('viewAny', User::class))->toBeTrue();
 });
 
 test('patient cannot view any users', function () {
@@ -31,11 +31,11 @@ test('admin can view any user', function () {
     expect($admin->can('view', $user))->toBeTrue();
 });
 
-test('doctor cannot view any user', function () {
+test('doctor can view any user', function () {
     $doktor = User::factory()->create(['role' => 'doktor']);
     $user = User::factory()->create(['role' => 'pacijent']);
 
-    expect($doktor->can('view', $user))->toBeFalse();
+    expect($doktor->can('view', $user))->toBeTrue();
 });
 
 test('patient cannot view other users', function () {
