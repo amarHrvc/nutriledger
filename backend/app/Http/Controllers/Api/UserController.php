@@ -124,8 +124,14 @@ class UserController extends ApiController
 
         $user->restore();
 
+        Log::warning('security.user_restored', [
+            'by' => auth()->id(),
+            'target' => $user->id,
+            'ip' => request()->ip(),
+        ]);
+
         return $this->ok('User restored successfully.', [
-            'user' => new UserResource($user),
+            'user' => new UserResource($user->fresh()),
         ]);
     }
 }
