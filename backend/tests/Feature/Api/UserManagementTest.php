@@ -510,3 +510,113 @@ test('restore already-active user returns 200', function () {
     $user->refresh();
     expect($user->deleted_at)->toBeNull();
 });
+
+// AUTH-29: UserResource Structure Tests
+test('user resource has type id and attributes keys', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+
+    $response = $this->actingAs($admin)
+        ->getJson("/api/users/{$user->id}");
+
+    $response->assertJsonStructure([
+        'data' => [
+            'user' => ['type', 'id', 'attributes'],
+        ],
+    ]);
+
+    expect($response->json('data.user.type'))->toBe('users');
+    expect($response->json('data.user.id'))->toBe($user->id);
+});
+
+test('user resource attributes use camelCase keys', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+
+    $response = $this->actingAs($admin)
+        ->getJson("/api/users/{$user->id}");
+
+    $attributes = $response->json('data.user.attributes');
+
+    expect($attributes)->toHaveKeys(['name', 'email', 'role', 'createdAt', 'updatedAt', 'deletedAt']);
+    expect(array_key_exists('created_at', $attributes ?? []))->toBeFalse();
+});
+
+test('user resource never includes password field', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+
+    $response = $this->actingAs($admin)
+        ->getJson("/api/users/{$user->id}");
+
+    $resourceString = json_encode($response->json());
+
+    expect(str_contains($resourceString, '"password"'))->toBeFalse();
+});
+
+test('collection response includes pagination meta and links', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    User::factory(5)->create(['role' => 'pacijent']);
+
+    $response = $this->actingAs($admin)
+        ->getJson('/api/users');
+
+    $response->assertJsonStructure([
+        'data' => ['*' => ['type', 'id', 'attributes']],
+        'meta' => ['current_page', 'last_page', 'per_page', 'total'],
+        'links' => ['first', 'last', 'prev', 'next'],
+    ]);
+});
+
+test('doctor sees only active users in list', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $activeUser = User::factory()->create(['role' => 'pacijent']);
+    $deletedUser = User::factory()->create(['role' => 'pacijent']);
+    $deletedUser->delete();
+
+    $response = $this->actingAs($doctor)
+        ->getJson('/api/users');
+
+    $ids = collect($response->json('data'))->pluck('id')->map('intval');
+
+    expect($ids)->toContain($activeUser->id)
+        ->and($ids)->not->toContain($deletedUser->id);
+});
+
+test('admin sees all users including soft-deleted in list', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $activeUser = User::factory()->create(['role' => 'pacijent']);
+    $deletedUser = User::factory()->create(['role' => 'pacijent']);
+    $deletedUser->delete();
+
+    $response = $this->actingAs($admin)
+        ->getJson('/api/users');
+
+    $ids = collect($response->json('data'))->pluck('id')->map('intval');
+
+    expect($ids)->toContain($activeUser->id)
+        ->and($ids)->toContain($deletedUser->id);
+});
+
+test('doctor gets 404 for soft-deleted user in show', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+    $user->delete();
+
+    $response = $this->actingAs($doctor)
+        ->getJson("/api/users/{$user->id}");
+
+    $response->assertNotFound();
+});
+
+test('admin can retrieve soft-deleted user via show', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+    $user->delete();
+
+    $response = $this->actingAs($admin)
+        ->getJson("/api/users/{$user->id}");
+
+    $response->assertOk()
+        ->assertJsonPath('data.user.attributes.deletedAt', $user->deleted_at->toIso8601String());
+});
