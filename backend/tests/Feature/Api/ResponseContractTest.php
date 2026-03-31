@@ -19,7 +19,7 @@ test('422 validation error response envelope', function () {
 });
 
 test('401 unauthenticated response envelope', function () {
-    $this->getJson('/api/user/1')
+    $this->getJson('/api/user')
         ->assertUnauthorized()
         ->assertJsonStructure(['message', 'status']);
 });

@@ -13,7 +13,7 @@ test('login endpoint responds with 200', function () {
         'password' => 'password',
     ])
         ->assertOk()
-        ->assertJsonStructure(['token', 'user']);
+        ->assertJsonStructure(['data' => ['token', 'user']]);
 });
 
 it('created helper returns 201 with status in body', function () {

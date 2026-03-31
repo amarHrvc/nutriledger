@@ -113,5 +113,5 @@ test('middleware returns json error for API requests', function () {
         ->get('/admin-only');
 
     $response->assertStatus(403);
-    $response->assertJson(['message' => 'Unauthorized']);
+    $response->assertJson(['message' => 'Forbidden']);
 });
