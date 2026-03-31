@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends ApiController
 {
@@ -15,20 +16,32 @@ class AuthController extends ApiController
     public function login(LoginRequest $request): JsonResponse
     {
         if (! auth()->attempt($request->only('email', 'password'))) {
-            // Check if the user exists but is soft-deleted
+            // Check if the user exists but is soft-deleted or deactivated
             $user = User::withTrashed()->where('email', $request->email)->first();
-            if ($user && $user->trashed()) {
+            if ($user && ($user->trashed() || $user->deactivated_at)) {
+                Log::warning('security.login_failed', [
+                    'ip' => $request->ip(),
+                ]);
+
                 return $this->error('Account is deactivated', 401);
             }
+
+            Log::warning('security.login_failed', [
+                'ip' => $request->ip(),
+            ]);
 
             return $this->error('Invalid credentials', 401);
         }
 
         $user = auth()->user();
 
-        // Check if user is soft-deleted (should not happen due to auth attempt)
-        if ($user->trashed()) {
+        // Check if user is soft-deleted or deactivated (should not happen due to auth attempt)
+        if ($user->trashed() || $user->deactivated_at) {
             auth()->logout();
+
+            Log::warning('security.login_failed', [
+                'ip' => $request->ip(),
+            ]);
 
             return $this->error('Account is deactivated', 401);
         }
@@ -46,6 +59,11 @@ class AuthController extends ApiController
 
     public function logout(Request $request): JsonResponse
     {
+        Log::warning('security.token_revoked', [
+            'user_id' => $request->user()->id,
+            'ip' => $request->ip(),
+        ]);
+
         $request->user()->currentAccessToken()->delete();
 
         return $this->noContent();
