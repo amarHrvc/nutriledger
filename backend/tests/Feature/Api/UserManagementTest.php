@@ -54,8 +54,6 @@ test('admin can view specific user', function () {
     $response = $this->actingAs($admin)
         ->getJson("/api/users/{$user->id}");
 
-
-
     $response
         ->assertOk()
         ->assertJsonStructure([
@@ -84,7 +82,7 @@ test('non-admin doctor can see list of all active users, not soft-deleted', func
     $doctor = User::factory()->create(['role' => 'doktor']);
     $activeUser = User::factory()->count(20)->create(['role' => 'pacijent']);
     $deletedUsers = User::factory()->count(10)->create(['role' => 'pacijent']);
-    $deletedUsers->each(fn(User $user) => $user->delete()); // soft delete
+    $deletedUsers->each(fn (User $user) => $user->delete()); // soft delete
 
     $response = $this->actingAs($doctor)->getJson('/api/users');
 
@@ -96,9 +94,7 @@ test('non-admin doctor can see list of all active users, not soft-deleted', func
 
     expect($ids)
         ->toContain($activeUser->pluck('id')->first())
-        ->and($ids)->not->toContain($deletedId)
-    ;
-
+        ->and($ids)->not->toContain($deletedId);
 
     $response->assertOk()
         ->assertJsonPath('meta.total', 21); // Only admin exists
@@ -114,30 +110,27 @@ test('non-admin patient cannot list users', function () {
 });
 
 test('users endpoint returns paginated results', function () {
-        $admin = User::factory()->create(['role' => 'admin']);
-        User::factory(20)->create(['role' => 'pacijent']);
+    $admin = User::factory()->create(['role' => 'admin']);
+    User::factory(20)->create(['role' => 'pacijent']);
 
-        $response = $this->actingAs($admin)->getJson('/api/users');
+    $response = $this->actingAs($admin)->getJson('/api/users');
 
-
-        $response->assertOk()
-            ->assertJsonStructure([
-                'data' =>  ['*' => ['type',
-                    'id', 'attributes']],
-                'meta' => ['current_page', 'per_page', 'total', 'last_page']
-            ]);
-    });
+    $response->assertOk()
+        ->assertJsonStructure([
+            'data' => ['*' => ['type',
+                'id', 'attributes']],
+            'meta' => ['current_page', 'per_page', 'total', 'last_page'],
+        ]);
+});
 
 test('empty user list returns 200 with pagination', function () {
-        $admin = User::factory()->create(['role' =>
-            'doktor']);
+    $admin = User::factory()->create(['role' => 'doktor']);
 
-        $response = $this->actingAs($admin)->getJson('/api/users');
+    $response = $this->actingAs($admin)->getJson('/api/users');
 
-
-        $response->assertOk()
-            ->assertJsonPath('meta.total', 1); // Only admin exists
-    });
+    $response->assertOk()
+        ->assertJsonPath('meta.total', 1); // Only admin exists
+});
 
 test('admin can view soft-deleted user', function () {
     $admin = User::factory()->create(['role' => 'admin']);
@@ -173,8 +166,7 @@ test('doctor cannot view soft-deleted user', function () {
 });
 
 test('patient can view own profile', function () {
-    $patient = User::factory()->create(['role' =>
-        'pacijent']);
+    $patient = User::factory()->create(['role' => 'pacijent']);
 
     $response = $this->actingAs($patient)
         ->getJson("/api/users/{$patient->id}");
@@ -184,16 +176,13 @@ test('patient can view own profile', function () {
 });
 
 test('patient cannot view other user', function () {
-    $patient1 = User::factory()->create(['role' =>
-        'pacijent']);
-    $patient2 = User::factory()->create(['role' =>
-        'pacijent']);
+    $patient1 = User::factory()->create(['role' => 'pacijent']);
+    $patient2 = User::factory()->create(['role' => 'pacijent']);
 
     $this->actingAs($patient1)
         ->getJson("/api/users/{$patient2->id}")
         ->assertForbidden();
 });
-
 
 test('admin can create new user', function () {
     $admin = User::factory()->create(['role' => 'admin']);
@@ -204,14 +193,11 @@ test('admin can create new user', function () {
 
     $response = $this->actingAs($admin)->postJson('/api/users', $payload);
 
-
-
     $response->assertCreated()
         ->assertJsonStructure([
             'data' => ['user' => ['type', 'id', 'attributes']],
         ]);
 });
-
 
 test('duplicate email returns 422', function () {
     $admin = User::factory()->create(['role' => 'admin']);
@@ -241,7 +227,6 @@ test('missing required fields returns 422', function () {
         ->assertJsonPath('errors.password.0', 'The password field is required.');
 });
 
-
 test('password confirmation mismatch returns 422', function () {
     $admin = User::factory()->create(['role' => 'admin']);
 
@@ -254,7 +239,6 @@ test('password confirmation mismatch returns 422', function () {
     $response->assertUnprocessable()
         ->assertJsonPath('errors.password.0', 'The password confirmation does not match.');
 });
-
 
 test('invalid role returns 422', function () {
     $admin = User::factory()->create(['role' => 'admin']);
@@ -282,7 +266,6 @@ test('non-admin cannot create user', function () {
     $response->assertForbidden();
 });
 
-
 test('created user password is hashed', function () {
     $admin = User::factory()->create(['role' => 'admin']);
 
@@ -297,4 +280,136 @@ test('created user password is hashed', function () {
 
     expect(Hash::check('password', $user->password))->toBeTrue()
         ->and($user->password)->not->toBe('password');
+});
+
+// AUTH-21: User Update Tests
+test('admin can update user name', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent', 'name' => 'Old Name']);
+
+    $response = $this->actingAs($admin)
+        ->patchJson("/api/users/{$user->id}", [
+            'name' => 'New Name',
+        ]);
+
+    $response->assertOk()
+        ->assertJsonPath('data.user.attributes.name', 'New Name');
+
+    $user->refresh();
+    expect($user->name)->toBe('New Name');
+});
+
+test('admin can change user role', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+
+    $response = $this->actingAs($admin)
+        ->patchJson("/api/users/{$user->id}", [
+            'role' => 'doktor',
+        ]);
+
+    $response->assertOk()
+        ->assertJsonPath('data.user.attributes.role', 'doktor');
+
+    $user->refresh();
+    expect($user->role)->toBe('doktor');
+});
+
+test('admin update with duplicate email returns 422', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['email' => 'unique@example.com']);
+    User::factory()->create(['email' => 'taken@example.com']);
+
+    $response = $this->actingAs($admin)
+        ->patchJson("/api/users/{$user->id}", [
+            'email' => 'taken@example.com',
+        ]);
+
+    $response->assertUnprocessable()
+        ->assertJsonPath('errors.email.0', 'The email has already been taken.');
+});
+
+test('admin update email uniqueness ignores own record', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['email' => 'original@example.com']);
+
+    $response = $this->actingAs($admin)
+        ->patchJson("/api/users/{$user->id}", [
+            'email' => 'original@example.com',
+        ]);
+
+    $response->assertOk();
+
+    $user->refresh();
+    expect($user->email)->toBe('original@example.com');
+});
+
+test('admin can update user password', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+    $oldPassword = 'password';
+
+    // Verify old password works
+    expect(Hash::check($oldPassword, $user->password))->toBeTrue();
+
+    $newPassword = 'NewPassword123!';
+    $response = $this->actingAs($admin)
+        ->patchJson("/api/users/{$user->id}", [
+            'password' => $newPassword,
+            'password_confirmation' => $newPassword,
+        ]);
+
+    $response->assertOk();
+
+    $user->refresh();
+
+    // Verify old password no longer works
+    expect(Hash::check($oldPassword, $user->password))->toBeFalse();
+
+    // Verify new password works
+    expect(Hash::check($newPassword, $user->password))->toBeTrue();
+});
+
+test('admin partial update leaves other fields unchanged', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create([
+        'role' => 'pacijent',
+        'name' => 'Original Name',
+        'email' => 'original@example.com',
+    ]);
+
+    $response = $this->actingAs($admin)
+        ->patchJson("/api/users/{$user->id}", [
+            'name' => 'Updated Name',
+        ]);
+
+    $response->assertOk();
+
+    $user->refresh();
+    expect($user->name)->toBe('Updated Name')
+        ->and($user->email)->toBe('original@example.com')
+        ->and($user->role)->toBe('pacijent');
+});
+
+test('non-admin cannot update user', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+
+    $response = $this->actingAs($doctor)
+        ->patchJson("/api/users/{$user->id}", [
+            'name' => 'New Name',
+        ]);
+
+    $response->assertForbidden();
+});
+
+test('non-existent user update returns 404', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+
+    $response = $this->actingAs($admin)
+        ->patchJson('/api/users/99999', [
+            'name' => 'New Name',
+        ]);
+
+    $response->assertNotFound();
 });

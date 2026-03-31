@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\StoreUserRequest;
+use App\Http\Requests\Api\UpdateUserRequest;
 use App\Http\Resources\Api\UserResource;
 use App\Models\User;
-use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class UserController extends ApiController
 {
@@ -27,7 +26,6 @@ class UserController extends ApiController
         if (auth()->user()->isDoctor()) {
             $users = User::query()->paginate();
         }
-
 
         return $this->paginated('Users retrieved successfully.', UserResource::collection($users));
     }
@@ -65,7 +63,6 @@ class UserController extends ApiController
 
         $this->authorize('view', $user);
 
-
         return $this->ok('User retrieved', [
             'user' => new UserResource($user),
         ]);
@@ -82,9 +79,17 @@ class UserController extends ApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, string $id): JsonResponse
     {
-        //
+        $user = User::findOrFail($id);
+
+        $this->authorize('update', $user);
+
+        $user->update($request->validated());
+
+        return $this->ok('User updated successfully.', [
+            'user' => new UserResource($user),
+        ]);
     }
 
     /**
