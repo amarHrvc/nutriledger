@@ -193,3 +193,107 @@ test('patient cannot view other user', function () {
         ->getJson("/api/users/{$patient2->id}")
         ->assertForbidden();
 });
+
+
+test('admin can create new user', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+
+    $payload = User::factory()->raw([
+        'password_confirmation' => 'password',
+    ]);
+
+    $response = $this->actingAs($admin)->postJson('/api/users', $payload);
+
+    $response->assertCreated()
+        ->assertJsonStructure([
+            'data' => ['user' => ['type', 'id', 'attributes']],
+        ]);
+});
+
+
+test('duplicate email returns 422', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    User::factory()->create(['email' => 'taken@example.com']);
+
+    $payload = User::factory()->raw([
+        'email' => 'taken@example.com',
+        'password_confirmation' => 'password',
+    ]);
+
+    $response = $this->actingAs($admin)->postJson('/api/users', $payload);
+
+    $response->assertUnprocessable()
+        ->assertJsonPath('errors.email.0', 'The email has already been taken.');
+});
+
+test('missing required fields returns 422', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+
+    $response = $this->actingAs($admin)
+        ->postJson('/api/users', [
+            'email' => 'user@example.com',
+            // Missing: password, password_confirmation, name, role
+        ]);
+
+    $response->assertUnprocessable()
+        ->assertJsonPath('errors.password.0', 'The password
+  field is required.');
+});
+
+
+test('password confirmation mismatch returns 422', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+
+    $payload = User::factory()->raw([
+        'password_confirmation' => 'DifferentPass456!',
+    ]);
+
+    $response = $this->actingAs($admin)->postJson('/api/users', $payload);
+
+    $response->assertUnprocessable()
+        ->assertJsonPath('errors.password.0', 'The password confirmation does not match.');
+});
+
+
+test('invalid role returns 422', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+
+    $payload = User::factory()->raw([
+        'role' => 'superuser',
+        'password_confirmation' => 'password',
+    ]);
+
+    $response = $this->actingAs($admin)->postJson('/api/users', $payload);
+
+    $response->assertUnprocessable()
+        ->assertJsonPath('errors.role.0', 'The role field must be admin, doktor, or pacijent.');
+});
+
+test('non-admin cannot create user', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+
+    $payload = User::factory()->raw([
+        'password_confirmation' => 'password',
+    ]);
+
+    $response = $this->actingAs($doctor)->postJson('/api/users', $payload);
+
+    $response->assertForbidden();
+});
+
+
+test('created user password is hashed', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+
+    $payload = User::factory()->raw([
+        'password_confirmation' => 'password',
+    ]);
+    $email = $payload['email'];
+
+    $this->actingAs($admin)->postJson('/api/users', $payload);
+
+    $user = User::where('email', $email)->first();
+
+    expect(Hash::check('password', $user->password))->toBeTrue()
+        ->and($user->password)->not->toBe('password');
+});
