@@ -7,6 +7,7 @@ use App\Http\Requests\Api\UpdateUserRequest;
 use App\Http\Resources\Api\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends ApiController
 {
@@ -102,6 +103,12 @@ class UserController extends ApiController
         $this->authorize('delete', $user);
 
         $user->delete();
+
+        Log::warning('security.user_deactivated', [
+            'by' => auth()->id(),
+            'target' => $user->id,
+            'ip' => request()->ip(),
+        ]);
 
         return $this->noContent();
     }
