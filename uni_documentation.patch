@@ -1,0 +1,939 @@
+Subject: [PATCH] uni documentation
+---
+Index: _docs_uni/sections/06_maintenance_analysis.md
+===================================================================
+diff --git a/_docs_uni/sections/06_maintenance_analysis.md b/_docs_uni/sections/06_maintenance_analysis.md
+new file mode 100644
+--- /dev/null	(date 1774938077550)
++++ b/_docs_uni/sections/06_maintenance_analysis.md	(date 1774938077550)
+@@ -0,0 +1,23 @@
++# 6. MAINTENANCE ANALYSIS
++
++## 6.1. Current State
++
++The NutriBase API is deployed to a managed PaaS provider (Railway or Fly.io), which handles infrastructure provisioning, automatic restarts on failure, and environment variable management. The deployment pipeline runs database migrations automatically on each release, ensuring the schema is always consistent with the deployed code.
++
++Authentication is handled by Laravel Sanctum [1], which issues opaque tokens stored in the `personal_access_tokens` table. Token expiration is configurable via environment variable (`SANCTUM_TOKEN_EXPIRATION`), allowing administrators to enforce session limits without code changes. All API routes require the `auth:sanctum` middleware, so unauthenticated requests are rejected at the routing layer before reaching any controller logic.
++
++Data integrity is preserved through soft deletes on the `users` and `patients` tables. Deactivated users and archived patient records are not physically removed from the database; they are flagged with a `deleted_at` timestamp and excluded from standard queries. This ensures that historical visit records and audit trails remain intact even when accounts are deactivated. Permanent deletion is available to administrators only and requires an explicit force-delete action.
++
++The automated Pest test suite [2] covers all API endpoints, including authentication flows, role-based access control, validation rejection, and soft-delete behaviour. Tests run against an in-memory SQLite database, providing fast, isolated, repeatable verification. The test suite is executed before each deployment to confirm no regression has been introduced.
++
++## 6.2. Future Improvements
++
++**Refresh token support.** The current implementation issues long-lived Sanctum tokens. Introducing short-lived access tokens paired with rotating refresh tokens would reduce the risk of token compromise, particularly in a medical context where data sensitivity is high. This improvement would require updates to the authentication endpoints and the React SPA token storage strategy.
++
++**Redis caching layer.** Patient list and visit history queries are executed against the database on every request. As the patient count grows, these queries will increase in cost. Introducing a Redis caching layer for frequently accessed, rarely changed data — such as paginated patient lists — would reduce database load and improve response times under concurrent usage.
++
++**Microservices decomposition.** The current monolithic Laravel API is appropriate for the MVP scale. As the platform grows to include Groups 4 through 9 (vital signs, medications, lab results, recommendations, reminders, and dashboards), the domain will become complex enough to justify splitting into independently deployable services. A phased migration using the strangler fig pattern would allow gradual decomposition without disrupting existing functionality.
++
++**Extended clinical record (Groups 4–9).** The current MVP captures visits with free-text notes. Future releases should introduce structured clinical data: vital signs (blood pressure, pulse, weight, BMI) per visit, active and discontinued medication lists, laboratory result logs, dietary recommendations with expiry tracking, and automated follow-up reminders. Each adds clinically significant value and brings the platform closer to a complete electronic health record.
++
++**AI-assisted clinical tools.** A rule-based nutritional risk scoring engine could be implemented as a Laravel service class, computing a risk level from existing patient data (BMI, dietary restrictions, food security score). A more advanced direction involves a doctor assistant chatbox powered by a large language model — a retrieval-augmented generation approach using the Laravel AI SDK with Claude as the model, exposing patient data as tool calls and streaming responses to the React frontend via server-sent events. This would allow doctors to query a patient's full history in natural language without leaving the application.
+Index: _docs_uni/sections/01_introduction.md
+===================================================================
+diff --git a/_docs_uni/sections/01_introduction.md b/_docs_uni/sections/01_introduction.md
+new file mode 100644
+--- /dev/null	(date 1774938072843)
++++ b/_docs_uni/sections/01_introduction.md	(date 1774938072843)
+@@ -0,0 +1,7 @@
++# 1. INTRODUCTION
++
++Clinical nutrition management is a discipline that requires accurate, longitudinal records of patient health — covering not only medical data such as blood type, allergies, and visit notes, but also the social determinants of health such as employment status, household income, dietary restrictions, and food security. In practice, many nutrition clinics and general practitioners still rely on paper-based records or generic office software that was not designed for clinical workflows. These tools offer no role-based access control, no structured patient profile, and no mechanism for tracking visit history alongside socioeconomic context. The result is fragmented information, increased risk of data loss, and no clear audit trail of clinical encounters.
++
++The aim of this project is to design and implement NutriBase, a web-based clinical information system that addresses these gaps. NutriBase provides a centralised platform for three types of users: administrators who manage system access and oversee all records, doctors who register and manage patient profiles and document clinical visits, and patients who have read-only access to their own data. The system enforces strict role-based access control so that no user can view or modify data outside their permitted scope, and it captures both clinical and socioeconomic patient data in a structured, queryable form.
++
++The proposed solution follows a decoupled architecture: a stateless RESTful API built with Laravel 12 [1] and secured using Laravel Sanctum [2] token-based authentication forms the backend, while a React TypeScript single-page application [3] provides the user interface. The two layers communicate exclusively over HTTPS using JSON-formatted request and response bodies. This separation of concerns allows the frontend and backend to be developed, tested, and deployed independently. The current implementation covers three feature groups — user and authentication management, patient record management, and visit and encounter tracking — which together constitute the minimum viable product required for clinical use.
+Index: _docs_uni/sections/references.md
+===================================================================
+diff --git a/_docs_uni/sections/references.md b/_docs_uni/sections/references.md
+new file mode 100644
+--- /dev/null	(date 1774938131242)
++++ b/_docs_uni/sections/references.md	(date 1774938131242)
+@@ -0,0 +1,31 @@
++# REFERENCES
++
++[1] Laravel LLC. (2024). *Laravel — The PHP Framework for Web Artisans*. Retrieved March 2026 from https://laravel.com/docs/12.x
++
++[2] Laravel LLC. (2024). *Laravel Sanctum — Lightweight Authentication for SPAs and APIs*. Retrieved March 2026 from https://laravel.com/docs/12.x/sanctum
++
++[3] Meta Open Source. (2024). *React — A JavaScript Library for Building User Interfaces*. Retrieved March 2026 from https://react.dev
++
++[4] Oracle Corporation. (2024). *MySQL 8.0 Reference Manual*. Retrieved March 2026 from https://dev.mysql.com/doc/refman/8.0/en/
++
++[5] Pest Contributors. (2024). *Pest — An Elegant PHP Testing Framework*. Retrieved March 2026 from https://pestphp.com/docs
++
++[6] Laravel LLC. (2024). *Laravel Pint — An Opinionated PHP Code Style Fixer*. Retrieved March 2026 from https://laravel.com/docs/12.x/pint
++
++[7] Larastan Contributors. (2024). *Larastan — PHPStan Extension for Laravel*. Retrieved March 2026 from https://github.com/larastan/larastan
++
++[8] Microsoft Corporation. (2024). *TypeScript — JavaScript with Syntax for Types*. Retrieved March 2026 from https://www.typescriptlang.org/docs/
++
++[9] VoidZero Inc. (2024). *Vite — Next Generation Frontend Tooling*. Retrieved March 2026 from https://vitejs.dev/guide/
++
++[10] Remix Software. (2024). *React Router v6 — Declarative Routing for React*. Retrieved March 2026 from https://reactrouter.com/en/main
++
++[11] TanStack. (2024). *TanStack Query — Powerful Asynchronous State Management for TypeScript/JavaScript*. Retrieved March 2026 from https://tanstack.com/query/latest/docs
++
++[12] shadcn. (2024). *shadcn/ui — Beautifully Designed Components Built with Radix UI and Tailwind CSS*. Retrieved March 2026 from https://ui.shadcn.com/docs
++
++[13] Axios Contributors. (2024). *Axios — Promise Based HTTP Client for the Browser and Node.js*. Retrieved March 2026 from https://axios-http.com/docs/intro
++
++[14] Railway. (2024). *Railway — Infrastructure, Instantly*. Retrieved March 2026 from https://docs.railway.app
++
++[15] Fly.io. (2024). *Fly.io — Deploy App Servers Close to Your Users*. Retrieved March 2026 from https://fly.io/docs/
+Index: _docs_uni/sections/07_conclusion.md
+===================================================================
+diff --git a/_docs_uni/sections/07_conclusion.md b/_docs_uni/sections/07_conclusion.md
+new file mode 100644
+--- /dev/null	(date 1774938096577)
++++ b/_docs_uni/sections/07_conclusion.md	(date 1774938096577)
+@@ -0,0 +1,17 @@
++# 7. CONCLUSION
++
++## 7.1. Future Work
++
++The current NutriBase MVP covers the three core feature groups required for clinical operation: user and authentication management, patient record management, and visit tracking. While this constitutes a functional and deployable system, the clinical domain it targets is considerably broader. The planned post-MVP roadmap extends the platform through eight additional feature groups.
++
++Groups 4 through 6 introduce structured clinical measurements. Group 4 adds vital signs recording per visit — blood pressure, pulse rate, body temperature, weight, height, and computed BMI — with automatic flagging of values outside normal ranges. Group 5 introduces a medication management module, allowing doctors to maintain a list of active and discontinued medications per patient with dosage and frequency. Group 6 enables laboratory result logging, associating lab parameters, measured values, units, and reference ranges with specific visits, and providing a chronological view across the patient's history.
++
++Groups 7 through 9 build clinical support and operational tools on top of the core record. Group 7 introduces dietary and lifestyle recommendations attached to visits, with configurable expiry dates. Group 8 adds a reminder system for scheduled lab tests, follow-up consultations, and check-ups, surfaced as a dashboard widget for clinical staff. Group 9 provides summary dashboards — a clinic-level overview of active patients, upcoming visits, and flagged abnormal values, as well as a patient-level mini-overview widget accessible during a consultation.
++
++Beyond structured data, the platform is designed to support an AI and automation layer. A rule-based nutritional risk scoring engine would derive a risk level from existing patient data. Workflow automation via n8n would handle inactivity alerts and pre-visit briefing generation. The most impactful planned feature is a doctor assistant — a retrieval-augmented generation chatbox using the Laravel AI SDK and Claude as the underlying model, giving doctors the ability to ask natural-language questions about a specific patient's history, with responses streamed back via server-sent events. Voice-to-notes transcription using the Whisper API is also planned, reducing the manual effort of documenting visit observations.
++
++## 7.2. Final Words
++
++The development of NutriBase provided practical exposure to a range of engineering challenges that are difficult to appreciate from academic study alone. Designing a stateless REST API with three-layer authorization — middleware, form requests, and policies — required careful attention to the interaction between Laravel's routing system, its service container, and the Sanctum token lifecycle. The dual-entity patient creation flow, which must atomically create a patient record and an associated socioeconomic profile within a single database transaction, was the most complex implementation task and led to the introduction of the Service Layer pattern as a structural solution.
++
++Coordinating a frontend and backend developed in parallel also required discipline: the API contract had to be stable enough for the React SPA to consume before all endpoints were implemented, which reinforced the value of defining response shapes and error structures upfront. The test-driven development approach, using Pest with an in-memory SQLite database, provided fast feedback cycles and caught several authorization edge cases — including cross-patient data access — that would have been difficult to detect through manual testing. The result is a system that is not only functional but verifiably correct with respect to its security requirements, and one that is structured to support the extended clinical feature set planned for future releases.
+Index: _docs_uni/sections/03_application_design.md
+===================================================================
+diff --git a/_docs_uni/sections/03_application_design.md b/_docs_uni/sections/03_application_design.md
+new file mode 100644
+--- /dev/null	(date 1774938173229)
++++ b/_docs_uni/sections/03_application_design.md	(date 1774938173229)
+@@ -0,0 +1,71 @@
++# 3. APPLICATION DESIGN
++
++This chapter presents the structural and behavioural models of the NutriBase system through UML diagrams. The diagrams cover the use case model, key activity flows, the domain class structure, and the sequence of interactions between system components for the primary API operations.
++
++## 3.1. Use Case Diagram
++
++The NutriBase system has three primary actors: **Admin**, **Doctor (Doktor)**, and **Patient (Pacijent)**. The Admin actor has the broadest access, managing user accounts, patient records, and visit data. The Doctor actor manages patient records and owns visit records they create. The Patient actor has read-only access restricted to their own profile and visit history. Figure 3.1 illustrates the complete use case model for the MVP scope.
++
++[INSERT FIGURE 3.1 — render from _docs_uni/diagrams/sd-mvp/use-case/system.mmd]
++
++*Figure 3.1. Use Case Diagram — NutriBase MVP*
++
++## 3.2. Activity Diagrams
++
++### 3.2.1. User Login
++
++Figure 3.2.1 illustrates the steps of the user login flow, from the moment the user submits their credentials through to the issuance of an authentication token or the return of a validation error. The flow covers both the happy path and the credential failure case.
++
++[INSERT FIGURE 3.2.1 — render from _docs_uni/diagrams/activity/login.mmd]
++
++*Figure 3.2.1. Activity Diagram — User Login*
++
++### 3.2.2. Register New Patient
++
++Figure 3.2.2 illustrates the steps of the patient registration flow, from form submission by an admin or doctor through to the atomic creation of both the patient record and the associated socioeconomic profile, or the return of validation errors if the input is invalid.
++
++[INSERT FIGURE 3.2.2 — render from _docs_uni/diagrams/activity/create-patient.mmd]
++
++*Figure 3.2.2. Activity Diagram — Register New Patient*
++
++### 3.2.3. Create Visit Record
++
++Figure 3.2.3 illustrates the steps of the visit creation flow, from a doctor submitting visit details for a specific patient through to the persisted visit record being returned as a JSON response, or the rejection of the request if the authenticated user is not authorised to create visits for that patient.
++
++[INSERT FIGURE 3.2.3 — render from _docs_uni/diagrams/activity/create-visit.mmd]
++
++*Figure 3.2.3. Activity Diagram — Create Visit Record*
++
++## 3.3. Class Diagram
++
++The domain model consists of four entities and their relationships. `User` has a one-to-one relationship with `Patient`; `Patient` has a one-to-one relationship with `PatientSocioeconomic`; and `Patient` has a one-to-many relationship with `Visit`, where each `Visit` also references the `User` (doctor) who created it. Figure 3.3 shows all four model classes with their attributes, key methods, and associations.
++
++[INSERT FIGURE 3.3 — render from _docs_uni/diagrams/class/domain.mmd]
++
++*Figure 3.3. Class Diagram — Domain Model*
++
++## 3.4. Sequence Diagrams
++
++### 3.4.1. API Login
++
++Figure 3.4.1 illustrates the interactions between the React SPA client and the Laravel API server components during the login flow. It shows the request path through the routing layer, the `LoginRequest` form request, the `AuthController`, the `User` model, and the Sanctum token issuance, culminating in the token being returned inside a `UserResource` envelope.
++
++[INSERT FIGURE 3.4.1 — render from _docs_uni/diagrams/sd-mvp/sequence/api-login.mmd]
++
++*Figure 3.4.1. Sequence Diagram — API Login*
++
++### 3.4.2. Create Patient via API
++
++Figure 3.4.2 illustrates the interactions between the client and the API server during patient creation. It shows the request passing through `auth:sanctum` middleware, the `StorePatientRequest` authorization and validation, the `PatientController`, the `PatientService` which atomically creates both the `Patient` and `PatientSocioeconomic` records within a database transaction, and the `PatientResource` that formats the response.
++
++[INSERT FIGURE 3.4.2 — render from _docs_uni/diagrams/sd-mvp/sequence/api-create-patient.mmd]
++
++*Figure 3.4.2. Sequence Diagram — Create Patient via API*
++
++### 3.4.3. Create Visit via API
++
++Figure 3.4.3 illustrates the interactions between the client and the API server during visit creation. It shows the nested route resolution that binds both the parent `Patient` and the `Visit` scope, the `StoreVisitRequest` authorization check that verifies the authenticated user is a doctor, the auto-assignment of `doctor_id` from the authenticated user rather than from the request body, and the `VisitResource` response.
++
++[INSERT FIGURE 3.4.3 — render from _docs_uni/diagrams/sd-mvp/sequence/api-create-visit.mmd]
++
++*Figure 3.4.3. Sequence Diagram — Create Visit via API*
+Index: _docs_uni/sections/04_implementation.md
+===================================================================
+diff --git a/_docs_uni/sections/04_implementation.md b/_docs_uni/sections/04_implementation.md
+new file mode 100644
+--- /dev/null	(date 1774938147788)
++++ b/_docs_uni/sections/04_implementation.md	(date 1774938147788)
+@@ -0,0 +1,43 @@
++# 4. IMPLEMENTATION
++
++## 4.1. Implementation Overview
++
++NutriBase is implemented as a decoupled two-tier system: a stateless RESTful API on the backend and a React TypeScript single-page application on the frontend. The backend is built with Laravel 12 [1] running on PHP 8.4 [2] and uses Laravel Sanctum [3] for token-based authentication. All business logic is encapsulated in a Service Layer, data access is abstracted through the Repository Pattern, and domain events are handled via the Observer Pattern. The frontend is a Vite-bundled [9] React application written in TypeScript [8], using TanStack Query [11] for server state management and shadcn/ui [12] for the component library. The two layers communicate exclusively over HTTPS, exchanging JSON payloads that conform to a consistent envelope structure: `{ "data": {...}, "message": "..." }` for success responses and `{ "message": "...", "errors": {...} }` for validation failures.
++
++## 4.2. Backend Technologies
++
++**PHP 8.4 [2]** is the server-side language underpinning the entire backend. PHP 8.4 introduces constructor property promotion, union types, named arguments, and fibers, which reduce boilerplate in Laravel service and model classes. It was chosen because Laravel 12 requires PHP 8.2 or higher, and 8.4 is the current stable release offering the most complete type system.
++
++**Laravel 12 [1]** is the primary backend framework. It provides the MVC structure, Eloquent ORM, route model binding, form request validation, and policy-based authorization used throughout the application. Laravel's service container and dependency injection system make it straightforward to introduce the Service Layer and Repository patterns without framework friction. Its streamlined bootstrap structure (introduced in Laravel 11) reduces configuration overhead.
++
++**Laravel Sanctum [3]** provides lightweight token-based authentication for the SPA. On login, Sanctum issues an opaque personal access token that the React client stores and attaches as a `Bearer` header on all subsequent requests. Sanctum was chosen over Passport because the application does not require OAuth2 flows — simple token issuance and revocation is sufficient for the clinical SPA use case.
++
++**MySQL [4]** is the relational database. The schema consists of four core tables: `users`, `patients`, `patient_socioeconomic`, and `visits`. Foreign key constraints enforce referential integrity across the one-to-one and one-to-many relationships. SQLite is used in-memory during automated testing to provide fast, isolated test runs without requiring a running database server.
++
++**Pest 4 [5]** is the testing framework. All API behaviour is verified through Pest feature tests that make real HTTP requests against the application using an in-memory SQLite database and the `RefreshDatabase` trait. Tests cover happy paths, validation failures, and all role-based authorization combinations. The `actingAs()` helper is used to authenticate requests as specific users without going through the login endpoint.
++
++**Laravel Pint [6]** enforces PSR-12 code style across all PHP files. It is run with the `--dirty` flag as part of the development workflow to format only files that have changed, keeping the codebase consistent without full-suite overhead.
++
++**Larastan [7]** provides static analysis at level 5 using PHPStan's engine extended with Laravel-specific rules. It detects type mismatches, undefined properties on Eloquent models, and incorrect return types before tests are run, catching a category of bugs that tests alone do not cover.
++
++## 4.3. Frontend Technologies
++
++**React 18 [3]** is the UI library. Its component model allows each page (login, patient list, patient profile, visit history) to be developed and tested independently. React's unidirectional data flow makes it straightforward to reason about which server state drives which UI elements.
++
++**TypeScript [8]** adds static typing to the JavaScript frontend. API response shapes are defined as TypeScript interfaces, ensuring that components reference only fields that the API actually returns. This eliminates an entire class of runtime errors caused by field name mismatches between the frontend and backend contract.
++
++**Vite [9]** is the build tool and development server. It provides near-instant hot module replacement during development and optimised production bundles via Rollup. Vite was chosen over Create React App because of its significantly faster cold start time and native ES module support.
++
++**React Router v6 [10]** handles client-side routing. Routes are defined declaratively with nested layouts, allowing the authenticated shell (navigation bar, sidebar) to wrap all protected pages without duplicating layout code. Route-level guards redirect unauthenticated users to the login page.
++
++**TanStack Query [11]** manages server state: fetching, caching, background refetching, and mutation handling. Each API resource (users, patients, visits) has a dedicated query key, and mutations automatically invalidate the relevant cache entries so that list views refresh immediately after a create or update operation without a full page reload.
++
++**shadcn/ui [12]** provides the component library. Built on Radix UI primitives and Tailwind CSS, it offers accessible, unstyled-by-default components (buttons, forms, dialogs, tables) that can be customised to match the clinical UI requirements. Using shadcn/ui avoids writing low-level accessibility logic (focus trapping, ARIA attributes) from scratch.
++
++**Axios [13]** is the HTTP client. A single Axios instance is configured with the API base URL and a request interceptor that attaches the Sanctum Bearer token from the auth store to every outgoing request. A response interceptor handles 401 responses by clearing the token and redirecting to the login page.
++
++## 4.4. Integrations and Services
++
++**Railway / Fly.io [14, 15]** is the deployment platform for the Laravel API backend. Both are PaaS providers that support PHP and MySQL, handle TLS termination, and allow environment variables to be managed through a web dashboard. The Laravel application is deployed as a containerised service; database migrations run automatically as a release command on each deployment.
++
++**CORS (Laravel configuration).** The React SPA and the Laravel API are hosted on separate origins (different ports in development, different subdomains in production). Laravel's built-in CORS middleware is configured in `config/cors.php` to allow the SPA origin, the required HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`), and the `Authorization` and `Content-Type` headers. In production, the allowed origin is restricted to the specific SPA domain to prevent cross-site request forgery.
+Index: _docs_uni/sections/02_system_analysis.md
+===================================================================
+diff --git a/_docs_uni/sections/02_system_analysis.md b/_docs_uni/sections/02_system_analysis.md
+new file mode 100644
+--- /dev/null	(date 1774938348903)
++++ b/_docs_uni/sections/02_system_analysis.md	(date 1774938348903)
+@@ -0,0 +1,467 @@
++# 2. SYSTEM ANALYSIS
++
++## 2.1. System Overview
++
++### 2.1.1. Product Perspective
++
++NutriBase is a web-based clinical information system designed to support multi-role workflows in nutrition clinics and general practice settings. The system exposes a stateless RESTful API as the backend layer, which is consumed by a React TypeScript single-page application. The API and SPA communicate exclusively over HTTPS using JSON request and response bodies. Authentication is token-based: on login, the server issues an opaque Sanctum token that the client includes as a `Bearer` header on all subsequent requests. The system does not use session cookies, making it suitable for deployment across separate origins.
++
++The platform manages four core entities: user accounts (with role assignments), patient profiles, patient socioeconomic profiles, and visit records. Role-based access control is enforced at three layers — route middleware, form request authorization, and policy classes — ensuring that each user type can only access and modify data within their permitted scope.
++
++### 2.1.2. Target Audience
++
++- **Admin** — The system administrator. Admins have full access to all resources: they create, edit, deactivate, restore, and permanently delete user accounts; they manage all patient records including soft-delete and restore operations; and they can delete visit records. Admins benefit from a centralised control point for system access and data governance.
++
++- **Doctor (Doktor)** — Clinical staff responsible for patient care. Doctors can register and manage patient profiles, view all active patients, and create visit records documenting their clinical encounters. They can edit only the visit records they personally created. Doctors benefit from a structured, searchable patient record that includes socioeconomic context alongside clinical data.
++
++- **Patient (Pacijent)** — The end user receiving care. Patients have read-only access restricted to their own profile and their own visit history. They cannot view other patients' records, cannot create or modify any data, and cannot access user management functions. Patients benefit from transparent access to their own medical information.
++
++### 2.1.3. Project Constraints and Risks
++
++**Timeline constraint.** The project is structured around three university milestones: M1 (April 5 2026, documentation only), M2 (May 3 2026, Release 1: auth and patient management), and M3 (June 7 2026, Release 2: visits, patterns, tests, deployment). The interval between M2 and M3 is five weeks, during which the visit API, design patterns, test coverage, and deployment must all be completed. A delay in M2 delivery directly compresses the time available for M3.
++
++**Team coordination risk.** The project is developed by a team of two, with backend (Laravel API) and frontend (React SPA) work proceeding in parallel. A divergence in the agreed API contract — response shapes, field names, HTTP status codes — between the two tracks would require rework on both sides. This risk is mitigated by defining the response envelope structure and endpoint contracts before implementation begins.
++
++**Dual-entity creation complexity.** Registering a new patient requires atomically creating both a `Patient` record and an associated `PatientSocioeconomic` record in a single database transaction. If either insert fails, both must be rolled back. This is the most complex data flow in the system and introduces the risk of partial data corruption if not handled correctly.
++
++**CORS configuration risk.** The React SPA and the Laravel API are deployed to separate origins. Misconfigured CORS headers — particularly the allowed origin, allowed headers, or preflight response — would silently block all API requests from the frontend without obvious error messages in the application UI.
++
++**Cross-patient data leakage.** If the patient policy is not correctly enforced, an authenticated patient could request another patient's profile or visit records by guessing their ID. This is a critical security risk in a medical context. It is mitigated by explicit policy checks in every controller action that touches patient-scoped data, and by explicit test cases that verify 403 responses for cross-patient access attempts.
++
++### 2.1.4. Success Criteria
++
++The following measurable criteria define a successful delivery:
++
++- All 19 API endpoints (`/api/login`, `/api/logout`, `/api/user`, 7 user endpoints, 7 patient endpoints, and 3 visit endpoints) return the correct HTTP status codes for all role combinations.
++- Three-layer authorization is in place for every protected endpoint: `auth:sanctum` middleware, `authorize()` in the form request, and a named policy method.
++- Unauthenticated requests to protected endpoints return HTTP 401. Requests from unauthorized roles return HTTP 403. Patients attempting to access other patients' records return HTTP 403.
++- A minimum of 5 Pest HTTP feature tests pass, covering authentication, role-gated access, and at least one validation failure case.
++- The application is accessible at a publicly reachable URL on Railway or Fly.io.
++- The React SPA renders the login page, patient list, patient profile, and visit history without JavaScript errors.
++
++---
++
++## 2.2. Requirements Analysis
++
++### 2.2.1. Functional Requirements
++
++---
++
++**1. Admin Login**
++As an **admin**, I want to log in with my email and password so that I can access the management dashboard.
++
++**Acceptance Criteria:**
++1. The user navigates to the login page of the React SPA.
++2. The user enters a valid admin email address and password and submits the form.
++3. The SPA sends a `POST /api/login` request with `{ "email": "...", "password": "..." }`.
++4. The server validates the credentials against the `users` table and confirms the role is `admin`.
++5. The server returns HTTP 200 with a JSON body containing the Sanctum token and user details wrapped in the API envelope.
++6. The SPA stores the token in the auth store and redirects the user to the admin dashboard.
++7. If the email does not exist, the server returns HTTP 422 with a validation error message.
++8. If the password is incorrect, the server returns HTTP 422 with a credential mismatch error.
++9. If the user submits the form with an empty email or password field, the server returns HTTP 422 with field-level validation errors.
++10. After three consecutive failed attempts within one minute, the login endpoint returns HTTP 429 (Too Many Requests).
++
++---
++
++**2. Doctor Login**
++As a **doctor**, I want to log in to the system so that I can manage my assigned patients and visits.
++
++**Acceptance Criteria:**
++1. The user navigates to the login page.
++2. The user enters a valid doctor email and password and submits the form.
++3. The SPA sends `POST /api/login` with valid credentials.
++4. The server confirms the credentials and the role is `doktor`.
++5. The server returns HTTP 200 with a token and user object.
++6. The SPA stores the token and redirects to the doctor's patient list view.
++7. If the credentials belong to an `admin` or `pacijent` account, the login still succeeds — role enforcement happens at the resource level, not at login.
++8. If credentials are invalid, the server returns HTTP 422.
++
++---
++
++**3. Patient Login**
++As a **patient**, I want to log in to the system so that I can view my own medical records.
++
++**Acceptance Criteria:**
++1. The user navigates to the login page.
++2. The user enters valid patient credentials and submits.
++3. The SPA sends `POST /api/login`.
++4. The server returns HTTP 200 with token and user object.
++5. The SPA redirects to the patient's own profile page.
++6. The patient cannot navigate to the user list, patient list, or any other patient's profile — these routes are guarded in the SPA and return HTTP 403 from the API.
++7. Invalid credentials return HTTP 422.
++
++---
++
++**4. Admin Creates User Account**
++As an **admin**, I want to create new user accounts and assign them a role so that staff and patients can access the system.
++
++**Acceptance Criteria:**
++1. The authenticated admin sends `POST /api/users` with `{ "name": "...", "email": "...", "password": "...", "role": "doktor" }`.
++2. The request passes the `auth:sanctum` middleware and the `StoreUserRequest` authorization check, which confirms the authenticated user is an admin.
++3. The server validates that `email` is unique, `role` is one of `admin`, `doktor`, `pacijent`, and `password` meets the minimum length requirement.
++4. The server creates the user record and returns HTTP 201 with the new user wrapped in `UserResource`.
++5. If the email is already taken, the server returns HTTP 422 with `errors.email`.
++6. If the role value is not one of the allowed strings, the server returns HTTP 422 with `errors.role`.
++7. If required fields are missing, the server returns HTTP 422 with field-level errors.
++8. If the request is made by a doctor or patient, the server returns HTTP 403.
++9. If the request is unauthenticated, the server returns HTTP 401.
++
++---
++
++**5. Admin Views User List**
++As an **admin**, I want to view a list of all registered users so that I can manage system access.
++
++**Acceptance Criteria:**
++1. The authenticated admin sends `GET /api/users`.
++2. The request passes the `auth:sanctum` middleware and the `UserPolicy::viewAny()` check.
++3. The server returns HTTP 200 with a paginated list of users (15 per page), each serialised through `UserResource`.
++4. Soft-deleted users are excluded from the response by default.
++5. The response includes pagination metadata: current page, total count, last page, and links.
++6. If the request is made by a doctor or patient, the server returns HTTP 403.
++7. If the request is unauthenticated, the server returns HTTP 401.
++
++---
++
++**6. Admin Edits User Profile**
++As an **admin**, I want to edit a user's profile information so that records stay up to date.
++
++**Acceptance Criteria:**
++1. The authenticated admin sends `PUT /api/users/{id}` with the fields to update.
++2. The request passes `auth:sanctum` middleware and `UpdateUserRequest` authorization.
++3. The server applies only the provided fields (partial update supported).
++4. The server returns HTTP 200 with the updated user through `UserResource`.
++5. If the new email is already taken by another user, the server returns HTTP 422 with `errors.email`.
++6. If `{id}` does not correspond to an existing, non-deleted user, the server returns HTTP 404.
++7. If the request is made by a doctor or patient, the server returns HTTP 403.
++8. If the request is unauthenticated, the server returns HTTP 401.
++
++---
++
++**7. Admin Deactivates User Account**
++As an **admin**, I want to deactivate (soft-delete) a user account so that access is revoked without losing historical data.
++
++**Acceptance Criteria:**
++1. The authenticated admin sends `DELETE /api/users/{id}`.
++2. The request passes `auth:sanctum` middleware and `UserPolicy::delete()`.
++3. The server sets `deleted_at` on the user record (soft delete) and revokes all Sanctum tokens for that user.
++4. The server returns HTTP 204 with no response body.
++5. Subsequent requests authenticated with the deactivated user's token return HTTP 401.
++6. The user record remains in the database and can be restored.
++7. If `{id}` does not correspond to an active user, the server returns HTTP 404.
++8. If the request is made by a non-admin, the server returns HTTP 403.
++
++---
++
++**8. Admin Restores Soft-Deleted User**
++As an **admin**, I want to restore a soft-deleted user account so that access can be reinstated when needed.
++
++**Acceptance Criteria:**
++1. The authenticated admin sends `POST /api/users/{id}/restore`.
++2. The request passes `auth:sanctum` middleware and `UserPolicy::restore()`.
++3. The server clears `deleted_at` on the user record.
++4. The server returns HTTP 200 with the restored user through `UserResource`.
++5. The restored user can log in and receive a new Sanctum token.
++6. If `{id}` does not correspond to a soft-deleted user, the server returns HTTP 404.
++7. If the request is made by a non-admin, the server returns HTTP 403.
++
++---
++
++**9. Admin Permanently Deletes User**
++As an **admin**, I want to permanently delete a user account so that their data is fully removed from the system.
++
++**Acceptance Criteria:**
++1. The authenticated admin sends `DELETE /api/users/{id}/force`.
++2. The request passes `auth:sanctum` middleware and `UserPolicy::forceDelete()`.
++3. The server permanently removes the user record and all associated Sanctum tokens from the database.
++4. The server returns HTTP 204.
++5. Any subsequent request to `GET /api/users/{id}` returns HTTP 404.
++6. This action is irreversible — no restore endpoint exists for force-deleted records.
++7. If `{id}` does not exist (including soft-deleted), the server returns HTTP 404.
++8. If the request is made by a non-admin, the server returns HTTP 403.
++
++---
++
++**10. Authenticated User Updates Own Profile**
++As any **authenticated user**, I want to update my own profile information so that my account details are current.
++
++**Acceptance Criteria:**
++1. Any authenticated user sends `PUT /api/users/{id}` where `{id}` matches their own user ID.
++2. The `UpdateUserRequest` authorization confirms that `$request->user()->id === $user->id` or the requester is an admin.
++3. The server applies the update and returns HTTP 200 with the updated user through `UserResource`.
++4. The user cannot change their own role — the `role` field is ignored if present in the request body.
++5. If the user attempts to update another user's profile without admin role, the server returns HTTP 403.
++6. If the new email is already taken, the server returns HTTP 422.
++7. If the request is unauthenticated, the server returns HTTP 401.
++
++---
++
++**11. Register New Patient — Personal Details**
++As an **admin or doctor**, I want to register a new patient with their personal details so that they become part of the system.
++
++**Acceptance Criteria:**
++1. The authenticated admin or doctor sends `POST /api/patients` with personal fields: `first_name`, `last_name`, `date_of_birth`, `gender`, `phone`, `address`.
++2. The request passes `auth:sanctum` middleware and `StorePatientRequest` authorization, which confirms the role is `admin` or `doktor`.
++3. The `PatientService` wraps the creation in a database transaction: it creates a `User` account for the patient (role `pacijent`), a `Patient` record, and a blank `PatientSocioeconomic` record atomically.
++4. The server returns HTTP 201 with the new patient through `PatientResource`, including the nested user and socioeconomic data.
++5. If required personal fields are missing, the server returns HTTP 422 with field-level errors.
++6. If the patient's email (used for the linked user account) is already taken, the server returns HTTP 422.
++7. If a patient role user sends the request, the server returns HTTP 403.
++8. If the transaction fails partway through, all created records are rolled back and the server returns HTTP 500.
++
++---
++
++**12. Register New Patient — Medical Metadata**
++As an **admin or doctor**, I want to enter a patient's medical metadata during registration so that clinically relevant information is captured upfront.
++
++**Acceptance Criteria:**
++1. The `POST /api/patients` request body may include optional medical fields: `blood_type`, `allergies`, `medical_notes`.
++2. If provided, these fields are validated and stored on the `patients` table.
++3. `blood_type` must be one of the valid values (A+, A-, B+, B-, AB+, AB-, O+, O-) or null.
++4. `allergies` is stored as free text; no format validation is applied.
++5. `medical_notes` is stored as free text; maximum length is enforced.
++6. If `blood_type` contains an invalid value, the server returns HTTP 422 with `errors.blood_type`.
++7. The fields are returned in the `PatientResource` response under the `attributes` object.
++8. Medical metadata can be updated independently via the patient update endpoint after initial registration.
++
++---
++
++**13. Admin or Doctor Views Patient List**
++As an **admin or doctor**, I want to view the full list of all active patients so that I can quickly find and access any patient record.
++
++**Acceptance Criteria:**
++1. The authenticated admin or doctor sends `GET /api/patients`.
++2. The request passes `auth:sanctum` middleware and `PatientPolicy::viewAny()`.
++3. The server returns HTTP 200 with a paginated list of active (non-deleted) patients, each serialised through `PatientResource`.
++4. Each item includes the patient's full name, date of birth, and primary contact number.
++5. The response includes pagination metadata.
++6. Soft-deleted patients are excluded from the list.
++7. If a patient role user sends the request, the server returns HTTP 403.
++8. If the request is unauthenticated, the server returns HTTP 401.
++
++---
++
++**14. Admin or Doctor Views Full Patient Profile**
++As an **admin or doctor**, I want to view the full profile of a specific patient, including their personal, medical, and socioeconomic data.
++
++**Acceptance Criteria:**
++1. The authenticated admin or doctor sends `GET /api/patients/{id}`.
++2. The request passes `auth:sanctum` middleware and `PatientPolicy::view()`.
++3. The server eager-loads the patient's user account and socioeconomic profile to prevent N+1 queries.
++4. The server returns HTTP 200 with the full patient through `PatientResource`, including nested `user`, `socioeconomic`, and computed `fullName` fields.
++5. If `{id}` does not correspond to an active patient, the server returns HTTP 404.
++6. If a patient role user sends the request for a different patient's profile, the server returns HTTP 403.
++7. If the request is unauthenticated, the server returns HTTP 401.
++
++---
++
++**15. Patient Views Own Profile**
++As a **patient**, I want to view my own profile and medical information so that I am informed about my records.
++
++**Acceptance Criteria:**
++1. The authenticated patient sends `GET /api/patients/{id}` where `{id}` is their own patient ID.
++2. `PatientPolicy::view()` confirms that `$user->patient->id === $patient->id`.
++3. The server returns HTTP 200 with the patient's own full profile.
++4. If the patient attempts `GET /api/patients/{id}` for a different patient's ID, the server returns HTTP 403.
++5. The patient cannot see other patients in the patient list — `GET /api/patients` returns HTTP 403 for patient role users.
++6. If the request is unauthenticated, the server returns HTTP 401.
++
++---
++
++**16. Admin or Doctor Updates Patient Personal and Contact Information**
++As an **admin or doctor**, I want to update a patient's personal and contact information so that records remain accurate.
++
++**Acceptance Criteria:**
++1. The authenticated admin or doctor sends `PUT /api/patients/{id}` with personal fields to update.
++2. The request passes `auth:sanctum` middleware and `UpdatePatientRequest` authorization.
++3. The `PatientService` applies the update to the `patients` table, supporting partial updates.
++4. The server returns HTTP 200 with the updated patient through `PatientResource`.
++5. If `{id}` does not exist, the server returns HTTP 404.
++6. If a field fails validation (e.g., invalid date format for `date_of_birth`), the server returns HTTP 422.
++7. If a patient role user sends the request, the server returns HTTP 403.
++
++---
++
++**17. Admin or Doctor Updates Medical Metadata**
++As an **admin or doctor**, I want to update a patient's medical metadata so that the clinical record reflects the current state.
++
++**Acceptance Criteria:**
++1. The authenticated admin or doctor sends `PUT /api/patients/{id}` including medical metadata fields: `blood_type`, `allergies`, `medical_notes`.
++2. The request is handled by the same update endpoint as personal data — the `PatientService` separates fields by their target table.
++3. Only provided fields are updated; omitted fields retain their current values.
++4. `blood_type` is validated against the allowed enumeration if provided.
++5. The server returns HTTP 200 with the updated patient resource.
++6. If `blood_type` is invalid, the server returns HTTP 422 with `errors.blood_type`.
++7. If a patient role user sends the request, the server returns HTTP 403.
++
++---
++
++**18. Admin or Doctor Views and Updates Socioeconomic Profile**
++As an **admin or doctor**, I want to view and update a patient's socioeconomic profile so that the care plan accounts for social determinants.
++
++**Acceptance Criteria:**
++1. The socioeconomic data is included in the `PatientResource` response under a `socioeconomic` key whenever `GET /api/patients/{id}` is called.
++2. The authenticated admin or doctor sends `PUT /api/patients/{id}` with socioeconomic fields: `marital_status`, `employment_status`, `monthly_income`, `health_insurance`, `smoking_status`, `alcohol_use`, `food_security_score`, `dietary_restrictions`.
++3. The `PatientService` routes these fields to the `patient_socioeconomic` table, creating the record if it does not yet exist.
++4. The server returns HTTP 200 with the updated patient resource including the updated socioeconomic data.
++5. Enum fields (`marital_status`, `employment_status`, `health_insurance`, `smoking_status`) are validated against their allowed value sets.
++6. If a field fails validation, the server returns HTTP 422 with field-level errors.
++7. If a patient role user sends the request, the server returns HTTP 403.
++
++---
++
++**19. Admin Soft-Deletes Patient Record**
++As an **admin**, I want to soft-delete a patient record so that it is removed from the active list without losing data.
++
++**Acceptance Criteria:**
++1. The authenticated admin sends `DELETE /api/patients/{id}`.
++2. The request passes `auth:sanctum` middleware and `PatientPolicy::delete()`, which requires the admin role.
++3. The server sets `deleted_at` on the `patients` record.
++4. The server returns HTTP 204.
++5. The patient no longer appears in `GET /api/patients` responses.
++6. Direct access via `GET /api/patients/{id}` returns HTTP 404 for the soft-deleted record.
++7. The patient's visit history and associated data remain in the database.
++8. If a doctor or patient role user sends the request, the server returns HTTP 403.
++
++---
++
++**20. Admin Restores Soft-Deleted Patient**
++As an **admin**, I want to restore a soft-deleted patient record so that the patient can be reactivated.
++
++**Acceptance Criteria:**
++1. The authenticated admin sends `POST /api/patients/{id}/restore`.
++2. The request passes `auth:sanctum` middleware and `PatientPolicy::restore()`.
++3. The server clears `deleted_at` on the patient record.
++4. The server returns HTTP 200 with the restored patient through `PatientResource`.
++5. The patient reappears in `GET /api/patients` responses.
++6. If `{id}` does not correspond to a soft-deleted patient, the server returns HTTP 404.
++7. If a doctor or patient role user sends the request, the server returns HTTP 403.
++
++---
++
++**21. Admin or Doctor Searches Patients by Name**
++As an **admin or doctor**, I want to search or filter patients by name so that I can quickly locate specific records in a large list.
++
++**Acceptance Criteria:**
++1. The authenticated admin or doctor sends `GET /api/patients?search=smith`.
++2. The server applies a case-insensitive `LIKE` filter on the `first_name` and `last_name` columns.
++3. The server returns HTTP 200 with the filtered, paginated list of matching patients.
++4. If no patients match the search term, the server returns HTTP 200 with an empty `data` array.
++5. The search parameter is optional — omitting it returns all active patients.
++6. The search term is sanitised to prevent SQL injection.
++7. If a patient role user sends the request, the server returns HTTP 403.
++
++---
++
++**22. Doctor Creates Visit Record**
++As a **doctor**, I want to create a new visit record for a patient so that each encounter is documented.
++
++**Acceptance Criteria:**
++1. The authenticated doctor sends `POST /api/patients/{patient}/visits` with `{ "date": "2026-03-15", "notes": "..." }`.
++2. The request passes `auth:sanctum` middleware and `StoreVisitRequest` authorization, which confirms the role is `doktor`.
++3. The server auto-assigns `doctor_id` from the authenticated user — this field is never accepted from the request body.
++4. The server creates the visit and returns HTTP 201 with the new visit through `VisitResource`.
++5. If `{patient}` does not correspond to an active patient, the server returns HTTP 404.
++6. If `date` is missing or not a valid date format, the server returns HTTP 422.
++7. If `notes` exceeds the maximum length, the server returns HTTP 422.
++8. If an admin or patient role user sends the request, the server returns HTTP 403.
++
++---
++
++**23. Admin or Doctor Views Patient Visit History**
++As an **admin or doctor**, I want to view the full visit history for a specific patient so that I have a chronological overview of their encounters.
++
++**Acceptance Criteria:**
++1. The authenticated admin or doctor sends `GET /api/patients/{patient}/visits`.
++2. The request passes `auth:sanctum` middleware and `VisitPolicy::viewAny()`.
++3. The server returns HTTP 200 with the list of visits ordered by `date` descending (newest first).
++4. Each visit item includes the visit date, the attending doctor's name, and a summary of the notes.
++5. If `{patient}` does not correspond to an active patient, the server returns HTTP 404.
++6. If a patient role user sends the request for a different patient's history, the server returns HTTP 403.
++7. If the request is unauthenticated, the server returns HTTP 401.
++
++---
++
++**24. Doctor Views Visit Details**
++As a **doctor**, I want to view the details of a specific visit so that I can review what was recorded.
++
++**Acceptance Criteria:**
++1. The authenticated doctor sends `GET /api/patients/{patient}/visits/{visit}`.
++2. The server confirms that the `visit.patient_id` matches `{patient}` — a visit cannot be accessed via a mismatched patient route.
++3. The server returns HTTP 200 with the full visit through `VisitResource`, including date, notes, and doctor details.
++4. If `{visit}` does not belong to `{patient}`, the server returns HTTP 404.
++5. If `{patient}` does not exist, the server returns HTTP 404.
++6. A patient role user can access `GET /api/patients/{patient}/visits/{visit}` for their own patient ID — `VisitPolicy::view()` allows this.
++7. A patient role user attempting to access a visit belonging to a different patient returns HTTP 403.
++8. If the request is unauthenticated, the server returns HTTP 401.
++
++---
++
++**25. Doctor Edits Visit Notes**
++As a **doctor**, I want to edit the notes of a visit I conducted so that I can correct or supplement the documentation.
++
++**Acceptance Criteria:**
++1. The authenticated doctor sends `PUT /api/patients/{patient}/visits/{visit}` with `{ "notes": "..." }` or `{ "date": "..." }` or both.
++2. `VisitPolicy::update()` confirms that `$visit->doctor_id === $user->id` — doctors can only edit visits they created.
++3. The server applies the update and returns HTTP 200 with the updated visit through `VisitResource`.
++4. `doctor_id` cannot be changed via this endpoint — it is ignored if present in the request body.
++5. If the authenticated doctor did not create this visit, the server returns HTTP 403.
++6. If `{visit}` does not belong to `{patient}`, the server returns HTTP 404.
++7. If `date` is provided but is not a valid date format, the server returns HTTP 422.
++8. Admin role users can update any visit regardless of `doctor_id`.
++
++---
++
++**26. Admin Deletes Visit Record**
++As an **admin**, I want to delete a visit record so that erroneous entries can be removed.
++
++**Acceptance Criteria:**
++1. The authenticated admin sends `DELETE /api/patients/{patient}/visits/{visit}`.
++2. `VisitPolicy::delete()` confirms the role is `admin`.
++3. The server permanently deletes the visit record (hard delete — no soft delete on visits).
++4. The server returns HTTP 204.
++5. Subsequent requests to `GET /api/patients/{patient}/visits/{visit}` return HTTP 404.
++6. The deletion does not affect the patient record or other visit records.
++7. If `{visit}` does not belong to `{patient}`, the server returns HTTP 404.
++8. If a doctor or patient role user sends the request, the server returns HTTP 403.
++
++---
++
++**27. Patient Views Own Visit History**
++As a **patient**, I want to view my own visit history (read-only) so that I can see when and why I attended the clinic.
++
++**Acceptance Criteria:**
++1. The authenticated patient sends `GET /api/patients/{patient}/visits` where `{patient}` is their own patient ID.
++2. `VisitPolicy::viewAny()` confirms that `$user->patient->id === $patient->id`.
++3. The server returns HTTP 200 with the patient's own visit history, ordered by date descending.
++4. If the patient sends the request using a different patient's ID, the server returns HTTP 403.
++5. The patient cannot create, update, or delete any visit records — those endpoints return HTTP 403.
++6. If the request is unauthenticated, the server returns HTTP 401.
++
++---
++
++### 2.2.2. Non-Functional Requirements
++
++**Security**
++- All API routes are protected by the `auth:sanctum` middleware, ensuring unauthenticated requests are rejected at the routing layer with HTTP 401 before reaching any application logic.
++- Authorization is enforced at three independent layers: route middleware, `authorize()` in form request classes, and dedicated policy methods. A failure at any layer returns HTTP 403.
++- Cross-patient data access is a critical security violation. `PatientPolicy` and `VisitPolicy` explicitly verify that patient role users can only access records associated with their own user ID. Test cases explicitly cover these cross-access scenarios.
++- All communication between the SPA and the API occurs over HTTPS in production. HTTP requests are redirected to HTTPS at the infrastructure level.
++
++**Performance**
++- API responses for single-resource endpoints (show, store, update) should complete in under 500ms under normal load.
++- List endpoints (index) use Laravel's built-in pagination with a default page size of 15 records to limit response payload size and database query cost.
++- Eloquent eager loading (`with()`) is applied on all endpoints that return nested relationships (e.g., `PatientResource` includes the user and socioeconomic records). This prevents N+1 query patterns that would degrade performance as the patient count grows.
++
++**Usability**
++- The React SPA presents a consistent navigation structure with role-appropriate menu items — patients see only their own profile and visit history, while admins and doctors see the full management interface.
++- Validation errors from the API are surfaced to the user as inline form field errors, not generic alert messages.
++- All form submissions provide visual feedback (loading state on the submit button) while the API request is in progress.
++
++**Scalability**
++- The Laravel API is stateless — no server-side session is maintained between requests. All state is carried in the Sanctum token. This allows multiple API instances to be run behind a load balancer without session affinity requirements.
++- The database schema uses indexed foreign keys (`user_id` on `patients`, `patient_id` and `doctor_id` on `visits`) to maintain query performance as record counts grow.
++
++**Compliance**
++- Patient data — including medical metadata (blood type, allergies) and socioeconomic data (income, employment, health insurance status) — is sensitive personal health information. Access is restricted by role and record ownership as described in the authorization model. No patient data is exposed in error messages or logs.
++- The system enforces the principle of least privilege: each role has access only to the minimum set of resources required to perform their clinical function.
+Index: _docs_uni/well-done-template-instructions.md
+===================================================================
+diff --git a/_docs_uni/well-done-template-instructions.md b/_docs_uni/well-done-template-instructions.md
+new file mode 100644
+--- /dev/null	(date 1774934958253)
++++ b/_docs_uni/well-done-template-instructions.md	(date 1774934958253)
+@@ -0,0 +1,222 @@
++# Instructions: What a Well-Done Senior Design Project Template Looks Like
++
++Based on analysis of the official IBU template and the Fitness Tracker example project.
++
++---
++
++## Front Matter
++
++### Cover Page
++- University, faculty, department
++- Full project title (all caps)
++- Student full name
++- Mentor name with academic title
++- City and month/year
++
++### Approval Page
++- Filled table: student name, faculty, department, project title, date of defense
++- Head of Department signature line (Assoc. Prof. Dr. Dino Kečo)
++- Mentor signature line with name and title
++- Examining Committee table: 3 members with Title/Name, Affiliation, Signature columns
++
++### Abstract
++- Must follow the 3-part structure: **problem statement → methods/procedures → results and conclusion**
++- One coherent paragraph, **max 350 words**
++- No references, diagrams, or footnotes
++- End with **Keywords:** (3–5 relevant terms)
++- Example of good abstract opening: *"The objective of this project is to develop [X] that is designed to [purpose]. The problem addressed is [specific gap]..."*
++
++### Acknowledgments
++- Thank mentor by name and title
++- Thank colleagues, staff, family
++- Keep personal and sincere
++
++### Declaration
++- Standard declaration text with **bold project title**
++- Student signature line + date
++
++### Table of Contents
++- Must include **all sections and subsections** that appear in the document
++- Use numbered heading format: `2.1.`, `2.1.1.`, etc.
++- Bold chapter-level headings
++
++### List of Tables / Table of Figures
++- Each entry: `Figure X.Y. Caption text ... page_number`
++- Numbering format: chapter number dot figure number (e.g., Figure 3.4.1.)
++
++### List of Abbreviations
++- All abbreviations used in the document, bolded, aligned
++
++---
++
++## Chapter 1 — Introduction
++
++- State the **problem** being solved
++- Explain **why** the problem matters (context, current gaps)
++- State the **aim/objective** of the project
++- Brief mention of the proposed solution
++- 1–2 paragraphs minimum; should not describe implementation details
++
++---
++
++## Chapter 2 — System Analysis
++
++### 2.1. System Overview
++Required subsections:
++- **2.1.1. Product Perspective** — what the system does at a high level
++- **2.1.2. Target Audience** — list each user group with a bullet + explanation of their benefit
++- **2.1.3. Project Constraints and Risks** — at least one concrete risk with explanation
++- **2.1.4. Success Criteria** — measurable indicators of success
++
++### 2.2. Requirements Analysis
++
++#### 2.2.1. Functional Requirements
++Each requirement must follow this format:
++
++```
++**N. Requirement Name**
++As a [role], I want to [action] so I can [benefit].
++
++**Acceptance Criteria:**
++1. Step-by-step description of the flow
++2. Include both happy path and error/invalid input cases
++3. Typically 5–10 numbered steps per requirement
++```
++
++- Role options: `user`, `registered user`, `logged in user`, `admin`
++- Number sequentially — **do not reuse numbers**
++- Cover all major features of the application (typically 10–20 requirements)
++- Include both user-facing and admin requirements
++
++#### 2.2.2. Non-Functional Requirements
++Group by category, each as a bold heading with 1–2 bullet points:
++- **Security** — authentication, authorization, data protection
++- **Usability** — UI intuitiveness, learnability
++- **Scalability** — user load targets, infrastructure
++- **Compliance** — relevant regulations
++- Add others as relevant (Performance, Reliability, etc.)
++
++---
++
++## Chapter 3 — Application Design
++
++Introduce the chapter briefly (1 sentence is enough).
++
++### 3.1. Use Case Diagram
++- List the primary actors before showing the diagram
++- Figure caption below the diagram: *Figure 3.1. Use Case Diagram*
++
++### 3.2. Activity Diagrams
++- One activity diagram **per major user flow/functional requirement**
++- Before each diagram, write 1–2 sentences describing what the diagram illustrates:
++  > *"Figure 3.2.X. illustrates the steps of [action], from [start] to [end]."*
++- Match diagram count to the number of key flows (aim for coverage of all major features)
++
++### 3.3. Class Diagram
++- 1–2 sentences explaining what the diagram shows and what entities are included
++- Show all major model classes with attributes, methods, and associations
++
++### 3.4. Sequence Diagrams
++- One sequence diagram **per major user flow** (should mirror the activity diagrams)
++- Before each diagram, write 1–2 sentences describing which components interact and what is shown:
++  > *"Figure 3.4.X. illustrates the interactions between [actor] and [system components]. It shows [key process]."*
++
++**Numbering rule:** Figure numbers must match the section. `Figure 3.2.1.` is in section 3.2, `Figure 3.4.5.` is in section 3.4. Do not mislabel (e.g., do not write `3.3.3.` when you mean `3.2.3.`).
++
++---
++
++## Chapter 4 — Implementation
++
++### 4.1. Implementation Overview
++- 1 paragraph summarizing the technology stack and architecture decisions
++
++### 4.2. Backend Technologies
++- For each major technology: explain what it is, why it was chosen, and cite a reference in `[N]` format
++- Example: *"Spring Boot... It is used to create stand-alone Spring-based applications... [1]."*
++- Cover: framework, database, authentication, any real-time/messaging tech
++
++### 4.3. Frontend Technologies
++- Same pattern: technology name, description, purpose, citation
++- Cover: UI framework, language, state management, routing, component library
++
++### 4.4. Integrations and Services
++- External APIs and services used (cloud storage, email, payments, etc.)
++- Explain why each was chosen and what it handles
++
++### 4.5. Results
++- Screenshots of the working application
++- Before each screenshot: 1 sentence describing what the figure shows
++- Cover all major pages/features
++- Figures: `Figure 4.5.N. Page Name`
++
++---
++
++## Chapter 5 — System Testing
++
++- Introductory paragraph: what testing framework was used and why, mention of mocking framework if applicable
++- Include a screenshot of the test run (all passing)
++
++### 5.1. Description of Unit Tests
++Organize by test class. For each class, briefly state what it tests. For each test method:
++
++```
++N. MethodName()
++
++**Purpose:** What the test verifies.
++**Setup:** How the test object/mock is prepared.
++**Verification:** What assertions are made and how.
++```
++
++- Cover all test classes: model, repository, service, controller
++- Explain Mockito mocking where used
++
++---
++
++## Chapter 6 — Maintenance Analysis
++
++Address **both current state and future plans**:
++
++**Current:**
++- How the deployed infrastructure ensures availability (e.g., managed cloud DB)
++- Security mechanisms in place
++- Data storage strategy
++
++**Future:**
++- At least 2–3 concrete future improvements (e.g., microservices, refresh tokens, caching)
++- Explain the motivation for each improvement
++
++---
++
++## Chapter 7 — Conclusion
++
++### 7.1. Future Work
++- List potential enhancements and new features
++- Explain why each would improve the system
++
++### 7.2. Final Words (or Summary)
++- Personal reflection on challenges, what was learned
++- Brief restatement of what was achieved
++
++---
++
++## References
++
++- Use numbered format: `[1]`, `[2]`, etc.
++- Cite inline in the text as `[1]` wherever a technology or fact is referenced
++- Format: `[N] Author/Organization (year). *Title*. Retrieved [date] from [URL]`
++- Every in-text citation must have a corresponding reference entry
++
++---
++
++## Common Mistakes to Avoid
++
++| Mistake | Fix |
++|---|---|
++| Duplicate requirement numbers | Number all functional requirements sequentially |
++| Cross-reference errors (e.g., Figure 3.3.3 instead of 3.2.3) | Double-check figure numbers against their section |
++| Missing diagrams for some features | Ensure activity + sequence diagram coverage matches requirements |
++| Vague acceptance criteria | Each step should describe a specific UI action or system response |
++| Technologies described without citations | Every external technology needs a `[N]` citation |
++| Table of Contents missing subsections | Include all headings down to level 3 |
++| Abstract exceeds 350 words | Trim; keep only problem/methods/results/conclusion |
++| Missing error/invalid-input cases in acceptance criteria | Every flow with user input needs a validation failure path |
