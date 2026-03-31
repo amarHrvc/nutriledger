@@ -620,3 +620,69 @@ test('admin can retrieve soft-deleted user via show', function () {
     $response->assertOk()
         ->assertJsonPath('data.user.attributes.deletedAt', $user->deleted_at->toIso8601String());
 });
+
+// AUTH-26: Permanent Deletion Tests
+test('admin can force-delete active user', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+
+    $response = $this->actingAs($admin)
+        ->deleteJson("/api/users/{$user->id}/force");
+
+    $response->assertNoContent();
+
+    expect(User::find($user->id))->toBeNull();
+});
+
+test('admin can force-delete deactivated user', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+    $user->delete();
+
+    $response = $this->actingAs($admin)
+        ->deleteJson("/api/users/{$user->id}/force");
+
+    $response->assertNoContent();
+
+    expect(User::withTrashed()->find($user->id))->toBeNull();
+});
+
+test('force-deleted user returns 404 on fetch', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+    $user->forceDelete();
+
+    $response = $this->actingAs($admin)
+        ->getJson("/api/users/{$user->id}");
+
+    $response->assertNotFound();
+});
+
+test('force-deleted email can be re-registered', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['email' => 'reusable@example.com']);
+    $user->forceDelete();
+
+    $payload = User::factory()->raw([
+        'email' => 'reusable@example.com',
+        'password_confirmation' => 'password',
+    ]);
+
+    $response = $this->actingAs($admin)
+        ->postJson('/api/users', $payload);
+
+    $response->assertCreated();
+    expect(User::where('email', 'reusable@example.com')->first()->email)->toBe('reusable@example.com');
+});
+
+test('non-admin cannot force-delete user', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+
+    $response = $this->actingAs($doctor)
+        ->deleteJson("/api/users/{$user->id}/force");
+
+    $response->assertForbidden();
+
+    expect(User::find($user->id))->not->toBeNull();
+});

@@ -134,4 +134,24 @@ class UserController extends ApiController
             'user' => new UserResource($user->fresh()),
         ]);
     }
+
+    /**
+     * Permanently delete a resource.
+     */
+    public function forceDelete(string $id): JsonResponse
+    {
+        $user = User::withTrashed()->findOrFail($id);
+
+        $this->authorize('forceDelete', $user);
+
+        $user->forceDelete();
+
+        Log::warning('security.user_permanently_deleted', [
+            'by' => auth()->id(),
+            'target' => $user->id,
+            'ip' => request()->ip(),
+        ]);
+
+        return $this->noContent();
+    }
 }
