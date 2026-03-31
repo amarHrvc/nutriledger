@@ -9,19 +9,15 @@ test('admin can list all users', function () {
     $admin = User::factory()->create(['role' => 'admin']);
     User::factory(3)->create(['role' => 'pacijent']);
 
-    $users = $this->actingAs($admin)
-        ->getJson('/api/users');
-
-    dump($users->json());
-
-    $users
+    $this->actingAs($admin)
+        ->getJson('/api/users')
         ->assertOk()
         ->assertJsonStructure([
             'data' => [
-                'users' => [
-                    '*' => ['type', 'id', 'attributes'],
-                ]
+                '*' => ['type', 'id', 'attributes'],
             ],
+            'meta' => ['current_page', 'last_page', 'per_page', 'total'],
+            'links' => ['first', 'last', 'prev', 'next'],
         ]);
 });
 
@@ -33,16 +29,16 @@ test('list users includes soft-deleted users', function () {
     $response = $this->actingAs($admin)->getJson('/api/users');
 
     $response->assertOk();
-    // Verify soft-deleted user is in list
-    $ids = collect($response->json('data.users'))->pluck('id')->map('intval');
+
+    $ids = collect($response->json('data'))->pluck('id')->map('intval');
 
     expect($ids)->toContain($user->id);
 });
 
 test('non-admin cannot list users', function () {
-    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = User::factory()->create(['role' => 'pacijent']);
 
-    $this->actingAs($doctor)
+    $this->actingAs($patient)
         ->getJson('/api/users')
         ->assertForbidden();
 });
@@ -57,7 +53,7 @@ test('admin can view specific user', function () {
 
     $response = $this->actingAs($admin)
         ->getJson("/api/users/{$user->id}");
-    dump($response->json());
+
     $response
         ->assertOk()
         ->assertJsonStructure([
@@ -79,5 +75,64 @@ test('non-admin cannot view user', function () {
 
     $this->actingAs($doctor)
         ->getJson("/api/users/{$user->id}")
+        ->assertOk();
+});
+
+test('non-admin doctor can see list of all active users, not soft-deleted', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $activeUser = User::factory()->count(20)->create(['role' => 'pacijent']);
+    $deletedUsers = User::factory()->count(10)->create(['role' => 'pacijent']);
+    $deletedUsers->each(fn(User $user) => $user->delete()); // soft delete
+
+    $response = $this->actingAs($doctor)->getJson('/api/users');
+
+    $response->assertOk();
+
+    $ids = collect($response->json('data'))->pluck('id')->map('intval');
+
+    $deletedId = $deletedUsers->pluck('id')->first();
+
+    expect($ids)
+        ->toContain($activeUser->pluck('id')->first())
+        ->and($ids)->not->toContain($deletedId)
+    ;
+
+
+    $response->assertOk()
+        ->assertJsonPath('meta.total', 21); // Only admin exists
+
+});
+
+test('non-admin patient cannot list users', function () {
+    $patient = User::factory()->create(['role' => 'pacijent']);
+
+    $this->actingAs($patient)
+        ->getJson('/api/users')
         ->assertForbidden();
 });
+
+test('users endpoint returns paginated results', function () {
+        $admin = User::factory()->create(['role' => 'admin']);
+        User::factory(20)->create(['role' => 'pacijent']);
+
+        $response = $this->actingAs($admin)->getJson('/api/users');
+
+
+        $response->assertOk()
+            ->assertJsonStructure([
+                'data' =>  ['*' => ['type',
+                    'id', 'attributes']],
+                'meta' => ['current_page', 'per_page', 'total', 'last_page']
+            ]);
+    });
+
+test('empty user list returns 200 with pagination', function () {
+        $admin = User::factory()->create(['role' =>
+            'doktor']);
+
+        $response = $this->actingAs($admin)->getJson('/api/users');
+
+
+        $response->assertOk()
+            ->assertJsonPath('meta.total', 1); // Only admin exists
+    });

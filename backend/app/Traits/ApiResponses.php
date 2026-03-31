@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 trait ApiResponses
 {
@@ -23,6 +24,18 @@ trait ApiResponses
     protected function ok(string $message, ?array $data = null): JsonResponse
     {
         return $this->success($message, 200, $data);
+    }
+
+    protected function paginated(string $message, ResourceCollection $collection): JsonResponse
+    {
+        $payload = $collection->response()->getData(true);
+        return response()->json([
+            'message' => $message,
+            'status'  => 200,
+            'data'    => $payload['data'],
+            'meta'    => $payload['meta'],
+            'links'   => $payload['links'],
+        ], 200);
     }
 
     protected function created(string $message, ?array $data = null): JsonResponse

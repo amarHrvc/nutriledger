@@ -4,22 +4,30 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\Api\UserResource;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class UserController extends ApiController
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        $users = User::withTrashed()->get();
+        $this->authorize('viewAny', User::class);
 
-        return $this->ok('OK', [
-            'users' => UserResource::collection($users),
-        ]);
+        $users = null;
+
+        if (auth()->user()->isAdmin()) {
+            $users = User::withTrashed()->paginate();
+        }
+
+        if (auth()->user()->isDoctor()) {
+            $users = User::query()->paginate();
+        }
+
+
+        return $this->paginated('Users retrieved successfully.', UserResource::collection($users));
     }
 
     /**
