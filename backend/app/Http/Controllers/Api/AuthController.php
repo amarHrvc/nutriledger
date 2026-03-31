@@ -14,15 +14,22 @@ class AuthController extends ApiController
     //
     public function login(LoginRequest $request): JsonResponse
     {
-        if (!auth()->attempt($request->only('email', 'password'))) {
+        if (! auth()->attempt($request->only('email', 'password'))) {
+            // Check if the user exists but is soft-deleted
+            $user = User::withTrashed()->where('email', $request->email)->first();
+            if ($user && $user->trashed()) {
+                return $this->error('Account is deactivated', 401);
+            }
+
             return $this->error('Invalid credentials', 401);
         }
 
         $user = auth()->user();
 
-        // Check if user is deactivated
-        if ($user->deactivated_at) {
+        // Check if user is soft-deleted (should not happen due to auth attempt)
+        if ($user->trashed()) {
             auth()->logout();
+
             return $this->error('Account is deactivated', 401);
         }
 
@@ -40,6 +47,7 @@ class AuthController extends ApiController
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
+
         return $this->noContent();
     }
 
@@ -53,5 +61,4 @@ class AuthController extends ApiController
             'Profile retrieved', ['user' => new UserResource($user)]
         );
     }
-
 }

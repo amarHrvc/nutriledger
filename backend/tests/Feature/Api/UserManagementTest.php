@@ -413,3 +413,100 @@ test('non-existent user update returns 404', function () {
 
     $response->assertNotFound();
 });
+
+// AUTH-23: Deactivation and Restore Tests
+test('admin can deactivate user', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+
+    $response = $this->actingAs($admin)
+        ->deleteJson("/api/users/{$user->id}");
+
+    $response->assertNoContent();
+
+    $user->refresh();
+    expect($user->deleted_at)->not->toBeNull();
+});
+
+test('deactivated user appears in admin list with non-null deletedAt', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+    $user->delete();
+
+    $response = $this->actingAs($admin)
+        ->getJson('/api/users');
+
+    $response->assertOk();
+
+    $userData = collect($response->json('data'))
+        ->firstWhere('id', (string) $user->id);
+
+    expect($userData)->not->toBeNull()
+        ->and($userData['attributes']['deletedAt'])->not->toBeNull();
+});
+
+test('deactivated user cannot log in', function () {
+    $user = User::factory()->create(['role' => 'pacijent', 'email' => 'deactivated@example.com']);
+    $user->delete();
+
+    $response = $this->postJson('/api/login', [
+        'email' => 'deactivated@example.com',
+        'password' => 'password',
+    ]);
+
+    $response->assertStatus(401);
+});
+
+test('admin can restore user', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+    $user->delete();
+
+    $response = $this->actingAs($admin)
+        ->postJson("/api/users/{$user->id}/restore");
+
+    $response->assertOk()
+        ->assertJsonPath('data.user.attributes.deleted_at', null);
+
+    $user->refresh();
+    expect($user->deleted_at)->toBeNull();
+});
+
+test('admin cannot deactivate themselves', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+
+    $response = $this->actingAs($admin)
+        ->deleteJson("/api/users/{$admin->id}");
+
+    $response->assertForbidden();
+
+    $admin->refresh();
+    expect($admin->deleted_at)->toBeNull();
+});
+
+test('non-admin cannot deactivate user', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+
+    $response = $this->actingAs($doctor)
+        ->deleteJson("/api/users/{$user->id}");
+
+    $response->assertForbidden();
+
+    $user->refresh();
+    expect($user->deleted_at)->toBeNull();
+});
+
+test('restore already-active user returns 200', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'pacijent']);
+
+    $response = $this->actingAs($admin)
+        ->postJson("/api/users/{$user->id}/restore");
+
+    $response->assertOk()
+        ->assertJsonPath('data.user.attributes.deleted_at', null);
+
+    $user->refresh();
+    expect($user->deleted_at)->toBeNull();
+});

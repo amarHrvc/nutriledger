@@ -95,8 +95,30 @@ class UserController extends ApiController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
-        //
+        $user = User::findOrFail($id);
+
+        $this->authorize('delete', $user);
+
+        $user->delete();
+
+        return $this->noContent();
+    }
+
+    /**
+     * Restore a soft-deleted resource.
+     */
+    public function restore(string $id): JsonResponse
+    {
+        $user = User::withTrashed()->findOrFail($id);
+
+        $this->authorize('restore', $user);
+
+        $user->restore();
+
+        return $this->ok('User restored successfully.', [
+            'user' => new UserResource($user),
+        ]);
     }
 }
