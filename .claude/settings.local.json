@@ -24,7 +24,9 @@
       "Bash(bd blocked:*)",
       "Bash(vendor/bin/pint --dirty)",
       "Bash(bd search:*)",
-      "Bash(composer run:*)"
+      "Bash(composer run:*)",
+      "Bash(bd create:*)",
+      "Bash(bd dep:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
