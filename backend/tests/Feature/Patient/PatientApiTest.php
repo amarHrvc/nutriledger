@@ -130,3 +130,145 @@ it('allows admin to view single patient with socioeconomic', function () {
         ->assertJsonPath('data.type', 'patient')
         ->assertJsonPath('data.id', (string) $patient->id);
 });
+
+// T016
+it('allows admin to update patient fields', function () {
+    $admin = User::factory()->admin()->create();
+    $patient = Patient::factory()->create(['first_name' => 'Old']);
+
+    $response = $this->actingAs($admin)
+        ->patchJson("/api/patients/{$patient->id}", [
+            'firstName' => 'Updated',
+            'phone' => '+387 61 999 888',
+        ]);
+
+    $response->assertOk()
+        ->assertJsonPath('data.attributes.firstName', 'Updated');
+
+    $this->assertDatabaseHas('patients', [
+        'id' => $patient->id,
+        'first_name' => 'Updated',
+        'phone' => '+387 61 999 888',
+    ]);
+});
+
+// T017
+it('allows admin to soft-delete patient and cascades to socioeconomic', function () {
+    $admin = User::factory()->admin()->create();
+    $patient = Patient::factory()->hasSocioeconomic()->create();
+    $socioId = $patient->socioeconomic->id;
+
+    $response = $this->actingAs($admin)
+        ->deleteJson("/api/patients/{$patient->id}");
+
+    $response->assertNoContent();
+
+    $this->assertSoftDeleted('patients', ['id' => $patient->id]);
+    $this->assertSoftDeleted('patient_socioeconomic', ['id' => $socioId]);
+});
+
+// T018
+it('excludes soft-deleted patients from list', function () {
+    $admin = User::factory()->admin()->create();
+    $active = Patient::factory()->create(['first_name' => 'Active']);
+    $deleted = Patient::factory()->create(['first_name' => 'Deleted']);
+    $deleted->delete();
+
+    $response = $this->actingAs($admin)
+        ->getJson('/api/patients');
+
+    $response->assertOk();
+
+    $ids = collect($response->json('data'))->pluck('id')->map(fn ($id) => (int) $id)->all();
+    expect($ids)->toContain($active->id)
+        ->not->toContain($deleted->id);
+});
+
+// T019
+it('returns 401 for unauthenticated requests', function (string $method, string $uri) {
+    $response = $this->json($method, $uri);
+    $response->assertUnauthorized();
+})->with([
+    ['GET', '/api/patients'],
+    ['POST', '/api/patients'],
+    ['GET', '/api/patients/1'],
+    ['PATCH', '/api/patients/1'],
+    ['DELETE', '/api/patients/1'],
+]);
+
+// T020
+it('returns 422 when required fields are missing on create', function () {
+    $admin = User::factory()->admin()->create();
+
+    $response = $this->actingAs($admin)
+        ->postJson('/api/patients', []);
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['firstName', 'lastName', 'dateOfBirth', 'gender']);
+});
+
+it('returns 422 for invalid gender value on create', function () {
+    $admin = User::factory()->admin()->create();
+    $patientUser = User::factory()->patient()->create();
+
+    $response = $this->actingAs($admin)
+        ->postJson('/api/patients', [
+            'userId' => $patientUser->id,
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'dateOfBirth' => '1990-01-15',
+            'gender' => 'X',
+            'phone' => '+387 61 234 567',
+            'emergencyContactName' => 'Jane',
+            'emergencyContactPhone' => '+387 61 345 678',
+        ]);
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['gender']);
+});
+
+it('returns 422 for invalid date format on create', function () {
+    $admin = User::factory()->admin()->create();
+    $patientUser = User::factory()->patient()->create();
+
+    $response = $this->actingAs($admin)
+        ->postJson('/api/patients', [
+            'userId' => $patientUser->id,
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'dateOfBirth' => 'not-a-date',
+            'gender' => 'M',
+            'phone' => '+387 61 234 567',
+            'emergencyContactName' => 'Jane',
+            'emergencyContactPhone' => '+387 61 345 678',
+        ]);
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['dateOfBirth']);
+});
+
+// T021
+it('response conforms to JSON:API envelope', function () {
+    $admin = User::factory()->admin()->create();
+    $patient = Patient::factory()->create();
+
+    $response = $this->actingAs($admin)
+        ->getJson("/api/patients/{$patient->id}");
+
+    $response->assertOk()
+        ->assertJsonStructure([
+            'data' => [
+                'type',
+                'id',
+                'attributes',
+                'relationships',
+            ],
+        ])
+        ->assertJsonPath('data.type', 'patient')
+        ->assertJsonPath('data.id', (string) $patient->id);
+
+    expect($response->json('data.attributes'))->toHaveKeys([
+        'firstName', 'lastName', 'fullName', 'dateOfBirth',
+        'gender', 'phone', 'createdAt', 'updatedAt',
+    ]);
+});
