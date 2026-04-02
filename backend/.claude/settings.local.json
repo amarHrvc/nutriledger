@@ -22,7 +22,8 @@
       "Bash(bd dep:*)",
       "Bash(bd human:*)",
       "Bash(bd update nutri-ledger-b45 '--notes=DESIGN CONFLICT — requires decision before implementation.:*)",
-      "Bash(bd stats:*)"
+      "Bash(bd stats:*)",
+      "Bash(bd doctor:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
