@@ -1,19 +1,15 @@
-﻿# CLAUDE.md
+# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Commands
 
 ```bash
-# Development (runs PHP server + queue + Vite concurrently)
-composer run dev
-
 # Run all tests
-composer run test
 php artisan test
 
 # Run a single test file
-php artisan test tests/Feature/PatientListTest.php
+php artisan test tests/Feature/Api/UserManagementTest.php
 
 # Run a single test by name
 php artisan test --filter="test name here"
@@ -23,47 +19,42 @@ composer run analyse
 
 # Auto-format (changed files only)
 vendor/bin/pint --dirty
-
-# Frontend
-npm run dev
-npm run build
 ```
 
 ## Architecture
 
 ### Stack
-- Laravel 12 + Livewire 3 (full-page components, not Volt functional API) + Flux UI free v2.1.1
-- Tailwind CSS v4 (use `@import` syntax, no deprecated utilities)
-- Pest 4 (Feature + Unit tests, SQLite in-memory for tests)
+- Laravel 12 REST API — no Livewire, no Blade UI (monolith archived)
+- Laravel Sanctum for API authentication (token-based)
+- Pest 4 (Feature + Unit tests, SQLite in-memory)
 - Larastan level 5, Laravel Pint for code style
+- Frontend: separate React SPA (not in this directory)
 
-### Livewire-First Pattern
-All interactive pages are Livewire full-page components — no traditional controllers for UI. Components live in `app/Livewire/` (class) and `resources/views/livewire/` (view). Routes point directly to Livewire component classes.
+### API Structure
+- All controllers extend `App\Http\Controllers\Api\ApiController`
+- `ApiController` uses `ApiResponses` trait (`success`, `ok`, `paginated`, `created`, `noContent`, `error`) and `AuthorizesRequests`
+- All API routes live in `routes/api.php` under the `auth:sanctum` middleware group
+- Resources live in `app/Http/Resources/Api/` — JSON:API v1 structure: `type`, `id`, `attributes`, `relationships`
+- Attribute keys in resources are camelCase; DB columns are snake_case — map explicitly
+- Form Request classes in `app/Http/Requests/Api/` for auth requests, `app/Http/Requests/` for domain requests
 
 ### Authorization Model
 - Three roles: `admin`, `doktor`, `pacijent` (stored as string on `users.role`, no Enum class)
-- `RoleMiddleware` registered as `role:admin` in `bootstrap/app.php`
-- Gates/policies (`PatientPolicy`, `UserPolicy`) enforce fine-grained access — always use `can:` middleware or `$this->authorize()` in Livewire
-- Soft deletes on `users` and `patients` — use `forceDelete()` only for admin
-
-### Form Validation
-Use dedicated Form Request classes (`StorePatientRequest`, `UpdatePatientRequest`) in `app/Http/Requests/` — do not inline validation in Livewire components.
-
-### Auth
-Laravel Fortify manages auth (login, register, password reset, email verification, 2FA). Auth routes are in `routes/auth.php`. Do not rewrite auth logic — extend Fortify actions if needed.
+- `RoleMiddleware` registered as `role:admin,doktor` etc. in `bootstrap/app.php`
+- Policies (`PatientPolicy`, `UserPolicy`) enforce fine-grained access — always call `$this->authorize()` in controllers
+- Soft deletes on `users` and `patients` — `forceDelete()` is admin-only
 
 ### Key Models
-- `User`: `isAdmin()`, `isDoctor()`, `isPatient()`, `initials()` helpers; includes `TwoFactorAuthenticatable`, `SoftDeletes`
-- `Patient`: one-to-one with `User`, computed `fullName` accessor, medical metadata fields (blood type, allergies, emergency contact, medical notes)
-
-### UI Components
-Use Flux UI free components (`<flux:button>`, `<flux:input>`, `<flux:modal>`, `<flux:badge>`, etc.) for all UI elements. Layouts: `layouts.app` (authenticated) and `layouts.auth` (guest).
+- `User`: `isAdmin()`, `isDoctor()`, `isPatient()` helpers; `SoftDeletes`
+- `Patient`: belongsTo `User` (1:1), hasOne `PatientSocioeconomic`, hasMany `Visit`; `fullName` computed accessor; `SoftDeletes`
+- `PatientSocioeconomic`: all enum fields stored as strings; boolean casts for `has_health_insurance`, `has_family_support`, `has_caregiver`
 
 ### Testing Conventions
-- Feature tests use `RefreshDatabase` and Pest's `actingAs()` helper
-- Test files mirror the feature: `tests/Feature/Patient/`, `tests/Feature/Admin/`, etc.
-- Policies, routes, Livewire component rendering, and middleware all have separate test coverage
-- Write tests before or alongside implementation (TDD encouraged)
+- Feature tests use `RefreshDatabase` and Pest's `actingAs()`
+- Test files mirror the feature: `tests/Feature/Api/`, `tests/Feature/Patient/`, etc.
+- Use factory states (`->admin()`, `->doctor()`, `->patient()`, `->hasSocioeconomic()`) — check existing factories before manually setting attributes
+- Every HTTP endpoint test asserts: status code, response structure, and DB state
+- Policy tests live separately from API endpoint tests
 
 ===
 
@@ -103,9 +94,6 @@ This application is a Laravel application and its main Laravel ecosystems packag
 ## Application Structure & Architecture
 - Stick to existing directory structure - don't create new base folders without approval.
 - Do not change the application's dependencies without approval.
-
-## Frontend Bundling
-- If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `npm run build`, `npm run dev`, or `composer run dev`. Ask them.
 
 ## Replies
 - Be concise in your explanations - focus on what's important rather than explaining obvious details.
@@ -225,9 +213,6 @@ protected function isAccessible(User $user, ?string $path = null): bool
 - Faker: Use methods such as `$this->faker->word()` or `fake()->randomDigit()`. Follow existing conventions whether to use `$this->faker` or `fake()`.
 - When creating tests, make use of `php artisan make:test [options] <name>` to create a feature test, and pass `--unit` to create a unit test. Most tests should be feature tests.
 
-### Vite Error
-- If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, you can run `npm run build` or ask the user to run `npm run dev` or `composer run dev`.
-
 
 === laravel/v12 rules ===
 
@@ -249,223 +234,6 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 ### Models
 - Casts can and likely should be set in a `casts()` method on a model rather than the `$casts` property. Follow existing conventions from other models.
-
-
-=== fluxui-free/core rules ===
-
-## Flux UI Free
-
-- This project is using the free edition of Flux UI. It has full access to the free components and variants, but does not have access to the Pro components.
-- Flux UI is a component library for Livewire. Flux is a robust, hand-crafted, UI component library for your Livewire applications. It's built using Tailwind CSS and provides a set of components that are easy to use and customize.
-- You should use Flux UI components when available.
-- Fallback to standard Blade components if Flux is unavailable.
-- If available, use Laravel Boost's `search-docs` tool to get the exact documentation and code snippets available for this project.
-- Flux UI components look like this:
-
-<code-snippet name="Flux UI Component Usage Example" lang="blade">
-    <flux:button variant="primary"/>
-</code-snippet>
-
-
-### Available Components
-This is correct as of Boost installation, but there may be additional components within the codebase.
-
-<available-flux-components>
-avatar, badge, brand, breadcrumbs, button, callout, checkbox, dropdown, field, heading, icon, input, modal, navbar, profile, radio, select, separator, switch, text, textarea, tooltip
-</available-flux-components>
-
-
-=== livewire/core rules ===
-
-## Livewire Core
-- Use the `search-docs` tool to find exact version specific documentation for how to write Livewire & Livewire tests.
-- Use the `php artisan make:livewire [Posts\\CreatePost]` artisan command to create new components
-- State should live on the server, with the UI reflecting it.
-- All Livewire requests hit the Laravel backend, they're like regular HTTP requests. Always validate form data, and run authorization checks in Livewire actions.
-
-## Livewire Best Practices
-- Livewire components require a single root element.
-- Use `wire:loading` and `wire:dirty` for delightful loading states.
-- Add `wire:key` in loops:
-
-    ```blade
-    @foreach ($items as $item)
-        <div wire:key="item-{{ $item->id }}">
-            {{ $item->name }}
-        </div>
-    @endforeach
-    ```
-
-- Prefer lifecycle hooks like `mount()`, `updatedFoo()` for initialization and reactive side effects:
-
-<code-snippet name="Lifecycle hook examples" lang="php">
-    public function mount(User $user) { $this->user = $user; }
-    public function updatedSearch() { $this->resetPage(); }
-</code-snippet>
-
-
-## Testing Livewire
-
-<code-snippet name="Example Livewire component test" lang="php">
-    Livewire::test(Counter::class)
-        ->assertSet('count', 0)
-        ->call('increment')
-        ->assertSet('count', 1)
-        ->assertSee(1)
-        ->assertStatus(200);
-</code-snippet>
-
-
-    <code-snippet name="Testing a Livewire component exists within a page" lang="php">
-        $this->get('/posts/create')
-        ->assertSeeLivewire(CreatePost::class);
-    </code-snippet>
-
-
-=== livewire/v3 rules ===
-
-## Livewire 3
-
-### Key Changes From Livewire 2
-- These things changed in Livewire 2, but may not have been updated in this application. Verify this application's setup to ensure you conform with application conventions.
-    - Use `wire:model.live` for real-time updates, `wire:model` is now deferred by default.
-    - Components now use the `App\Livewire` namespace (not `App\Http\Livewire`).
-    - Use `$this->dispatch()` to dispatch events (not `emit` or `dispatchBrowserEvent`).
-    - Use the `components.layouts.app` view as the typical layout path (not `layouts.app`).
-
-### New Directives
-- `wire:show`, `wire:transition`, `wire:cloak`, `wire:offline`, `wire:target` are available for use. Use the documentation to find usage examples.
-
-### Alpine
-- Alpine is now included with Livewire, don't manually include Alpine.js.
-- Plugins included with Alpine: persist, intersect, collapse, and focus.
-
-### Lifecycle Hooks
-- You can listen for `livewire:init` to hook into Livewire initialization, and `fail.status === 419` for the page expiring:
-
-<code-snippet name="livewire:load example" lang="js">
-document.addEventListener('livewire:init', function () {
-    Livewire.hook('request', ({ fail }) => {
-        if (fail && fail.status === 419) {
-            alert('Your session expired');
-        }
-    });
-
-    Livewire.hook('message.failed', (message, component) => {
-        console.error(message);
-    });
-});
-</code-snippet>
-
-
-=== volt/core rules ===
-
-## Livewire Volt
-
-- This project uses Livewire Volt for interactivity within its pages. New pages requiring interactivity must also use Livewire Volt. There is documentation available for it.
-- Make new Volt components using `php artisan make:volt [name] [--test] [--pest]`
-- Volt is a **class-based** and **functional** API for Livewire that supports single-file components, allowing a component's PHP logic and Blade templates to co-exist in the same file
-- Livewire Volt allows PHP logic and Blade templates in one file. Components use the `@livewire("volt-anonymous-fragment-eyJuYW1lIjoidm9sdC1hbm9ueW1vdXMtZnJhZ21lbnQtYmQ5YWJiNTE3YWMyMTgwOTA1ZmUxMzAxODk0MGJiZmIiLCJwYXRoIjoic3RvcmFnZVxcZnJhbWV3b3JrXFx2aWV3c1wvMTUxYWRjZWRjMzBhMzllOWIxNzQ0ZDRiMWRjY2FjYWIuYmxhZGUucGhwIn0=", Livewire\Volt\Precompilers\ExtractFragments::componentArguments([...get_defined_vars(), ...array (
-)]))
-</code-snippet>
-
-
-### Volt Class Based Component Example
-To get started, define an anonymous class that extends Livewire\Volt\Component. Within the class, you may utilize all of the features of Livewire using traditional Livewire syntax:
-
-
-<code-snippet name="Volt Class-based Volt Component Example" lang="php">
-use Livewire\Volt\Component;
-
-new class extends Component {
-    public $count = 0;
-
-    public function increment()
-    {
-        $this->count++;
-    }
-} ?>
-
-<div>
-    <h1>{{ $count }}</h1>
-    <button wire:click="increment">+</button>
-</div>
-</code-snippet>
-
-
-### Testing Volt & Volt Components
-- Use the existing directory for tests if it already exists. Otherwise, fallback to `tests/Feature/Volt`.
-
-<code-snippet name="Livewire Test Example" lang="php">
-use Livewire\Volt\Volt;
-
-test('counter increments', function () {
-    Volt::test('counter')
-        ->assertSee('Count: 0')
-        ->call('increment')
-        ->assertSee('Count: 1');
-});
-</code-snippet>
-
-
-<code-snippet name="Volt Component Test Using Pest" lang="php">
-declare(strict_types=1);
-
-use App\Models\{User, Product};
-use Livewire\Volt\Volt;
-
-test('product form creates product', function () {
-    $user = User::factory()->create();
-
-    Volt::test('pages.products.create')
-        ->actingAs($user)
-        ->set('form.name', 'Test Product')
-        ->set('form.description', 'Test Description')
-        ->set('form.price', 99.99)
-        ->call('create')
-        ->assertHasNoErrors();
-
-    expect(Product::where('name', 'Test Product')->exists())->toBeTrue();
-});
-</code-snippet>
-
-
-### Common Patterns
-
-
-<code-snippet name="CRUD With Volt" lang="php">
-<?php
-
-use App\Models\Product;
-use function Livewire\Volt\{state, computed};
-
-state(['editing' => null, 'search' => '']);
-
-$products = computed(fn() => Product::when($this->search,
-    fn($q) => $q->where('name', 'like', "%{$this->search}%")
-)->get());
-
-$edit = fn(Product $product) => $this->editing = $product->id;
-$delete = fn(Product $product) => $product->delete();
-
-?>
-
-<!-- HTML / UI Here -->
-</code-snippet>
-
-<code-snippet name="Real-Time Search With Volt" lang="php">
-    <flux:input
-        wire:model.live.debounce.300ms="search"
-        placeholder="Search..."
-    />
-</code-snippet>
-
-<code-snippet name="Loading States With Volt" lang="php">
-    <flux:button wire:click="save" wire:loading.attr="disabled">
-        <span wire:loading.remove>Save</span>
-        <span wire:loading>Saving...</span>
-    </flux:button>
-</code-snippet>
 
 
 === pint/core rules ===
@@ -528,111 +296,6 @@ it('has emails', function (string $email) {
     'taylor' => 'taylor@laravel.com',
 ]);
 </code-snippet>
-
-
-=== pest/v4 rules ===
-
-## Pest 4
-
-- Pest v4 is a huge upgrade to Pest and offers: browser testing, smoke testing, visual regression testing, test sharding, and faster type coverage.
-- Browser testing is incredibly powerful and useful for this project.
-- Browser tests should live in `tests/Browser/`.
-- Use the `search-docs` tool for detailed guidance on utilizing these features.
-
-### Browser Testing
-- You can use Laravel features like `Event::fake()`, `assertAuthenticated()`, and model factories within Pest v4 browser tests, as well as `RefreshDatabase` (when needed) to ensure a clean state for each test.
-- Interact with the page (click, type, scroll, select, submit, drag-and-drop, touch gestures, etc.) when appropriate to complete the test.
-- If requested, test on multiple browsers (Chrome, Firefox, Safari).
-- If requested, test on different devices and viewports (like iPhone 14 Pro, tablets, or custom breakpoints).
-- Switch color schemes (light/dark mode) when appropriate.
-- Take screenshots or pause tests for debugging when appropriate.
-
-### Example Tests
-
-<code-snippet name="Pest Browser Test Example" lang="php">
-it('may reset the password', function () {
-    Notification::fake();
-
-    $this->actingAs(User::factory()->create());
-
-    $page = visit('/sign-in'); // Visit on a real browser...
-
-    $page->assertSee('Sign In')
-        ->assertNoJavascriptErrors() // or ->assertNoConsoleLogs()
-        ->click('Forgot Password?')
-        ->fill('email', 'nuno@laravel.com')
-        ->click('Send Reset Link')
-        ->assertSee('We have emailed your password reset link!')
-
-    Notification::assertSent(ResetPassword::class);
-});
-</code-snippet>
-
-<code-snippet name="Pest Smoke Testing Example" lang="php">
-$pages = visit(['/', '/about', '/contact']);
-
-$pages->assertNoJavascriptErrors()->assertNoConsoleLogs();
-</code-snippet>
-
-
-=== tailwindcss/core rules ===
-
-## Tailwind Core
-
-- Use Tailwind CSS classes to style HTML, check and use existing tailwind conventions within the project before writing your own.
-- Offer to extract repeated patterns into components that match the project's conventions (i.e. Blade, JSX, Vue, etc..)
-- Think through class placement, order, priority, and defaults - remove redundant classes, add classes to parent or child carefully to limit repetition, group elements logically
-- You can use the `search-docs` tool to get exact examples from the official documentation when needed.
-
-### Spacing
-- When listing items, use gap utilities for spacing, don't use margins.
-
-    <code-snippet name="Valid Flex Gap Spacing Example" lang="html">
-        <div class="flex gap-8">
-            <div>Superior</div>
-            <div>Michigan</div>
-            <div>Erie</div>
-        </div>
-    </code-snippet>
-
-
-### Dark Mode
-- If existing pages and components support dark mode, new pages and components must support dark mode in a similar way, typically using `dark:`.
-
-
-=== tailwindcss/v4 rules ===
-
-## Tailwind 4
-
-- Always use Tailwind CSS v4 - do not use the deprecated utilities.
-- `corePlugins` is not supported in Tailwind v4.
-- In Tailwind v4, you import Tailwind using a regular CSS `@import` statement, not using the `@tailwind` directives used in v3:
-
-<code-snippet name="Tailwind v4 Import Tailwind Diff" lang="diff">
-   - @tailwind base;
-   - @tailwind components;
-   - @tailwind utilities;
-   + @import "tailwindcss";
-</code-snippet>
-
-
-### Replaced Utilities
-- Tailwind v4 removed deprecated utilities. Do not use the deprecated option - use the replacement.
-- Opacity values are still numeric.
-
-| Deprecated |	Replacement |
-|------------+--------------|
-| bg-opacity-* | bg-black/* |
-| text-opacity-* | text-black/* |
-| border-opacity-* | border-black/* |
-| divide-opacity-* | divide-black/* |
-| ring-opacity-* | ring-black/* |
-| placeholder-opacity-* | placeholder-black/* |
-| flex-shrink-* | shrink-* |
-| flex-grow-* | grow-* |
-| overflow-ellipsis | text-ellipsis |
-| decoration-slice | box-decoration-slice |
-| decoration-clone | box-decoration-clone |
 
 
 === tests rules ===
