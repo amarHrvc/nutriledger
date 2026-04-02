@@ -247,6 +247,82 @@ it('returns 422 for invalid date format on create', function () {
         ->assertJsonValidationErrors(['dateOfBirth']);
 });
 
+// T022
+it('allows patient to view their own record', function () {
+    $patientUser = User::factory()->patient()->create();
+    $patient = Patient::factory()->create(['user_id' => $patientUser->id]);
+
+    $response = $this->actingAs($patientUser)
+        ->getJson("/api/patients/{$patient->id}");
+
+    $response->assertOk()
+        ->assertJsonPath('data.id', (string) $patient->id);
+});
+
+// T023
+it('returns 403 when patient tries to view another patient record', function () {
+    $patientUser = User::factory()->patient()->create();
+    $otherPatient = Patient::factory()->create();
+
+    $response = $this->actingAs($patientUser)
+        ->getJson("/api/patients/{$otherPatient->id}");
+
+    $response->assertForbidden();
+});
+
+// T024
+it('allows patient to update their own profile', function () {
+    $patientUser = User::factory()->patient()->create();
+    $patient = Patient::factory()->create(['user_id' => $patientUser->id]);
+
+    $response = $this->actingAs($patientUser)
+        ->patchJson("/api/patients/{$patient->id}", [
+            'phone' => '+387 61 000 111',
+        ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('patients', ['id' => $patient->id, 'phone' => '+387 61 000 111']);
+});
+
+// T025
+it('returns 403 when patient tries to update another patient', function () {
+    $patientUser = User::factory()->patient()->create();
+    $otherPatient = Patient::factory()->create();
+
+    $response = $this->actingAs($patientUser)
+        ->patchJson("/api/patients/{$otherPatient->id}", [
+            'phone' => '+387 61 000 111',
+        ]);
+
+    $response->assertForbidden();
+});
+
+// T026
+it('returns only own record when patient lists patients', function () {
+    $patientUser = User::factory()->patient()->create();
+    $ownPatient = Patient::factory()->create(['user_id' => $patientUser->id]);
+    Patient::factory()->count(3)->create();
+
+    $response = $this->actingAs($patientUser)
+        ->getJson('/api/patients');
+
+    $response->assertOk();
+
+    $ids = collect($response->json('data'))->pluck('id')->map(fn ($id) => (int) $id)->all();
+    expect($ids)->toBe([$ownPatient->id]);
+});
+
+// T027
+it('returns 403 when patient tries to delete any patient', function () {
+    $patientUser = User::factory()->patient()->create();
+    $patient = Patient::factory()->create(['user_id' => $patientUser->id]);
+
+    $response = $this->actingAs($patientUser)
+        ->deleteJson("/api/patients/{$patient->id}");
+
+    $response->assertForbidden();
+});
+
 // T021
 it('response conforms to JSON:API envelope', function () {
     $admin = User::factory()->admin()->create();
