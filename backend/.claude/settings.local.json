@@ -32,7 +32,9 @@
       "Bash(bd search:*)",
       "Bash(echo \"EXIT:$?\")",
       "Bash(echo \"Exit: $?\")",
-      "Bash(composer run:*)"
+      "Bash(composer run:*)",
+      "Edit",
+      "Write"
     ]
   },
   "enableAllProjectMcpServers": true,
