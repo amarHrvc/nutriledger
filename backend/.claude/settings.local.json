@@ -25,7 +25,11 @@
       "Bash(bd stats:*)",
       "Bash(bd doctor:*)",
       "Bash(bd create '--title=Fix camelCase request keys in StorePatientRequest and PatientApiTest' --type=task --priority=1 '--description=Constitution Principle VI \\(v2.1.0\\) mandates snake_case for all request body inputs. StorePatientRequest was written with camelCase rule keys \\(userId, firstName, dateOfBirth, etc.\\) before this decision was made. PatientApiTest sends matching camelCase payloads. Both must be corrected so that $request->validated\\(\\) can be passed directly to PatientService without any conversion layer.:*)",
-      "Bash(vendor/bin/pint --dirty)"
+      "Bash(vendor/bin/pint --dirty)",
+      "Bash(bd update nutri-ledger-9gl '--design=:*)",
+      "Bash(bd update nutri-ledger-1u3 '--design=:*)",
+      "Bash(bd update:*)",
+      "Bash(bd search:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

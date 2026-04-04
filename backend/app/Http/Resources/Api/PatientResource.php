@@ -40,7 +40,7 @@ class PatientResource extends JsonResource
     {
         return [
             'type' => 'patient',
-            'id' => (string)$this->id,
+            'id' => (string) $this->id,
             'attributes' => [
                 'firstName' => $this->first_name,
                 'lastName' => $this->last_name,
@@ -62,29 +62,19 @@ class PatientResource extends JsonResource
             'relationships' => [
                 'user' => [
                     'data' => $this->whenLoaded('user',
-                        fn() => [
+                        fn () => [
                             'type' => 'user',
-                            'id' => (string)$this->user->id,
+                            'id' => (string) $this->user->id,
                         ]),
                 ],
                 'socioeconomic' => [
-                    'data' => $this->whenLoaded('socioeconomic', fn() => $this->socioeconomic
+                    'data' => $this->whenLoaded('socioeconomic', fn () => $this->socioeconomic
                         ? [
                             'type' => 'patient_socioeconomic',
-                            'id' => (string)$this->socioeconomic->id,
+                            'id' => (string) $this->socioeconomic->id,
                         ] : null),
                 ],
             ],
         ];
-    }
-
-
-    public function with(Request $request): array
-    {
-        $included = [];
-        if ($this->resource->relationLoaded('socioeconomic') && $this->socioeconomic !== null) {
-            $included[] = new PatientSocioeconomicResource($this->socioeconomic);
-        }
-        return $included ? ['included' => $included] : [];
     }
 }

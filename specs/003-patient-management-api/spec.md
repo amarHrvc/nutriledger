@@ -89,7 +89,7 @@ Acceptance Scenario:
 - FR-003: API MUST allow retrieval of a single patient with related socioeconomic data and user relationship.
 - FR-004: API MUST allow updating patient fields, socioeconomic fields, or both; updating user linkage (user_id) after create is forbidden.
 - FR-005: API MUST support soft-delete (archive) and restore operations; soft-deleted patients are excluded from all patient queries (no trashed listing endpoint). Patient restoration occurs via User restore (Admin-only in User Management API).
-- FR-006: API responses MUST use a stable, documented JSON envelope with camelCase attribute keys. Request body inputs MUST use snake_case keys (no conversion layer — see Constitution Principle VI).
+- FR-006: API responses MUST use the project-standard `ApiResponses` trait envelope (see Constitution Principles VI and VII). Single-resource responses: `{message, status, data:{patient:{type,id,attributes,relationships}}}`. List responses: `{message, status, data:[...], meta, links}`. Request inputs use snake_case; response attribute keys use camelCase.
 - FR-007: API MUST validate inputs and return field-level errors for invalid data (422) and proper auth errors (401/403).
 - FR-008: Authorization MUST enforce role rules: Admin/Doctor broad access; Patient limited to own record.
 - FR-009: Creating or updating patient data MUST create or update socioeconomic record atomically.

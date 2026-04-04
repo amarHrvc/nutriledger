@@ -12,7 +12,7 @@ class PatientPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin() || $user->isDoctor();
+        return $user->isAdmin() || $user->isDoctor() || $user->isPatient();
     }
 
     /**
@@ -20,12 +20,7 @@ class PatientPolicy
      */
     public function view(User $user, Patient $patient): bool
     {
-        if ($user->isPatient() && $user->id !== $patient->user_id) {
-            return false;
-        }
-
         return $user->isAdmin() || $user->isDoctor() || ($user->isPatient() && $user->id === $patient->user_id);
-
     }
 
     /**

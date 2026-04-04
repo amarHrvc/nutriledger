@@ -53,12 +53,8 @@ it('allows admin to create patient with socioeconomic data', function () {
     $response->assertCreated()
         ->assertJsonStructure([
             'data' => [
-                'type',
-                'id',
-                'attributes' => ['firstName', 'lastName'],
-                'relationships' => ['user', 'socioeconomic'],
+                'patient' => ['type', 'id', 'attributes', 'relationships'],
             ],
-            'included',
         ]);
 
     $this->assertDatabaseHas('patients', ['user_id' => $patientUser->id, 'first_name' => 'John']);
@@ -114,21 +110,18 @@ it('allows admin to view single patient with socioeconomic', function () {
     $response->assertOk()
         ->assertJsonStructure([
             'data' => [
-                'type',
-                'id',
-                'attributes' => [
-                    'firstName', 'lastName', 'fullName', 'dateOfBirth',
-                    'gender', 'phone', 'bloodType', 'allergies', 'medicalNotes',
-                ],
-                'relationships' => [
-                    'socioeconomic' => ['data'],
-                    'user' => ['data'],
+                'patient' => [
+                    'type', 'id',
+                    'attributes' => [
+                        'firstName', 'lastName', 'fullName', 'dateOfBirth',
+                        'gender', 'phone', 'bloodType', 'allergies', 'medicalNotes',
+                    ],
+                    'relationships' => ['socioeconomic', 'user'],
                 ],
             ],
-            'included',
         ])
-        ->assertJsonPath('data.type', 'patient')
-        ->assertJsonPath('data.id', (string) $patient->id);
+        ->assertJsonPath('data.patient.type', 'patient')
+        ->assertJsonPath('data.patient.id', (string) $patient->id);
 });
 
 // T016
@@ -143,7 +136,7 @@ it('allows admin to update patient fields', function () {
         ]);
 
     $response->assertOk()
-        ->assertJsonPath('data.attributes.firstName', 'Updated');
+        ->assertJsonPath('data.patient.attributes.firstName', 'Updated');
 
     $this->assertDatabaseHas('patients', [
         'id' => $patient->id,
@@ -256,7 +249,7 @@ it('allows patient to view their own record', function () {
         ->getJson("/api/patients/{$patient->id}");
 
     $response->assertOk()
-        ->assertJsonPath('data.id', (string) $patient->id);
+        ->assertJsonPath('data.patient.id', (string) $patient->id);
 });
 
 // T023
@@ -334,16 +327,13 @@ it('response conforms to JSON:API envelope', function () {
     $response->assertOk()
         ->assertJsonStructure([
             'data' => [
-                'type',
-                'id',
-                'attributes',
-                'relationships',
+                'patient' => ['type', 'id', 'attributes', 'relationships'],
             ],
         ])
-        ->assertJsonPath('data.type', 'patient')
-        ->assertJsonPath('data.id', (string) $patient->id);
+        ->assertJsonPath('data.patient.type', 'patient')
+        ->assertJsonPath('data.patient.id', (string) $patient->id);
 
-    expect($response->json('data.attributes'))->toHaveKeys([
+    expect($response->json('data.patient.attributes'))->toHaveKeys([
         'firstName', 'lastName', 'fullName', 'dateOfBirth',
         'gender', 'phone', 'createdAt', 'updatedAt',
     ]);

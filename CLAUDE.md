@@ -37,6 +37,10 @@ vendor/bin/pint --dirty
 - Resources live in `app/Http/Resources/Api/` — JSON:API v1 structure: `type`, `id`, `attributes`, `relationships`
 - Request body keys are snake_case (matches Laravel conventions — no conversion needed in controllers)
 - Resource attribute keys (responses) are camelCase — map snake_case → camelCase only in the Resource class
+- Single-resource responses use `$this->created/ok('msg', ['<resource>' => new Resource($model)])` → shape: `data.<resource>.{type,id,attributes}`
+- List responses use `$this->paginated('msg', Resource::collection($query->paginate()))` → shape: `data:[...], meta, links`
+- Delete responses use `$this->noContent()` → 204 no body
+- Never use raw `->response()->setStatusCode()` on Resources; never use `JsonResource::with()`
 - Form Request classes in `app/Http/Requests/Api/` for auth requests, `app/Http/Requests/` for domain requests
 
 ### Authorization Model

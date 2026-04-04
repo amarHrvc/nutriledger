@@ -150,6 +150,34 @@ Tests MUST send snake_case payloads. FormRequest validation rules MUST use snake
 
 This rule governs all feature groups: Users, Patients, Visits, and any future groups.
 
+### VII. API Response Envelope (NON-NEGOTIABLE)
+
+All API controllers MUST use the `ApiResponses` trait methods. Raw `->response()` calls on
+Eloquent Resources are forbidden. The envelope shape is determined by operation type:
+
+| Operation | Trait method | `data` shape |
+|---|---|---|
+| Create (201) | `$this->created('msg', ['<resource>' => new Resource($model)])` | `data.<resource>.{type,id,attributes,...}` |
+| Read single (200) | `$this->ok('msg', ['<resource>' => new Resource($model)])` | `data.<resource>.{type,id,attributes,...}` |
+| Update (200) | `$this->ok('msg', ['<resource>' => new Resource($model)])` | `data.<resource>.{type,id,attributes,...}` |
+| List (200) | `$this->paginated('msg', Resource::collection($query->paginate()))` | `data` is flat array; `meta` and `links` alongside |
+| Delete (204) | `$this->noContent()` | no body |
+
+The resource key MUST match the model name in snake_case singular: `user`, `patient`, `visit`.
+
+Tests for single-resource responses MUST use the `data.<resource>.*` path prefix:
+```php
+->assertJsonPath('data.patient.type', 'patient')
+->assertJsonPath('data.patient.attributes.firstName', 'Jane')
+```
+
+The JSON:API `included` key MUST NOT appear in responses. Related data referenced in
+`relationships` uses resource identifiers (`type` + `id`) only. If full related data is
+needed inline, embed it in `attributes` or add a dedicated endpoint.
+
+This rule applies to all feature groups: Users, Patients, Visits, and any future groups.
+`JsonResource::with()` MUST NOT be used — it is bypassed by the trait and produces dead code.
+
 ## Shared Artifacts
 
 The following directories are shared between SE and SD tracks. Changes MUST be backward
@@ -218,4 +246,4 @@ the `plan.md` "Constitution Check" gate for feature work.
 
 ---
 
-**Version**: 2.1.0 | **Ratified**: 2026-03-15 | **Last Amended**: 2026-04-04
+**Version**: 2.2.0 | **Ratified**: 2026-03-15 | **Last Amended**: 2026-04-04
