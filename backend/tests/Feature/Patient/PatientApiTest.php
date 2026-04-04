@@ -197,7 +197,16 @@ it('returns 422 when required fields are missing on create', function () {
         ->postJson('/api/patients', []);
 
     $response->assertUnprocessable()
-        ->assertJsonValidationErrors(['first_name', 'last_name', 'date_of_birth', 'gender']);
+        ->assertJsonValidationErrors([
+            'user_id',
+            'first_name',
+            'last_name',
+            'date_of_birth',
+            'gender',
+            'phone',
+            'emergency_contact_name',
+            'emergency_contact_phone',
+        ]);
 });
 
 it('returns 422 for invalid gender value on create', function () {
