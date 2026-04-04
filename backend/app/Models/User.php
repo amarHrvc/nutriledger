@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Patient;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -102,7 +103,7 @@ class User extends Authenticatable
         });
 
         static::restored(function (User $user) {
-            $user->patient()->withTrashed()->first()?->restore();
+            Patient::withTrashed()->where('user_id', $user->id)->first()?->restore();
         });
     }
 

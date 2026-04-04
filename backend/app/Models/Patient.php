@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\PatientSocioeconomic;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -44,7 +45,7 @@ class Patient extends Model
         });
 
         static::restored(function (Patient $patient) {
-            $patient->socioeconomic()->withTrashed()->first()?->restore();
+            PatientSocioeconomic::withTrashed()->where('patient_id', $patient->id)->first()?->restore();
         });
     }
 

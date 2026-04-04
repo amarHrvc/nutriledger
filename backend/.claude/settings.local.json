@@ -31,7 +31,8 @@
       "Bash(bd update:*)",
       "Bash(bd search:*)",
       "Bash(echo \"EXIT:$?\")",
-      "Bash(echo \"Exit: $?\")"
+      "Bash(echo \"Exit: $?\")",
+      "Bash(composer run:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
