@@ -30,7 +30,8 @@
       "Bash(bd update nutri-ledger-1u3 '--design=:*)",
       "Bash(bd update:*)",
       "Bash(bd search:*)",
-      "Bash(echo \"EXIT:$?\")"
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(echo \"Exit: $?\")"
     ]
   },
   "enableAllProjectMcpServers": true,

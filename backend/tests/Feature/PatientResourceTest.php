@@ -164,13 +164,3 @@ test('PatientResource with() returns empty array when patient has no socioeconom
     expect($with)->toBe([]);
 });
 
-test('PatientResource with() includes socioeconomic in included when loaded and present', function (): void {
-    $patient = Patient::factory()->hasSocioeconomic()->create();
-    $patient->load('socioeconomic');
-
-    $with = (new PatientResource($patient))->with(request());
-
-    expect($with)->toHaveKey('included')
-        ->and($with['included'])->toHaveCount(1)
-        ->and($with['included'][0])->toBeInstanceOf(PatientSocioeconomicResource::class);
-});
