@@ -38,6 +38,17 @@ class Patient extends Model
 
     ];
 
+    protected static function booted(): void
+    {
+        static::deleted(function (Patient $patient) {
+            $patient->socioeconomic?->delete();
+        });
+
+        static::restored(function (Patient $patient) {
+            $patient->socioeconomic()->withTrashed()->first()?->restore();
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

@@ -96,6 +96,17 @@ class User extends Authenticatable
         return $this->role === 'pacijent';
     }
 
+    protected static function booted(): void
+    {
+        static::deleted(function (User $user) {
+            $user->patient?->delete();
+        });
+
+        static::restored(function (User $user) {
+            $user->patient()->withTrashed()->first()?->restore();
+        });
+    }
+
     public function patient(): HasOne
     {
         return $this->hasOne(Patient::class);

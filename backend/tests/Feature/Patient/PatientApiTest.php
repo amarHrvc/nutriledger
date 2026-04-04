@@ -325,6 +325,41 @@ it('returns 403 when patient tries to delete any patient', function () {
     $response->assertForbidden();
 });
 
+// T034
+it('restores patient and socioeconomic when user is restored', function () {
+    $admin = User::factory()->admin()->create();
+    $patientUser = User::factory()->patient()->create();
+    $patient = Patient::factory()->hasSocioeconomic()->create(['user_id' => $patientUser->id]);
+    $socioId = $patient->socioeconomic->id;
+
+    $patientUser->delete();
+
+    $this->assertSoftDeleted('patients', ['id' => $patient->id]);
+    $this->assertSoftDeleted('patient_socioeconomic', ['id' => $socioId]);
+
+    $this->actingAs($admin)
+        ->postJson("/api/users/{$patientUser->id}/restore")
+        ->assertOk();
+
+    $this->assertNotSoftDeleted('users', ['id' => $patientUser->id]);
+    $this->assertNotSoftDeleted('patients', ['id' => $patient->id]);
+    $this->assertNotSoftDeleted('patient_socioeconomic', ['id' => $socioId]);
+});
+
+// T033
+it('returns 422 when user_id is sent on update', function () {
+    $admin = User::factory()->admin()->create();
+    $patient = Patient::factory()->create();
+
+    $this->actingAs($admin)
+        ->patchJson("/api/patients/{$patient->id}", [
+            'user_id' => 999,
+            'first_name' => 'Jane',
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['user_id']);
+});
+
 // T021
 it('response conforms to JSON:API envelope', function () {
     $admin = User::factory()->admin()->create();
