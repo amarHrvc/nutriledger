@@ -89,15 +89,15 @@ Acceptance Scenario:
 - FR-003: API MUST allow retrieval of a single patient with related socioeconomic data and user relationship.
 - FR-004: API MUST allow updating patient fields, socioeconomic fields, or both; updating user linkage (user_id) after create is forbidden.
 - FR-005: API MUST support soft-delete (archive) and restore operations; soft-deleted patients are excluded from all patient queries (no trashed listing endpoint). Patient restoration occurs via User restore (Admin-only in User Management API).
-- FR-006: API responses MUST use a stable, documented JSON envelope with camelCase attribute keys.
+- FR-006: API responses MUST use a stable, documented JSON envelope with camelCase attribute keys. Request body inputs MUST use snake_case keys (no conversion layer — see Constitution Principle VI).
 - FR-007: API MUST validate inputs and return field-level errors for invalid data (422) and proper auth errors (401/403).
 - FR-008: Authorization MUST enforce role rules: Admin/Doctor broad access; Patient limited to own record.
 - FR-009: Creating or updating patient data MUST create or update socioeconomic record atomically.
 - FR-010: API MUST provide pagination and metadata for list endpoints.
 
 ### Key Entities
-- Patient: personal and medical profile (firstName, lastName, dateOfBirth, gender, phone, address, bloodType, allergies, medicalNotes, emergency contact fields, etc.)
-- PatientSocioeconomic: social determinants (maritalStatus, numberOfDependents, employmentStatus, incomeLevel, hasHealthInsurance, smokingStatus, alcoholConsumption, physicalActivityLevel, foodSecurityStatus, additionalNotes)
+- Patient: personal and medical profile (first_name, last_name, date_of_birth, gender, phone, address, blood_type, allergies, medical_notes, emergency_contact_name, emergency_contact_phone, etc.)
+- PatientSocioeconomic: social determinants (marital_status, number_of_dependents, employment_status, income_level, has_health_insurance, smoking_status, alcohol_consumption, physical_activity_level, food_security_status, additional_notes)
 - User (reference): authentication and role attribution (admin, doktor, pacijent)
 
 ## Success Criteria (mandatory)

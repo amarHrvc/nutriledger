@@ -1,6 +1,24 @@
 <!--
   SYNC IMPACT REPORT
   ==================
+  Version change: 2.0.1 → 2.1.0
+  Type: MINOR — New Principle VI added: API Input/Output Case Convention.
+
+  Added principles:
+  - VI. API Input/Output Case Convention (NON-NEGOTIABLE)
+      Request bodies use snake_case; responses use camelCase (in Resources only).
+      Eliminates Str::snake() conversion layers in controllers.
+      Applies retroactively to all feature groups (Users, Patients, Visits, future).
+
+  Propagation required:
+  - specs/003-patient-management-api/spec.md   ✅ FR-006 updated; Key Entities corrected to snake_case.
+  - specs/003-patient-management-api/tasks.md  → Review T006 (StorePatientRequest) — rule keys must be snake_case.
+  - app/Http/Requests/StorePatientRequest.php  → MUST be updated to snake_case rule keys.
+  - tests/Feature/Patient/PatientApiTest.php   → MUST send snake_case payloads.
+  - CLAUDE.md                                  ✅ Updated.
+
+  ---
+
   Version change: 1.0.0 → 2.0.1 (cumulative; 1.0.0 → 2.0.0 → 2.0.1)
   Type (2.0.1): PATCH — Technology Stack clarification: SE frontend locked to React + JavaScript.
 
@@ -116,6 +134,22 @@ fields per task:
 BE (backend) and FE (frontend / React) tasks MUST always be separate task items.
 No single task may span both the API layer and the React SPA layer.
 
+### VI. API Input/Output Case Convention (NON-NEGOTIABLE)
+
+Request bodies (input) MUST use **snake_case** keys. This aligns with Laravel's native
+conventions: `$fillable`, factory definitions, `$request->validated()`, and Eloquent all
+use snake_case. No conversion layer between FormRequest and Eloquent is permitted.
+
+Response bodies (output) MUST use **camelCase** attribute keys. The mapping from
+snake_case model attributes to camelCase happens exclusively inside Eloquent API Resource
+classes (`toArray()`). No other layer performs case conversion.
+
+Concrete rule: `$request->validated()` MUST be passable directly to `Model::create()` or
+`$model->update()` without any `Str::snake()` / `mapWithKeys()` transformation.
+Tests MUST send snake_case payloads. FormRequest validation rules MUST use snake_case keys.
+
+This rule governs all feature groups: Users, Patients, Visits, and any future groups.
+
 ## Shared Artifacts
 
 The following directories are shared between SE and SD tracks. Changes MUST be backward
@@ -184,4 +218,4 @@ the `plan.md` "Constitution Check" gate for feature work.
 
 ---
 
-**Version**: 2.0.1 | **Ratified**: 2026-03-15 | **Last Amended**: 2026-03-15
+**Version**: 2.1.0 | **Ratified**: 2026-03-15 | **Last Amended**: 2026-04-04

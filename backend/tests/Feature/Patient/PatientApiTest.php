@@ -13,14 +13,14 @@ it('allows doctor to create patient without socioeconomic data', function () {
 
     $response = $this->actingAs($doctor)
         ->postJson('/api/patients', [
-            'userId' => $patientUser->id,
-            'firstName' => 'Jane',
-            'lastName' => 'Smith',
-            'dateOfBirth' => '1985-05-20',
+            'user_id' => $patientUser->id,
+            'first_name' => 'Jane',
+            'last_name' => 'Smith',
+            'date_of_birth' => '1985-05-20',
             'gender' => 'F',
             'phone' => '+387 62 111 222',
-            'emergencyContactName' => 'John Smith',
-            'emergencyContactPhone' => '+387 62 333 444',
+            'emergency_contact_name' => 'John Smith',
+            'emergency_contact_phone' => '+387 62 333 444',
         ]);
 
     $response->assertCreated();
@@ -35,18 +35,18 @@ it('allows admin to create patient with socioeconomic data', function () {
 
     $response = $this->actingAs($admin)
         ->postJson('/api/patients', [
-            'userId' => $patientUser->id,
-            'firstName' => 'John',
-            'lastName' => 'Doe',
-            'dateOfBirth' => '1990-01-15',
+            'user_id' => $patientUser->id,
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'date_of_birth' => '1990-01-15',
             'gender' => 'M',
             'phone' => '+387 61 234 567',
-            'emergencyContactName' => 'Jane Doe',
-            'emergencyContactPhone' => '+387 61 345 678',
+            'emergency_contact_name' => 'Jane Doe',
+            'emergency_contact_phone' => '+387 61 345 678',
             'socioeconomic' => [
-                'maritalStatus' => 'married',
-                'employmentStatus' => 'employed_full_time',
-                'incomeLevel' => 'middle',
+                'marital_status' => 'married',
+                'employment_status' => 'employed_full_time',
+                'income_level' => 'middle',
             ],
         ]);
 
@@ -138,7 +138,7 @@ it('allows admin to update patient fields', function () {
 
     $response = $this->actingAs($admin)
         ->patchJson("/api/patients/{$patient->id}", [
-            'firstName' => 'Updated',
+            'first_name' => 'Updated',
             'phone' => '+387 61 999 888',
         ]);
 
@@ -204,7 +204,7 @@ it('returns 422 when required fields are missing on create', function () {
         ->postJson('/api/patients', []);
 
     $response->assertUnprocessable()
-        ->assertJsonValidationErrors(['firstName', 'lastName', 'dateOfBirth', 'gender']);
+        ->assertJsonValidationErrors(['first_name', 'last_name', 'date_of_birth', 'gender']);
 });
 
 it('returns 422 for invalid gender value on create', function () {
@@ -213,14 +213,14 @@ it('returns 422 for invalid gender value on create', function () {
 
     $response = $this->actingAs($admin)
         ->postJson('/api/patients', [
-            'userId' => $patientUser->id,
-            'firstName' => 'John',
-            'lastName' => 'Doe',
-            'dateOfBirth' => '1990-01-15',
+            'user_id' => $patientUser->id,
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'date_of_birth' => '1990-01-15',
             'gender' => 'X',
             'phone' => '+387 61 234 567',
-            'emergencyContactName' => 'Jane',
-            'emergencyContactPhone' => '+387 61 345 678',
+            'emergency_contact_name' => 'Jane',
+            'emergency_contact_phone' => '+387 61 345 678',
         ]);
 
     $response->assertUnprocessable()
@@ -233,18 +233,18 @@ it('returns 422 for invalid date format on create', function () {
 
     $response = $this->actingAs($admin)
         ->postJson('/api/patients', [
-            'userId' => $patientUser->id,
-            'firstName' => 'John',
-            'lastName' => 'Doe',
-            'dateOfBirth' => 'not-a-date',
+            'user_id' => $patientUser->id,
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'date_of_birth' => 'not-a-date',
             'gender' => 'M',
             'phone' => '+387 61 234 567',
-            'emergencyContactName' => 'Jane',
-            'emergencyContactPhone' => '+387 61 345 678',
+            'emergency_contact_name' => 'Jane',
+            'emergency_contact_phone' => '+387 61 345 678',
         ]);
 
     $response->assertUnprocessable()
-        ->assertJsonValidationErrors(['dateOfBirth']);
+        ->assertJsonValidationErrors(['date_of_birth']);
 });
 
 // T022

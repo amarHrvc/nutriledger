@@ -35,7 +35,8 @@ vendor/bin/pint --dirty
 - `ApiController` uses `ApiResponses` trait (`success`, `ok`, `paginated`, `created`, `noContent`, `error`) and `AuthorizesRequests`
 - All API routes live in `routes/api.php` under the `auth:sanctum` middleware group
 - Resources live in `app/Http/Resources/Api/` — JSON:API v1 structure: `type`, `id`, `attributes`, `relationships`
-- Attribute keys in resources are camelCase; DB columns are snake_case — map explicitly
+- Request body keys are snake_case (matches Laravel conventions — no conversion needed in controllers)
+- Resource attribute keys (responses) are camelCase — map snake_case → camelCase only in the Resource class
 - Form Request classes in `app/Http/Requests/Api/` for auth requests, `app/Http/Requests/` for domain requests
 
 ### Authorization Model
