@@ -29,7 +29,8 @@
       "Bash(bd update nutri-ledger-9gl '--design=:*)",
       "Bash(bd update nutri-ledger-1u3 '--design=:*)",
       "Bash(bd update:*)",
-      "Bash(bd search:*)"
+      "Bash(bd search:*)",
+      "Bash(echo \"EXIT:$?\")"
     ]
   },
   "enableAllProjectMcpServers": true,
