@@ -46,6 +46,7 @@ class PatientController extends ApiController
             $patientData,
             $validated['socioeconomic'] ?? null
         );
+
         return $this->created('Patient created successfully.',
             ['patient' => new PatientResource($patient)]);
     }
@@ -56,12 +57,14 @@ class PatientController extends ApiController
     public function show(Patient $patient): JsonResponse
     {
         $this->authorize('view', $patient);
+
         return $this->ok('Patient retrieved successfully.',
             ['patient' => new PatientResource($patient->load(['socioeconomic', 'user']))]);
     }
 
     /**
      * Update the specified resource in storage.
+     *
      * @throws \Throwable
      */
     public function update(UpdatePatientRequest $request, Patient $patient): JsonResponse
@@ -71,7 +74,8 @@ class PatientController extends ApiController
             collect($request->validated())->except(['socioeconomic'])->toArray(),
             $request->validated()['socioeconomic'] ?? null
         );
-        return $this->ok('Patient updated successfully.', ["patient" => new PatientResource($updatePatient)]);
+
+        return $this->ok('Patient updated successfully.', ['patient' => new PatientResource($updatePatient)]);
     }
 
     /**
@@ -81,6 +85,7 @@ class PatientController extends ApiController
     {
         $this->authorize('delete', $patient);
         $patient->delete();
+
         return $this->noContent();
     }
 }

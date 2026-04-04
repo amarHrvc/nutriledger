@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Resources\Api\PatientResource;
-use App\Http\Resources\Api\PatientSocioeconomicResource;
 use App\Models\Patient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -163,4 +162,3 @@ test('PatientResource with() returns empty array when patient has no socioeconom
 
     expect($with)->toBe([]);
 });
-

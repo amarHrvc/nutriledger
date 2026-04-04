@@ -39,7 +39,7 @@ class PatientSocioeconomicResource extends JsonResource
     {
         return [
             'type' => 'patient_socioeconomic',
-            'id' => (string)$this->id,
+            'id' => (string) $this->id,
             'attributes' => [
                 'maritalStatus' => $this->marital_status,
                 'numberOfDependents' => $this->number_of_dependents,
@@ -56,8 +56,7 @@ class PatientSocioeconomicResource extends JsonResource
                 'hasCaregiver' => $this->has_caregiver,
                 'transportationAccess' => $this->transportation_access,
                 'foodSecurityStatus' => $this->food_security_status,
-                'dietaryRestrictionsCultural' =>
-                    $this->dietary_restrictions_cultural,
+                'dietaryRestrictionsCultural' => $this->dietary_restrictions_cultural,
                 'additionalNotes' => $this->additional_notes,
                 'createdAt' => $this->created_at?->toIso8601String(),
                 'updatedAt' => $this->updated_at?->toIso8601String(),

@@ -29,7 +29,7 @@ class StoreUserRequest extends FormRequest
             'role' => 'required|in:admin,doktor,pacijent',
         ];
     }
-    
+
     public function messages(): array
     {
         return [
