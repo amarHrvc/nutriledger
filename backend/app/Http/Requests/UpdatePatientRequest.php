@@ -41,6 +41,8 @@ class UpdatePatientRequest extends FormRequest
             'allergies' => ['sometimes', 'nullable', 'string'],
             'medical_notes' => ['sometimes', 'nullable', 'string'],
 
+            'user_id' => ['prohibited'],
+
             'socioeconomic' => ['sometimes', 'nullable', 'array'],
             'socioeconomic.marital_status' => ['sometimes', 'nullable', 'in:single,married,divorced,widowed,separated,other'],
             'socioeconomic.number_of_dependents' => ['sometimes', 'nullable', 'integer', 'min:0'],
