@@ -42,8 +42,8 @@ class PatientFactory extends Factory
         ];
     }
 
-    public function hasSocioeconomic(): static
+    public function hasSocioeconomic(array $attributes = []): static
     {
-        return $this->has(PatientSocioeconomic::factory(), 'socioeconomic');
+        return $this->has(PatientSocioeconomic::factory()->state($attributes), 'socioeconomic');
     }
 }
