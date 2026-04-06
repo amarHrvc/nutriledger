@@ -4,8 +4,8 @@ Private development monorepo for NutriBase — clinical nutrition management pla
 
 - `backend/` — Laravel 12 REST API
 - `frontend/` — React SPA (SD track)
-- `_sd/README.md` — SD delivery repo README (flows through filter-repo as root README)
-- `backend/README.md` — SE delivery repo README (flows through subtree split as root README)
+- `_sd/README.md` — SD delivery repo root README (flows through filter-repo as root README)
+- `backend/README.md` — Laravel API documentation (delivered to se-origin as `backend/README.md`)
 
 This repo is the **source of truth**. Nothing flows back into it from delivery repos.
 
@@ -16,10 +16,10 @@ This repo is the **source of truth**. Nothing flows back into it from delivery r
 ```
 nutri-ledger/                  ← private development sandbox (this repo)
 ├── backend/                   ← Laravel 12 REST API
+│   └── README.md              ← Laravel API docs (delivered to se-origin as backend/README.md)
 ├── frontend/                  ← React SPA
 ├── _sd/
-│   └── README.md              ← SD repo root README (managed here, delivered via filter-repo)
-├── backend/README.md          ← SE repo root README (managed here, delivered via subtree split)
+│   └── README.md              ← SD repo root README (managed here, delivered via filter-repo rename)
 └── README.md                  ← this file
 ```
 
@@ -37,7 +37,9 @@ Feature branches are numbered and flow sequentially — each branch is based on 
 ...
 ```
 
-Work happens on feature branches. When a feature is complete it is **squash-merged into `develop`** — all commits from the feature branch collapse into one clean commit on develop. Feature branches are deleted after merge.
+Work happens on feature branches. When a feature is complete it is **squash-merged into `develop`** —
+all commits from the feature branch collapse into one clean commit on develop. Feature branches are
+deleted after merge.
 
 `develop` is the only branch that delivery repos ever consume.
 
@@ -67,6 +69,10 @@ git push origin --delete 003-patient-mgmt-api
 
 After this, trigger the delivery push workflow in the appropriate delivery clone(s).
 
+> **Warning**: never rebase or amend commits already on `develop`. Both SE and SD delivery rely on
+> filter-repo determinism — rewriting NL history changes filtered commit hashes and forces a
+> `--force-with-lease` push to all delivery remotes to resync.
+
 ---
 
 ## Delivery Architecture
@@ -75,11 +81,25 @@ NL is never pushed to directly from delivery clones. Two separate local delivery
 one-directional pipelines:
 
 ```
-NL (origin) ──fetch──► SE delivery clone ──subtree split──► se-origin/be-delivery ──PR──► se-origin/main
-                                                                                    ↑
-                                                             colleague FE branch ───┘
+NL (origin) ──fetch──► SE delivery clone ──filter-repo──► se-origin/be-delivery ──PR──┐
+                                                                                        ▼
+                                                           colleague FE branch ──PR──► se-origin/develop
+                                                           your direct changes  ──PR──► se-origin/develop
+                                                                                        │
+                                                                               se-origin/develop ──► se-origin/main (deployment, TBD)
 
-NL (origin) ──fetch──► SD delivery clone ──filter-repo────► sd-origin/main
+NL (origin) ──fetch──► SD delivery clone ──filter-repo────────────────────────────► sd-origin/main
+```
+
+### se-origin branch structure
+
+- `develop` — integration branch. All PRs land here: BE from `be-delivery`, FE from colleague, any direct changes.
+- `main` (or release branch, name TBD) — deployment/submission branch. Merged from `develop` at milestone. Never committed to directly.
+
+```
+se-origin/develop
+├── backend/    ← managed via NL delivery pipeline (be-delivery → PR → develop)
+└── frontend/   ← managed directly by colleague and/or you (feature branch → PR → develop)
 ```
 
 ### Why separate delivery clones
@@ -87,25 +107,40 @@ NL (origin) ──fetch──► SD delivery clone ──filter-repo────
 - NL push is disabled at the remote URL level in both clones — physically impossible to push back
 - Fetch is restricted to `main` and `develop` only — feature branch noise never enters delivery clones
 - Delivery clones are pipeline tools, not workspaces — never commit to them manually
-- If you need to do manual work in se-origin (e.g. FE contribution), use a separate standard clone
-  of se-origin — completely independent from the delivery clone
+- For direct work in se-origin (FE or BE), use a separate standard clone of se-origin
+
+---
+
+## Prerequisites — both delivery clones
+
+Install `git-filter-repo` once. Both SE and SD delivery pipelines use it.
+
+```bash
+pip install git-filter-repo
+```
 
 ---
 
 ## SE Delivery — Setup (one-time)
 
-SE repo receives `backend/` only. The subtree split promotes `backend/` content to the repo root,
-so se-origin looks like a plain Laravel project. The colleague adds their FE directly to se-origin
-without ever touching NL.
+SE delivery pipeline delivers `backend/` only to the `be-delivery` branch in se-origin.
+filter-repo keeps `backend/` as a subfolder (not promoted to root), so the structure in
+`be-delivery` matches se-origin's `backend/` subfolder exactly. Merging `be-delivery` into
+`main` cleanly updates `backend/` while leaving `frontend/` untouched.
 
-### 1. Clone NL into a dedicated SE delivery folder
+### 1. Create se-origin on GitHub first
+
+Create an empty repository on GitHub before running any commands below. The initial push
+requires the remote to exist.
+
+### 2. Clone NL into a dedicated SE delivery folder
 
 ```bash
 git clone git@github_ibu:amarHrvc/nutriledger.git nutri-ledger-se-delivery
 cd nutri-ledger-se-delivery
 ```
 
-### 2. Rename origin to upstream
+### 3. Rename origin to upstream
 
 `origin` is the default name after cloning. Renaming makes it explicit that this is a read-only
 source, not something you push to.
@@ -114,7 +149,7 @@ source, not something you push to.
 git remote rename origin upstream
 ```
 
-### 3. Restrict fetch to main and develop only
+### 4. Restrict fetch to main and develop only
 
 By default, `git fetch` pulls every branch from the remote. Replacing the wildcard refspec with
 two explicit ones means only `main` and `develop` ever land in this clone. Feature branches from
@@ -128,15 +163,7 @@ git config remote.upstream.fetch "+refs/heads/main:refs/remotes/upstream/main"
 git config --add remote.upstream.fetch "+refs/heads/develop:refs/remotes/upstream/develop"
 ```
 
-Verify the result — you should see exactly two fetch lines for upstream:
-
-```bash
-git remote -v show upstream
-# fetch = +refs/heads/main:refs/remotes/upstream/main
-# fetch = +refs/heads/develop:refs/remotes/upstream/develop
-```
-
-### 4. Disable push to upstream
+### 5. Disable push to upstream
 
 This makes it physically impossible to push back to NL from this clone. The push URL is set to a
 nonsense string — git will refuse the push with a "does not appear to be a git repository" error.
@@ -145,15 +172,21 @@ nonsense string — git will refuse the push with a "does not appear to be a git
 git remote set-url --push upstream DISABLED
 ```
 
-### 5. Add se-origin remote
+### 6. Add se-origin remote
 
 ```bash
 git remote add se-origin git@github.com:you/nutribase-se.git
 ```
 
-### 6. Verify all remotes
+### 7. Verify all remotes
 
 ```bash
+git remote show upstream
+# Fetch URL: git@github_ibu:amarHrvc/nutriledger.git
+# Push  URL: DISABLED
+# fetch refspec: +refs/heads/main:refs/remotes/upstream/main
+# fetch refspec: +refs/heads/develop:refs/remotes/upstream/develop
+
 git remote -v
 # upstream   git@github_ibu:amarHrvc/nutriledger.git (fetch)
 # upstream   DISABLED (push)
@@ -161,71 +194,105 @@ git remote -v
 # se-origin  git@github.com:you/nutribase-se.git (push)
 ```
 
-### 7. Initial sync and first push
+### 8. Initial sync and first push
 
 ```bash
 git fetch upstream
 git checkout -B develop upstream/develop
 
-# Subtree split — extracts all commits that touched backend/ and creates a new branch
-# where backend/ content is promoted to the repo root
-git subtree split --prefix=backend -b subtree/se-backend
+# filter-repo keeps only backend/ as a subfolder — everything else is stripped
+# --force is required because filter-repo refuses to run on a repo with configured remotes
+# without it (a safety check) — it does not mean force-push, it means force-run the filter
+git filter-repo \
+  --path backend/ \
+  --force
 
-# Push the split branch to se-origin as be-delivery (not main — main is protected)
-git push se-origin subtree/se-backend:be-delivery --set-upstream
+# filter-repo removes all remote config as a side effect — restore it
+git remote add upstream git@github_ibu:amarHrvc/nutriledger.git
+git config remote.upstream.fetch "+refs/heads/main:refs/remotes/upstream/main"
+git config --add remote.upstream.fetch "+refs/heads/develop:refs/remotes/upstream/develop"
+git remote set-url --push upstream DISABLED
+git remote add se-origin git@github.com:you/nutribase-se.git
+
+# First push — establishes be-delivery branch on se-origin
+git push se-origin develop:be-delivery
 ```
 
-### 8. Create PR on GitHub
+### 9. Create PR on GitHub
 
-In se-origin, open a PR from `be-delivery` → `main`. This PR stays open for the duration of a
-milestone. Each subsequent delivery push updates the `be-delivery` branch and the PR reflects the
-latest BE state automatically. Merge the PR at milestone submission.
+In se-origin, open a PR from `be-delivery` → `develop`. This PR stays open for the duration of a
+milestone. Each subsequent delivery push updates `be-delivery` and the PR reflects the latest
+pipeline state automatically.
 
-### 9. Protect main on se-origin (GitHub settings)
+**Merge strategy**: always use a standard **merge commit** (not squash merge, not rebase) when
+merging `be-delivery` into `develop`. Squash and rebase change commit hashes on `develop`, causing
+divergence with the next delivery push.
 
-In se-origin repository settings → Branches → Add rule for `main`:
+Merge at milestone submission, then promote `develop` → `main` (or the release branch) for deployment.
+
+### 10. Protect branches on se-origin (GitHub settings)
+
+**`develop`** — integration branch, protect with PRs required:
 - Require pull request before merging
 - No direct pushes allowed
 
-This ensures neither you nor the colleague can accidentally commit BE changes directly to main,
-bypassing the delivery pipeline.
+**`main`** (or release branch) — deployment/submission branch:
+- Merged from `develop` only at milestone
+- No direct pushes, no feature PRs — only receives merges from `develop`
+
+Both BE (via `be-delivery` PR) and FE (via feature branch PRs) flow into `develop` through PRs.
 
 ---
 
 ## SE Delivery — Push Workflow (after each NL squash merge)
 
-Run this inside `nutri-ledger-se-delivery`.
+Run this inside `nutri-ledger-se-delivery`, or use the push script below.
 
 ```bash
-# 1. Fetch latest from NL (only main + develop due to restricted refspecs)
+# 1. Save remote URLs before filter-repo removes them
+UPSTREAM_URL=$(git remote get-url upstream)
+SE_URL=$(git remote get-url se-origin)
+
+# 2. Fetch latest from NL (only main + develop due to restricted refspecs)
 git fetch upstream
 
-# 2. Reset local develop to match upstream exactly
-#    This restores the full NL tree including the new squash commit
+# 3. Reset local develop to match upstream exactly
+#    Restores the full NL tree including the new squash commit
 git checkout develop
 git reset --hard upstream/develop
 
-# 3. Delete stale split branch and recreate
-#    subtree split is deterministic — old commits produce identical hashes,
-#    only the new squash commit produces a new hash that appends to be-delivery
-git branch -D subtree/se-backend 2>/dev/null || true
-git subtree split --prefix=backend -b subtree/se-backend
+# 4. Run filter-repo — rewrites local develop in place, keeping only backend/
+#    Old commits produce identical hashes (deterministic), new commit appends
+git filter-repo \
+  --path backend/ \
+  --force
 
-# 4. Push to be-delivery — no force needed for normal incremental pushes
+# 5. Restore remote config (filter-repo removes it every time)
+git remote add upstream "$UPSTREAM_URL"
+git config remote.upstream.fetch "+refs/heads/main:refs/remotes/upstream/main"
+git config --add remote.upstream.fetch "+refs/heads/develop:refs/remotes/upstream/develop"
+git remote set-url --push upstream DISABLED
+git remote add se-origin "$SE_URL"
+
+# 6. Push to be-delivery — no force needed for normal incremental pushes
 #    Old filtered commits already exist in se-origin with identical hashes
 #    Only the new commit is sent
-git push se-origin subtree/se-backend:be-delivery
+git push se-origin develop:be-delivery
 ```
 
-The open PR on GitHub updates automatically. Review and merge at milestone.
+The open PR (`be-delivery` → `develop`) on GitHub updates automatically. Review and merge at milestone,
+then merge `develop` → `main` for deployment/submission.
 
 ### Push script
 
-Save as `push-se.sh` in the delivery clone root for convenience:
+Save as `push-se.sh` in the SE delivery clone root:
 
 ```bash
 #!/bin/bash
 set -e
+
+UPSTREAM_URL=$(git remote get-url upstream)
+SE_URL=$(git remote get-url se-origin)
 
 echo "[SE] Fetching upstream (main + develop only)..."
 git fetch upstream
@@ -234,12 +301,20 @@ echo "[SE] Syncing develop to upstream..."
 git checkout develop
 git reset --hard upstream/develop
 
-echo "[SE] Running subtree split on backend/..."
-git branch -D subtree/se-backend 2>/dev/null || true
-git subtree split --prefix=backend -b subtree/se-backend
+echo "[SE] Running filter-repo (removes remote config as side effect)..."
+git filter-repo \
+  --path backend/ \
+  --force
+
+echo "[SE] Restoring remote config..."
+git remote add upstream "$UPSTREAM_URL"
+git config remote.upstream.fetch "+refs/heads/main:refs/remotes/upstream/main"
+git config --add remote.upstream.fetch "+refs/heads/develop:refs/remotes/upstream/develop"
+git remote set-url --push upstream DISABLED
+git remote add se-origin "$SE_URL"
 
 echo "[SE] Pushing to se-origin/be-delivery..."
-git push se-origin subtree/se-backend:be-delivery
+git push se-origin develop:be-delivery
 
 echo "[SE] Done. Check PR status on se-origin."
 ```
@@ -253,117 +328,124 @@ chmod +x push-se.sh
 
 ## SE Delivery — Force Push Scenarios
 
-A regular push works for all normal incremental deliveries. Force is only needed when the filter
-rules themselves change — adding or removing paths from the subtree split prefix would rewrite all
-historical commit hashes, making them incompatible with what se-origin already has.
+A regular push works for all normal incremental deliveries. Force is only needed when filter-repo
+rules change — adding or removing paths rewrites all historical commit hashes, making them
+incompatible with what se-origin already has.
 
 ```bash
-# Only use this if you changed the split prefix or rules
-git push se-origin subtree/se-backend:be-delivery --force-with-lease
+# Only use this if filter-repo paths changed
+git push se-origin develop:be-delivery --force-with-lease
 ```
 
 `--force-with-lease` over plain `--force`: before overwriting, it checks that the remote tip
-matches what your last fetch saw. If someone pushed to be-delivery from another machine since your
-last fetch, it refuses instead of silently overwriting. Safe habit even in a solo delivery context.
+matches what your last fetch saw. If something was pushed to `be-delivery` from another machine
+since your last fetch, it refuses instead of silently overwriting.
 
 ---
 
-## SE Delivery — Colleague Workflow ***
+## SE Delivery — Direct Work in se-origin
 
-The colleague clones se-origin directly — they never interact with NL.
+Both you and the colleague can make direct changes anywhere in se-origin — including `backend/` —
+via normal feature branches and PRs. The `be-delivery` + PR design means direct `backend/` changes
+are not silently overwritten: if a direct change to `backend/` conflicts with the next NL delivery,
+the `be-delivery → main` PR surfaces a merge conflict at review time. Resolve it in the PR by
+accepting whichever version is correct.
+
+**You (FE or BE work):** use a separate standard clone — never the delivery clone:
 
 ```bash
+# One-time: clone se-origin as a normal workspace
+# Note: 'origin' here refers to se-origin, not NL
+git clone git@github.com:you/nutribase-se.git nutribase-se-workspace
+cd nutribase-se-workspace
+
+git checkout -b fix/something
+# ... make changes in backend/ or frontend/ ...
+git push origin fix/something
+# Open PR → develop
+```
+
+**Colleague (FE work, or anything else):**
+
+```bash
+# Note: 'origin' here refers to se-origin, not NL
 git clone git@github.com:you/nutribase-se.git
 cd nutribase-se
 git checkout -b fe/patient-list
 # ... FE work in frontend/ folder ...
 git push origin fe/patient-list
-# Open PR → main on GitHub
+# Open PR → develop on GitHub
 ```
 
-Their FE commits and your BE delivery commits both flow into se-origin/main via PRs. The two
-streams are fully independent.
+The colleague should put all FE code in a `frontend/` folder at the se-origin root to match the
+`backend/` + `frontend/` convention. There is no pre-existing `frontend/` folder — they create and
+bootstrap it from scratch in their first PR.
 
-**Critical convention**: the colleague must never commit to `backend/` in se-origin. The next BE
-delivery push would overwrite those changes because they are not in NL. If a BE fix is discovered
-during FE work, it must be ported to NL first, squash-merged to develop, then delivered through
-the pipeline.
-
----
-
-## SE Delivery — Manual FE Work by You
-
-If you need to contribute to FE in se-origin yourself, use a separate standard clone — completely
-independent from the delivery clone:
-
-```bash
-# One-time: clone se-origin as a normal workspace
-git clone git@github.com:you/nutribase-se.git nutribase-se-workspace
-cd nutribase-se-workspace
-
-# Normal git workflow — feature branch, PR to main
-git checkout -b fe/fix-something
-# ... make changes ...
-git push origin fe/fix-something
-# Open PR → main
-```
-
-Never commit manually inside `nutri-ledger-se-delivery`. It is a pipeline, not a workspace.
+> The delivery clone (`nutri-ledger-se-delivery`) is a pipeline only — never commit to it manually.
+> Any work you want in se-origin goes through the workspace clone above.
 
 ---
 
 ## SD Delivery — Setup (one-time)
 
-SD repo receives `backend/` + `frontend/` + `_sd/README.md` (renamed to `README.md`). Uses
-`git filter-repo` instead of subtree split because multiple paths are involved. SD is solo so
-main is not protected — delivery pushes go directly to main.
+SD repo receives `backend/` + `frontend/` + `_sd/README.md` (renamed to root `README.md`).
+SD is solo — delivery pushes go directly to `main`, no PR needed.
 
-### Prerequisites
-
-Install `git-filter-repo` once:
+`_sd/README.md` must exist in NL before the first push. Create it:
 
 ```bash
-pip install git-filter-repo
-# or on Windows: winget install git-filter-repo
+mkdir -p _sd
+# write the SD repo README content
+touch _sd/README.md
+git add _sd/README.md
+git commit -m "chore: add SD delivery README"
 ```
 
-### 1. Clone NL into a dedicated SD delivery folder
+### 1. Create sd-origin on GitHub first
+
+Create an empty repository on GitHub before running any commands below.
+
+### 2. Clone NL into a dedicated SD delivery folder
 
 ```bash
 git clone git@github_ibu:amarHrvc/nutriledger.git nutri-ledger-sd-delivery
 cd nutri-ledger-sd-delivery
 ```
 
-### 2. Rename origin to upstream
+### 3. Rename origin to upstream
 
 ```bash
 git remote rename origin upstream
 ```
 
-### 3. Restrict fetch to main and develop only
-
-Same reasoning as SE — only the branches you care about are fetchable.
+### 4. Restrict fetch to main and develop only
 
 ```bash
 git config remote.upstream.fetch "+refs/heads/main:refs/remotes/upstream/main"
 git config --add remote.upstream.fetch "+refs/heads/develop:refs/remotes/upstream/develop"
 ```
 
-### 4. Disable push to upstream
+### 5. Disable push to upstream
 
 ```bash
 git remote set-url --push upstream DISABLED
 ```
 
-### 5. Add sd-origin remote
+### 6. Add sd-origin remote
 
 ```bash
 git remote add sd-origin git@github.com:you/nutribase-sd.git
 ```
 
-### 6. Verify all remotes
+### 7. Verify all remotes
 
 ```bash
+git remote show upstream
+# Fetch URL: git@github_ibu:amarHrvc/nutriledger.git
+# Push  URL: DISABLED
+# fetch refspec: +refs/heads/main:refs/remotes/upstream/main
+# fetch refspec: +refs/heads/develop:refs/remotes/upstream/develop
+
 git remote -v
 # upstream   git@github_ibu:amarHrvc/nutriledger.git (fetch)
 # upstream   DISABLED (push)
@@ -371,21 +453,25 @@ git remote -v
 # sd-origin  git@github.com:you/nutribase-sd.git (push)
 ```
 
-### 7. Initial sync and first push
+### 8. Initial sync and first push
 
 ```bash
 git fetch upstream
 git checkout -B develop upstream/develop
 
-# filter-repo strips everything except the listed paths and renames _sd/README.md to README.md
-# --force is required because filter-repo refuses to run on a repo with a configured remote
-# without it (safety check) — it does not mean force-push, it means force-run
 git filter-repo \
   --path backend/ \
   --path frontend/ \
   --path _sd/README.md \
   --path-rename _sd/README.md:README.md \
   --force
+
+# Restore remote config after filter-repo removes it
+git remote add upstream git@github_ibu:amarHrvc/nutriledger.git
+git config remote.upstream.fetch "+refs/heads/main:refs/remotes/upstream/main"
+git config --add remote.upstream.fetch "+refs/heads/develop:refs/remotes/upstream/develop"
+git remote set-url --push upstream DISABLED
+git remote add sd-origin git@github.com:you/nutribase-sd.git
 
 # First push — establishes history on sd-origin
 git push sd-origin develop:main
@@ -395,19 +481,21 @@ git push sd-origin develop:main
 
 ## SD Delivery — Push Workflow (after each NL squash merge)
 
-Run this inside `nutri-ledger-sd-delivery`.
+Run this inside `nutri-ledger-sd-delivery`, or use the push script below.
 
 ```bash
-# 1. Fetch latest from NL
+# 1. Save remote URLs before filter-repo removes them
+UPSTREAM_URL=$(git remote get-url upstream)
+SD_URL=$(git remote get-url sd-origin)
+
+# 2. Fetch latest from NL
 git fetch upstream
 
-# 2. Restore full NL tree — this undoes the previous filter-repo rewrite
-#    and brings in the new squash commit from develop
+# 3. Restore full NL tree — resets local develop to unfiltered upstream state
 git checkout develop
 git reset --hard upstream/develop
 
-# 3. Run filter-repo — rewrites the local develop history in place
-#    Old commits produce identical hashes (deterministic), new commit appends
+# 4. Run filter-repo
 git filter-repo \
   --path backend/ \
   --path frontend/ \
@@ -415,17 +503,27 @@ git filter-repo \
   --path-rename _sd/README.md:README.md \
   --force
 
-# 4. Push — no force needed for normal incremental pushes
+# 5. Restore remote config
+git remote add upstream "$UPSTREAM_URL"
+git config remote.upstream.fetch "+refs/heads/main:refs/remotes/upstream/main"
+git config --add remote.upstream.fetch "+refs/heads/develop:refs/remotes/upstream/develop"
+git remote set-url --push upstream DISABLED
+git remote add sd-origin "$SD_URL"
+
+# 6. Push — no force needed for normal incremental pushes
 git push sd-origin develop:main
 ```
 
 ### Push script
 
-Save as `push-sd.sh` in the delivery clone root:
+Save as `push-sd.sh` in the SD delivery clone root:
 
 ```bash
 #!/bin/bash
 set -e
+
+UPSTREAM_URL=$(git remote get-url upstream)
+SD_URL=$(git remote get-url sd-origin)
 
 echo "[SD] Fetching upstream (main + develop only)..."
 git fetch upstream
@@ -434,13 +532,20 @@ echo "[SD] Syncing develop to upstream..."
 git checkout develop
 git reset --hard upstream/develop
 
-echo "[SD] Running filter-repo..."
+echo "[SD] Running filter-repo (removes remote config as side effect)..."
 git filter-repo \
   --path backend/ \
   --path frontend/ \
   --path _sd/README.md \
   --path-rename _sd/README.md:README.md \
   --force
+
+echo "[SD] Restoring remote config..."
+git remote add upstream "$UPSTREAM_URL"
+git config remote.upstream.fetch "+refs/heads/main:refs/remotes/upstream/main"
+git config --add remote.upstream.fetch "+refs/heads/develop:refs/remotes/upstream/develop"
+git remote set-url --push upstream DISABLED
+git remote add sd-origin "$SD_URL"
 
 echo "[SD] Pushing to sd-origin/main..."
 git push sd-origin develop:main
@@ -457,7 +562,7 @@ chmod +x push-sd.sh
 
 ## SD Delivery — Force Push Scenarios
 
-Same rule as SE — only needed if filter paths or rename rules change:
+Only needed if filter-repo paths or rename rules change:
 
 ```bash
 git push sd-origin develop:main --force-with-lease
@@ -467,15 +572,13 @@ git push sd-origin develop:main --force-with-lease
 
 ## README Management
 
-Both delivery repos get a managed README that lives in NL and flows through automatically.
-
-| File in NL | Appears as in delivery repo | Mechanism |
+| File in NL | Appears in delivery repo | Mechanism |
 |---|---|---|
-| `backend/README.md` | `README.md` in se-origin | subtree split promotes backend/ to root |
-| `_sd/README.md` | `README.md` in sd-origin | filter-repo path-rename |
+| `backend/README.md` | `backend/README.md` in se-origin | filter-repo keeps path as-is |
+| `_sd/README.md` | `README.md` (root) in sd-origin | filter-repo path-rename |
 
-Edit these files in NL as normal. They are committed to NL history and delivered with every push.
-Never edit README directly in se-origin or sd-origin — it will be overwritten on next delivery.
+Edit these files in NL as normal — they are committed to NL history and delivered with every push.
+se-origin's root README is not managed via pipeline — add it directly in se-origin if needed.
 
 ---
 
@@ -486,9 +589,9 @@ Never edit README directly in se-origin or sd-origin — it will be overwritten 
 | Accidental push from SE delivery clone to NL | `set-url --push upstream DISABLED` — git refuses at URL level |
 | Accidental push from SD delivery clone to NL | `set-url --push upstream DISABLED` — git refuses at URL level |
 | Feature branch noise entering delivery clones | Fetch refspecs restricted to `main` + `develop` only |
-| Direct BE commits to se-origin bypassing pipeline | `main` branch protection on se-origin (PRs required) |
+| Direct commits to se-origin develop bypassing review | `develop` branch protection on se-origin (PRs required) |
 | Manual commits inside delivery clones | Convention — delivery clones are pipelines, not workspaces |
-| Colleague BE changes in se-origin lost on next push | Branch protection + code review on PRs catches this |
+| NL history rewrite breaking incremental delivery | Never rebase or amend commits on `develop` — use force push to resync if it happens |
 
 ---
 
@@ -505,8 +608,8 @@ typed React hooks and Axios clients → FE components consume the hooks directly
 Laravel routes + Form Requests + Resources
         ↓  Scramble reads at runtime
 /docs/api.json  (OpenAPI 3.1 spec, live endpoint)
-        ↓  Orval reads spec URL or local file
-frontend/src/api/  (generated TS types, React Query hooks, Axios clients)
+        ↓  Orval reads spec URL or exported file
+frontend/src/api/generated/  (TS types, React Query hooks, Axios clients)
         ↓
 React components use generated hooks (useGetPatients, useCreatePatient, etc.)
 ```
@@ -541,6 +644,10 @@ php artisan vendor:publish --provider="Dedoc\Scramble\ScrambleServiceProvider" -
 **Auth** — Scramble needs to know about Sanctum so it documents auth correctly:
 
 ```php
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
+
 // AppServiceProvider::boot()
 Scramble::extendOpenApi(function (OpenApi $openApi) {
     $openApi->secure(
@@ -553,7 +660,7 @@ Scramble::extendOpenApi(function (OpenApi $openApi) {
 
 ### FE — Orval
 
-Orval reads the OpenAPI spec (URL or local file) and generates:
+Orval reads the OpenAPI spec (URL or exported file) and generates:
 - **TypeScript interfaces** for all request/response schemas
 - **React Query hooks** (`useQuery`, `useMutation`) per endpoint
 - **Axios instances** pre-configured with base URL and interceptors
@@ -575,8 +682,10 @@ import { defineConfig } from 'orval';
 export default defineConfig({
   nutribase: {
     input: {
-      target: 'http://localhost:8000/docs/api.json',  // Scramble live endpoint
-      // or: target: '../backend/docs/api.json'       // exported local file
+      // Live URL — requires backend running locally
+      target: 'http://localhost:8000/docs/api.json',
+      // Exported file — run: php artisan scramble:export first
+      // target: '../backend/storage/app/api.json',
     },
     output: {
       target: './src/api/generated',
@@ -621,11 +730,11 @@ export function PatientList() {
 
 Whenever BE routes, Form Requests, or Resources change:
 
-1. Scramble picks up changes automatically (no rebuild needed — spec is generated at runtime)
+1. Scramble picks up changes automatically (no rebuild — spec is generated at runtime)
 2. Run `npx orval` in `frontend/` to regenerate hooks and types
 3. TypeScript compiler immediately surfaces any breaking changes in components
 
-Optionally add orval to a `package.json` script:
+Add to `package.json`:
 
 ```json
 {
@@ -643,4 +752,52 @@ Optionally add orval to a `package.json` script:
 |---|---|---|
 | Scribe (`knuckleswtf/scribe`) | BE spec generation | More mature than Scramble, supports annotations, also outputs HTML docs. More setup required. |
 | Hey API | FE client generation | Newer alternative to Orval, cleaner config, less community adoption currently. |
-| openapi-typescript + openapi-fetch | FE client generation | Lightweight alternative — generates types only, no hooks. Manual query setup required. |
+| openapi-typescript + openapi-fetch | FE client generation | Lightweight — generates types only, no hooks. Manual query setup required. |
+
+---
+
+## Appendix — be-delivery Branch Access Control (Future Consideration)
+
+> Not implemented. Worth revisiting if stricter pipeline enforcement is needed.
+
+By default, anyone with write access to se-origin can push to `be-delivery`. The following options
+restrict pushes to `be-delivery` to the delivery pipeline only, making it truly read-only for humans.
+
+### Option A — Dedicated bot account
+
+1. Create a separate GitHub account (e.g. `nutribase-bot`) and add it as a collaborator on se-origin
+2. Branch protection on `be-delivery` → **Restrict who can push** → allow only `nutribase-bot`
+3. Configure the SE delivery clone's se-origin remote to authenticate as the bot via its SSH key or PAT
+4. Neither you nor the colleague can push to `be-delivery` with personal accounts — only the delivery clone authenticating as the bot
+
+**Trade-off**: requires maintaining a second GitHub account and its credentials in the delivery clone.
+
+### Option B — GitHub Actions (fully automated)
+
+Move the delivery push out of the local delivery clone and into a GitHub Actions workflow on NL:
+
+1. Workflow triggers on push to NL `develop`
+2. Runs filter-repo + pushes to se-origin `be-delivery` using a stored secret (PAT or deploy key)
+3. Branch protection on `be-delivery` → allow only `github-actions[bot]`
+
+Neither you nor the colleague can push to `be-delivery` at all. The pipeline becomes fully automated
+and triggered by NL activity rather than run manually.
+
+**Trade-off**: more setup. Requires NL to be hosted where GitHub Actions are available. Local delivery
+clone becomes unnecessary for SE BE delivery.
+
+### Option C — Admin bypass (pragmatic, imperfect)
+
+Branch protection on `be-delivery` with no explicit bypass. As repo owner you can override
+protections as admin when running the delivery push. The colleague (non-admin collaborator) cannot
+push to `be-delivery` at all.
+
+**Trade-off**: does not protect against accidental direct pushes by you. Simplest to set up.
+
+### Recommendation
+
+| Scenario | Option |
+|---|---|
+| Block colleague only, trust yourself | C — admin bypass |
+| Block everyone including yourself | A — bot account |
+| Full automation, no manual delivery steps | B — GitHub Actions |
