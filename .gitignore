@@ -198,3 +198,6 @@ _ide_helper_models.php
 backend/storage/debugbar/
 backend/public/hot
 backend/public/storage
+
+# Beads / Dolt files (added by bd init)
+.beads-credential-key

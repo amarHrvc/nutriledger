@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Patient>
+ * @extends Factory<Patient>
  */
 class PatientFactory extends Factory
 {
@@ -20,6 +21,7 @@ class PatientFactory extends Factory
         $user = User::factory()->create([
             'role' => 'pacijent',
         ]);
+
         return [
             'user_id' => $user->id,
             'first_name' => $user->name,

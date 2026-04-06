@@ -1,8 +1,10 @@
 <?php
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('patient_socioeconomic table exists', function () {
     expect(Schema::hasTable('patient_socioeconomic'))->toBeTrue();
@@ -89,7 +91,7 @@ test('patient_socioeconomic table has updated_at column', function () {
 });
 
 test('has_health_insurance column defaults to false', function () {
-    $columns = \Illuminate\Support\Facades\DB::select("PRAGMA table_info('patient_socioeconomic')");
+    $columns = DB::select("PRAGMA table_info('patient_socioeconomic')");
     $column = collect($columns)->firstWhere('name', 'has_health_insurance');
 
     expect($column)->not->toBeNull()
@@ -97,7 +99,7 @@ test('has_health_insurance column defaults to false', function () {
 });
 
 test('has_family_support column defaults to false', function () {
-    $columns = \Illuminate\Support\Facades\DB::select("PRAGMA table_info('patient_socioeconomic')");
+    $columns = DB::select("PRAGMA table_info('patient_socioeconomic')");
     $column = collect($columns)->firstWhere('name', 'has_family_support');
 
     expect($column)->not->toBeNull()
@@ -105,7 +107,7 @@ test('has_family_support column defaults to false', function () {
 });
 
 test('has_caregiver column defaults to false', function () {
-    $columns = \Illuminate\Support\Facades\DB::select("PRAGMA table_info('patient_socioeconomic')");
+    $columns = DB::select("PRAGMA table_info('patient_socioeconomic')");
     $column = collect($columns)->firstWhere('name', 'has_caregiver');
 
     expect($column)->not->toBeNull()
@@ -113,7 +115,7 @@ test('has_caregiver column defaults to false', function () {
 });
 
 test('patient_id is a foreign key referencing patients table', function () {
-    $foreignKeys = \Illuminate\Support\Facades\DB::select("PRAGMA foreign_key_list('patient_socioeconomic')");
+    $foreignKeys = DB::select("PRAGMA foreign_key_list('patient_socioeconomic')");
     $fk = collect($foreignKeys)->firstWhere('from', 'patient_id');
 
     expect($fk)->not->toBeNull()
@@ -121,14 +123,14 @@ test('patient_id is a foreign key referencing patients table', function () {
 });
 
 test('patient_id has a unique constraint enforcing one-to-one relationship', function () {
-    $indexes = \Illuminate\Support\Facades\DB::select("PRAGMA index_list('patient_socioeconomic')");
+    $indexes = DB::select("PRAGMA index_list('patient_socioeconomic')");
 
     $uniqueOnPatientId = collect($indexes)->filter(function ($index) {
         if (! $index->unique) {
             return false;
         }
         $indexName = addslashes((string) $index->name);
-        $indexInfo = \Illuminate\Support\Facades\DB::select("PRAGMA index_info('{$indexName}')");
+        $indexInfo = DB::select("PRAGMA index_info('{$indexName}')");
 
         return collect($indexInfo)->contains('name', 'patient_id');
     });

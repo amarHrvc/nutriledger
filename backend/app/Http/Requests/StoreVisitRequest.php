@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Visit;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreVisitRequest extends FormRequest
@@ -11,13 +13,13 @@ class StoreVisitRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user() !== null && $this->user()->can('create', \App\Models\Visit::class);
+        return $this->user() !== null && $this->user()->can('create', Visit::class);
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {

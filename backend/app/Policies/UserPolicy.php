@@ -3,41 +3,43 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-//    public function viewAny(User $user): bool
-//    {
-//        return false;
-//    }
+    public function viewAny(User $user): bool
+    {
+        return  $user->isDoctor() || $user->isAdmin();
+    }
 
     /**
      * Determine whether the user can view the model.
      */
-//    public function view(User $user, User $model): bool
-//    {
-//        return false;
-//    }
+    public function view(User $user, User $model): bool
+    {
+        if ($user->isPatient()) {
+            return $user->id === $model->id;
+        }
+
+        return true;
+    }
 
     /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'doktor';
-
+        return $user->isAdmin();
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user): bool
+    public function update(User $user, User $model): bool
     {
-        return $user->role === 'admin' || $user->role === 'doktor';
+        return $user->isAdmin();
     }
 
     /**
@@ -45,36 +47,26 @@ class UserPolicy
      */
     public function delete(User $user, User $userToDelete): bool
     {
-
-        if ($userToDelete->id === $user->id){
-            session()->flash('error', 'You can\'t delete yourself.');
+        if ($userToDelete->id === $user->id) {
             return false;
         }
 
-        if ($user->isAdmin()) {
-            return true;
-        }
-
-        if ($user->isDoctor() && $userToDelete->isPatient()) {
-            return true;
-        }
-
-        return false;
+        return $user->isAdmin();
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-//    public function restore(User $user, User $model): bool
-//    {
-//        return false;
-//    }
+    public function restore(User $user, User $model): bool
+    {
+        return $user->isAdmin();
+    }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-//    public function forceDelete(User $user, User $model): bool
-//    {
-//        return false;
-//    }
+    public function forceDelete(User $user, User $model): bool
+    {
+        return $user->isAdmin();
+    }
 }

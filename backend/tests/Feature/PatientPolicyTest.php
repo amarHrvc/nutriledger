@@ -16,7 +16,6 @@ test('doctor can view any patients', function () {
     expect($doktor->can('viewAny', Patient::class))->toBeTrue();
 });
 
-
 test('patient can not view other patients', function () {
     $user = User::factory()->create(['role' => 'pacijent']);
 
@@ -96,7 +95,6 @@ test('pacijent can not update other patient profile', function () {
     expect($patientB->user->can('update', $patientA))->toBeFalse();
 });
 
-
 // === delete() Authorization Tests ===
 
 test('admin can delete patients', function () {
@@ -110,7 +108,8 @@ test('doktor can delete patients', function () {
     $patient = Patient::factory()->create();
 
     expect($doktor->can('delete', $patient))->toBeTrue();
-});test('pacijent cannot delete own profile', function () {
+});
+test('pacijent cannot delete own profile', function () {
     $user = User::factory()->create(['role' => 'pacijent']);
     $patient = Patient::factory()->create(['user_id' => $user->id]);
 

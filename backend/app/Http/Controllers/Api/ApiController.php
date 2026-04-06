@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Traits\ApiResponses;
-use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ApiController extends Controller
 {
-    use ApiResponses;
+    use ApiResponses, AuthorizesRequests;
     //
 }

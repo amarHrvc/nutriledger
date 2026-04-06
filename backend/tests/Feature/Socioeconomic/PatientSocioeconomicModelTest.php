@@ -50,7 +50,7 @@ test('socioeconomic record can be created with all fields', function (): void {
 });
 
 test('socioeconomic patient_id is required', function (): void {
-    expect(fn () => PatientSocioeconomic::create([]))->toThrow(\Exception::class);
+    expect(fn () => PatientSocioeconomic::create([]))->toThrow(Exception::class);
 });
 
 // --- Fillable ---
@@ -153,7 +153,7 @@ test('patient can only have one socioeconomic record', function (): void {
     $patient = Patient::factory()->create();
     $patient->socioeconomic()->create([]);
 
-    expect(fn () => $patient->socioeconomic()->create([]))->toThrow(\Exception::class);
+    expect(fn () => $patient->socioeconomic()->create([]))->toThrow(Exception::class);
 });
 
 // --- Cascade delete ---

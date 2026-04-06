@@ -1,6 +1,23 @@
 {
+  "permissions": {
+    "allow": [
+      "Read(//d/_Learn/_PhpstormProjects/nutri-ledger/**)",
+      "Bash(powershell.exe -Command \".specify/scripts/powershell/create-new-feature.ps1 ''-input'' ''_docs\\\\spec-kit\\\\002-group1-auth-user-management-prompt.md'' -Json -ShortName ''user-mgmt-api'' ''Auth and User Management API''\")",
+      "Bash(powershell.exe -Command \".specify/scripts/powershell/setup-plan.ps1 -Json\")",
+      "Bash(powershell.exe -Command \"Get-Content .specify/scripts/powershell/update-agent-context.ps1 | head -40\")",
+      "Bash(powershell.exe -Command \"Test-Path .specify/extensions.yml\")",
+      "Bash(powershell.exe -Command \".specify/scripts/powershell/check-prerequisites.ps1 -Json\")",
+      "Bash(git:*)",
+      "Bash(php artisan:*)",
+      "Read(//c/Users/Korisnik/.claude/skills/**)",
+      "Read(//c/Users/Korisnik/.claude/**)",
+      "Bash(find ~/.claude -name settings*.json)",
+      "Bash(gh api:*)",
+      "Bash(curl -s https://raw.githubusercontent.com/steveyegge/beads/main/cmd/bd/import.go)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "laravel-boost"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

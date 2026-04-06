@@ -32,16 +32,16 @@ test('factory produces valid marital_status or null', function (): void {
     expect($socio->marital_status)->toBeIn([...$valid, null]);
 });
 dataset('enum_fields', [
-    'marital_status'        => ['marital_status',        ['single', 'married', 'divorced', 'widowed', 'partnered']],
-    'employment_status'     => ['employment_status',     ['employed_full_time', 'employed_part_time', 'self_employed', 'unemployed', 'retired', 'student', 'disabled']],
-    'income_level'          => ['income_level',          ['low', 'middle', 'high', 'prefer_not_to_say']],
-    'education_level'       => ['education_level',       ['primary', 'secondary', 'vocational', 'bachelor', 'master', 'doctorate', 'other']],
-    'smoking_status'        => ['smoking_status',        ['never', 'former', 'current']],
-    'alcohol_consumption'   => ['alcohol_consumption',   ['none', 'occasional', 'moderate', 'heavy']],
+    'marital_status' => ['marital_status',        ['single', 'married', 'divorced', 'widowed', 'partnered']],
+    'employment_status' => ['employment_status',     ['employed_full_time', 'employed_part_time', 'self_employed', 'unemployed', 'retired', 'student', 'disabled']],
+    'income_level' => ['income_level',          ['low', 'middle', 'high', 'prefer_not_to_say']],
+    'education_level' => ['education_level',       ['primary', 'secondary', 'vocational', 'bachelor', 'master', 'doctorate', 'other']],
+    'smoking_status' => ['smoking_status',        ['never', 'former', 'current']],
+    'alcohol_consumption' => ['alcohol_consumption',   ['none', 'occasional', 'moderate', 'heavy']],
     'physical_activity_level' => ['physical_activity_level', ['sedentary', 'light', 'moderate', 'active', 'very_active']],
     'transportation_access' => ['transportation_access', ['own_vehicle', 'public_transport', 'family', 'limited', 'none']],
-    'food_security_status'  => ['food_security_status',  ['secure', 'at_risk', 'insecure']],
-    'living_arrangement'    => ['living_arrangement',    ['alone', 'with_family', 'with_partner', 'shared', 'institution']],
+    'food_security_status' => ['food_security_status',  ['secure', 'at_risk', 'insecure']],
+    'living_arrangement' => ['living_arrangement',    ['alone', 'with_family', 'with_partner', 'shared', 'institution']],
 ]);
 
 test('factory produces valid enum value or null', function (string $field, array $validValues): void {

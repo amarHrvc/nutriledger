@@ -20,16 +20,16 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->date('date_of_birth');
-            $table->enum("gender", ["M", "F"]);
-            $table->string("phone");
-            $table->string("address")->nullable(true);
-            $table->string("city")->nullable(true);
-            $table->string("postal_code")->nullable(true);
-            $table->string("emergency_contact_name");
-            $table->string("emergency_contact_phone");
-            $table->enum("blood_type", ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])->nullable(true);
-            $table->text("allergies")->nullable(true);
-            $table->text("medical_notes")->nullable(true);
+            $table->enum('gender', ['M', 'F']);
+            $table->string('phone');
+            $table->string('address')->nullable(true);
+            $table->string('city')->nullable(true);
+            $table->string('postal_code')->nullable(true);
+            $table->string('emergency_contact_name');
+            $table->string('emergency_contact_phone');
+            $table->enum('blood_type', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])->nullable(true);
+            $table->text('allergies')->nullable(true);
+            $table->text('medical_notes')->nullable(true);
 
             $table->softDeletes();
             $table->timestamps();

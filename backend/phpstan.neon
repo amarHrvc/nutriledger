@@ -17,3 +17,8 @@ parameters:
         - message: '#Call to an undefined method PHPUnit\\Framework\\TestCase::(getJson|postJson|putJson|deleteJson|patchJson|actingAs|withToken)#'
           paths:
               - tests/**
+        # Pest test dynamic properties set in beforeEach
+        - message: '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$tester#'
+          paths:
+              - tests/Unit/Traits/ApiResponsesTest.php
+
