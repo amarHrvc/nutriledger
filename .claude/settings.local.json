@@ -26,7 +26,8 @@
       "Bash(bd search:*)",
       "Bash(composer run:*)",
       "Bash(bd create:*)",
-      "Bash(bd dep:*)"
+      "Bash(bd dep:*)",
+      "Bash(git -C D:/_Learn/_PhpstormProjects/nutri-ledger remote -v)"
     ]
   },
   "enableAllProjectMcpServers": true,
