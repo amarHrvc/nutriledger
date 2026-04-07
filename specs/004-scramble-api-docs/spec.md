@@ -56,9 +56,9 @@ A developer exports the OpenAPI spec to a static file for offline use, sharing w
 
 ### Edge Cases
 
-- What happens when a route exists but has no corresponding Form Request — does the spec omit the request body or show an empty schema?
-- How does the docs endpoint behave in production — is it accessible publicly or restricted?
-- What happens when the frontend code generation tool is run while the backend is offline?
+- Routes without a corresponding Form Request: Scramble emits an empty or minimal request body schema for that endpoint. No annotation is required; the absence of a Form Request is reflected as-is.
+- Docs endpoints in production: The `/docs/api` and `/docs/api.json` endpoints are not registered in production (`App::isProduction()` gate). Requests return 404. This is intentional.
+- Frontend code generation tool run while backend is offline: Orval exits with a network error. The fix is to start the backend first before running `pnpm run api:generate`.
 
 ## Requirements *(mandatory)*
 
@@ -85,15 +85,23 @@ A developer exports the OpenAPI spec to a static file for offline use, sharing w
 
 ### Measurable Outcomes
 
-- **SC-001**: All existing API endpoints are visible in the docs UI without adding any annotations to existing code
+- **SC-001**: All existing API endpoints are visible in the docs UI without adding any annotations to existing code; verified by asserting that `/docs/api.json` returns HTTP 200 and that specific API paths (`/api/patients`, `/api/users`, `/api/login`) are present in the JSON response
 - **SC-002**: Bearer token authentication is correctly documented on all protected endpoints
 - **SC-003**: The frontend code generation tool runs successfully against the live spec URL and produces output files with no manual intervention
 - **SC-004**: Re-running code generation after a backend change produces updated client files; TypeScript compilation surfaces breaking changes in consuming components
 - **SC-005**: Docs setup requires no changes to existing controllers, resources, form requests, or route files
 
+## Clarifications
+
+### Session 2026-04-07
+
+- Q: What test depth should verify SC-001 (all endpoints visible in docs)? → A: Structural — assert HTTP 200 on `/docs/api.json` plus assert specific API paths (`/api/patients`, `/api/users`, `/api/login`) are present in the JSON response body
+- Q: Should `frontend/src/api/generated/` be committed to git? → A: No — git-ignore the directory; regenerate locally from the live spec
+
 ## Assumptions
 
 - Docs and spec endpoints will be accessible in local development only; production access is out of scope for this feature
 - The frontend code generation tool configuration file is part of this feature's scope to create as a starting point
+- `frontend/src/api/generated/` is git-ignored; generated output is never committed — developers regenerate from the live spec
 - Existing routes, Form Requests, and Resources are structured consistently enough for automatic inference to work without gaps
 - The spec will not cover archived Livewire monolith routes — only current REST API routes
