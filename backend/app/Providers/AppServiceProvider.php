@@ -8,35 +8,23 @@ use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\RateLimiter;
-
 use Illuminate\Support\ServiceProvider;
-use Str;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
+    public function register(): void {}
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         RateLimiter::for('login', fn ($r) => Limit::perMinute(5)->by($r->ip()));
 
-        Scramble::configure()
-            ->routes(function (Route $route) {
-                return Str::startsWith($route->uri, 'api/');
-            });
-
-        Scramble::afterOpenApiGenerated(function (OpenApi $openApi) {
-            $openApi->secure(SecurityScheme::http('bearer', 'JWT'));
+        Scramble::routes(function (Route $route): bool {
+            return str_starts_with($route->uri, 'api/')
+                && ! str_starts_with($route->uri, 'api/test');
         });
 
+        Scramble::afterOpenApiGenerated(function (OpenApi $openApi): void {
+            $openApi->secure(SecurityScheme::http('bearer', 'JWT'));
+        });
     }
 }

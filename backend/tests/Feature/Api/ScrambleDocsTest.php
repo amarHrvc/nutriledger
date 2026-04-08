@@ -13,8 +13,8 @@ test('spec endpoint returns 200', function () {
 test('core API paths are present in spec', function () {
     $spec = $this->getJson('/docs/api.json')->json();
 
-    expect($spec['paths'])->toHaveKey('/api/login')
-        ->and($spec['paths'])->toHaveKey('/api/users');
+    expect($spec['paths'])->toHaveKey('/login')
+        ->and($spec['paths'])->toHaveKey('/users');
 });
 
 test('docs UI is accessible', function () {
@@ -32,7 +32,7 @@ test('bearer security scheme is registered in components', function () {
 test('POST /api/users has request body schema in spec', function () {
     $spec = $this->getJson('/docs/api.json')->json();
 
-    expect($spec['paths']['/api/users']['post'])->toHaveKey('requestBody');
+    expect($spec['paths']['/users']['post'])->toHaveKey('requestBody');
 });
 
 test('docs routes are absent from spec paths', function () {
