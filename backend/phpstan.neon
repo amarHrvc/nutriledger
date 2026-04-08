@@ -1,5 +1,6 @@
 includes:
     - vendor/larastan/larastan/extension.neon
+    - phpstan-baseline.neon
 
 parameters:
     level: 5
@@ -14,7 +15,7 @@ parameters:
     tmpDir: storage/phpstan
     ignoreErrors:
         # Pest test helper methods not recognized by PHPStan
-        - message: '#Call to an undefined method PHPUnit\\Framework\\TestCase::(getJson|postJson|putJson|deleteJson|patchJson|actingAs|withToken)#'
+        - message: '#Call to an undefined method PHPUnit\\Framework\\TestCase::(get|getJson|postJson|putJson|deleteJson|patchJson|actingAs|withToken|withoutMiddleware)#'
           paths:
               - tests/**
         # Pest test dynamic properties set in beforeEach

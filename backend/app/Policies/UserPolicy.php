@@ -11,7 +11,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return  $user->isDoctor() || $user->isAdmin();
+        return $user->isDoctor() || $user->isAdmin();
     }
 
     /**
