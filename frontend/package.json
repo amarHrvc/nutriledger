@@ -12,6 +12,7 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "build:icons": "tsx src/assets/iconify-icons/bundle-icons-css.ts",
     "postinstall": "npm run build:icons",
+    "api:generate": "orval",
     "clean": "rm -rf .next",
     "clear": "rm -rf node_modules .next"
   },
@@ -64,7 +65,7 @@
   },
   "resolutions": {
     "rimraf": "5.0.7",
-    "unicorn-magic": "0.1.0",
+    "unicorn-magic": "0.4.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "eslint": "8.57.1",
@@ -72,7 +73,7 @@
   },
   "overrides": {
     "rimraf": "5.0.7",
-    "unicorn-magic": "0.1.0",
+    "unicorn-magic": "0.4.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "@emoji-mart/react": {
