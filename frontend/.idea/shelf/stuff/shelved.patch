@@ -1,0 +1,227 @@
+Index: .idea/material_theme_project_new.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/material_theme_project_new.xml b/.idea/material_theme_project_new.xml
+new file mode 100644
+--- /dev/null	(date 1775771377181)
++++ b/.idea/material_theme_project_new.xml	(date 1775771377181)
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="MaterialThemeProjectNewConfig">
++    <option name="metadata">
++      <MTProjectMetadataState>
++        <option name="migrated" value="true" />
++        <option name="pristineConfig" value="false" />
++        <option name="userId" value="5622db:1911eb588b8:-8000" />
++        <option name="version" value="8.13.2" />
++      </MTProjectMetadataState>
++    </option>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/inspectionProfiles/Project_Default.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/inspectionProfiles/Project_Default.xml b/.idea/inspectionProfiles/Project_Default.xml
+new file mode 100644
+--- /dev/null	(date 1775771375045)
++++ b/.idea/inspectionProfiles/Project_Default.xml	(date 1775771375045)
+@@ -0,0 +1,6 @@
++<component name="InspectionProjectProfileManager">
++  <profile version="1.0">
++    <option name="myName" value="Project Default" />
++    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
++  </profile>
++</component>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"0d19696e-ccce-412c-98cb-f7393b2031c8\" name=\"Changes\" comment=\"T017: Configure .env.local and .env.example\" />\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"ChangesViewManager\">\n    <option name=\"groupingKeys\">\n      <option value=\"directory\" />\n      <option value=\"repository\" />\n    </option>\n  </component>\n  <component name=\"CopilotPersistence\">\n    <persistenceIdMap>\n      <entry key=\"_D:/_Learn/_PhpstormProjects/nutri-ledger/frontend\" value=\"3BubvoivVxyX8hVWUJy7AHa4zDf\" />\n    </persistenceIdMap>\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"TypeScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$/..\" />\n  </component>\n  <component name=\"ProjectColorInfo\"><![CDATA[{\n  \"associatedIndex\": 5\n}]]></component>\n  <component name=\"ProjectId\" id=\"3BubvoivVxyX8hVWUJy7AHa4zDf\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"ModuleVcsDetector.initialDetectionPerformed\": \"true\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252\": \"true\",\n    \"git-widget-placeholder\": \"003-patient-management-api\",\n    \"ignore.virus.scanning.warn.message\": \"true\",\n    \"js.debugger.nextJs.config.created.client\": \"true\",\n    \"js.debugger.nextJs.config.created.server\": \"true\",\n    \"last_opened_file_path\": \"D:/_Learn/_PhpstormProjects/nutri-ledger/frontend/src/app/(dashboard)\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.detected.package.stylelint\": \"true\",\n    \"node.js.detected.package.tslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"node.js.selected.package.stylelint\": \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\\\\frontend\\\\node_modules\\\\stylelint\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"pnpm\",\n    \"prettierjs.PrettierConfiguration.Package\": \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\\\\frontend\\\\node_modules\\\\prettier\",\n    \"ts.external.directory.path\": \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\\\\frontend\\\\node_modules\\\\typescript\\\\lib\",\n    \"vue.rearranger.settings.migration\": \"true\"\n  }\n}]]></component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\frontend\\src\\app\\(dashboard)\" />\n      <recent name=\"D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\frontend\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\frontend\\src\\app\\(dashboard)\\page\" />\n    </key>\n  </component>\n  <component name=\"RunManager\" selected=\"npm.Next.js: server-side\">\n    <configuration name=\"Next.js: debug client-side\" type=\"JavascriptDebugType\" uri=\"http://localhost:3000/\">\n      <method v=\"2\" />\n    </configuration>\n    <configuration name=\"Next.js: server-side\" type=\"js.build_tools.npm\">\n      <package-json value=\"$PROJECT_DIR$/package.json\" />\n      <command value=\"run\" />\n      <scripts>\n        <script value=\"dev\" />\n      </scripts>\n      <node-interpreter value=\"project\" />\n      <envs />\n      <method v=\"2\" />\n    </configuration>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-WS-252.26830.93\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"0d19696e-ccce-412c-98cb-f7393b2031c8\" name=\"Changes\" comment=\"\" />\n      <created>1775342136854</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1775342136854</updated>\n      <workItem from=\"1775342137775\" duration=\"4584000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"T014: Scaffold Next.js + TypeScript project\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1775343958949</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1775343958949</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"T015: Create http client instance\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1775345689519</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1775345689519</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"T016: Create smoke-test page component\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1775346862949</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1775346862949</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"T017: Configure .env.local and .env.example\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1775346974600</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1775346974601</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"5\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"T014: Scaffold Next.js + TypeScript project\" />\n    <MESSAGE value=\"T015: Create http client instance\" />\n    <MESSAGE value=\"T016: Create smoke-test page component\" />\n    <MESSAGE value=\"T017: Configure .env.local and .env.example\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"T017: Configure .env.local and .env.example\" />\n  </component>\n  <component name=\"github-copilot-workspace\">\n    <instructionFileLocations>\n      <option value=\".github/instructions\" />\n    </instructionFileLocations>\n    <promptFileLocations>\n      <option value=\".github/prompts\" />\n    </promptFileLocations>\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 34100686334a1f646352353c611f4e58f01eae1e)
++++ b/.idea/workspace.xml	(date 1775771464269)
+@@ -31,36 +31,36 @@
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+   </component>
+-  <component name="ProjectColorInfo"><![CDATA[{
+-  "associatedIndex": 5
+-}]]></component>
++  <component name="ProjectColorInfo">{
++  &quot;associatedIndex&quot;: 5
++}</component>
+   <component name="ProjectId" id="3BubvoivVxyX8hVWUJy7AHa4zDf" />
+   <component name="ProjectViewState">
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "ModuleVcsDetector.initialDetectionPerformed": "true",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+-    "git-widget-placeholder": "003-patient-management-api",
+-    "ignore.virus.scanning.warn.message": "true",
+-    "js.debugger.nextJs.config.created.client": "true",
+-    "js.debugger.nextJs.config.created.server": "true",
+-    "last_opened_file_path": "D:/_Learn/_PhpstormProjects/nutri-ledger/frontend/src/app/(dashboard)",
+-    "node.js.detected.package.eslint": "true",
+-    "node.js.detected.package.stylelint": "true",
+-    "node.js.detected.package.tslint": "true",
+-    "node.js.selected.package.eslint": "(autodetect)",
+-    "node.js.selected.package.stylelint": "D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\frontend\\node_modules\\stylelint",
+-    "node.js.selected.package.tslint": "(autodetect)",
+-    "nodejs_package_manager_path": "pnpm",
+-    "prettierjs.PrettierConfiguration.Package": "D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\frontend\\node_modules\\prettier",
+-    "ts.external.directory.path": "D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\frontend\\node_modules\\typescript\\lib",
+-    "vue.rearranger.settings.migration": "true"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;003-patient-management-api&quot;,
++    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
++    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
++    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
++    &quot;last_opened_file_path&quot;: &quot;D:/_Learn/_PhpstormProjects/nutri-ledger/frontend/src/app/(dashboard)&quot;,
++    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
++    &quot;node.js.detected.package.stylelint&quot;: &quot;true&quot;,
++    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
++    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
++    &quot;node.js.selected.package.stylelint&quot;: &quot;D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\frontend\\node_modules\\stylelint&quot;,
++    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
++    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
++    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\frontend\\node_modules\\prettier&quot;,
++    &quot;ts.external.directory.path&quot;: &quot;D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\frontend\\node_modules\\typescript\\lib&quot;,
++    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="RecentsManager">
+     <key name="CopyFile.RECENT_KEYS">
+       <recent name="D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\(dashboard)" />
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1775771375059)
++++ b/.idea/vcs.xml	(date 1775771375059)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/prettier.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/prettier.xml b/.idea/prettier.xml
+new file mode 100644
+--- /dev/null	(date 1775771375055)
++++ b/.idea/prettier.xml	(date 1775771375055)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="PrettierConfiguration">
++    <option name="myConfigurationMode" value="AUTOMATIC" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Checkout_at_09_04_2026_23_48_[Changes]/shelved.patch
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Checkout_at_09_04_2026_23_48_[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Checkout_at_09_04_2026_23_48_[Changes]/shelved.patch
+new file mode 100644
+--- /dev/null	(date 1775771324693)
++++ b/.idea/shelf/Uncommitted_changes_before_Checkout_at_09_04_2026_23_48_[Changes]/shelved.patch	(date 1775771324693)
+@@ -0,0 +1,52 @@
++Index: .idea/workspace.xml
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"0d19696e-ccce-412c-98cb-f7393b2031c8\" name=\"Changes\" comment=\"T017: Configure .env.local and .env.example\" />\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"ChangesViewManager\">\n    <option name=\"groupingKeys\">\n      <option value=\"directory\" />\n      <option value=\"repository\" />\n    </option>\n  </component>\n  <component name=\"CopilotPersistence\">\n    <persistenceIdMap>\n      <entry key=\"_D:/_Learn/_PhpstormProjects/nutri-ledger/frontend\" value=\"3BubvoivVxyX8hVWUJy7AHa4zDf\" />\n    </persistenceIdMap>\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"TypeScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$/..\" />\n  </component>\n  <component name=\"ProjectColorInfo\"><![CDATA[{\n  \"associatedIndex\": 5\n}]]></component>\n  <component name=\"ProjectId\" id=\"3BubvoivVxyX8hVWUJy7AHa4zDf\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"ModuleVcsDetector.initialDetectionPerformed\": \"true\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252\": \"true\",\n    \"git-widget-placeholder\": \"003-patient-management-api\",\n    \"ignore.virus.scanning.warn.message\": \"true\",\n    \"js.debugger.nextJs.config.created.client\": \"true\",\n    \"js.debugger.nextJs.config.created.server\": \"true\",\n    \"last_opened_file_path\": \"D:/_Learn/_PhpstormProjects/nutri-ledger/frontend/src/app/(dashboard)\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.detected.package.stylelint\": \"true\",\n    \"node.js.detected.package.tslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"node.js.selected.package.stylelint\": \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\\\\frontend\\\\node_modules\\\\stylelint\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"pnpm\",\n    \"prettierjs.PrettierConfiguration.Package\": \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\\\\frontend\\\\node_modules\\\\prettier\",\n    \"ts.external.directory.path\": \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\\\\frontend\\\\node_modules\\\\typescript\\\\lib\",\n    \"vue.rearranger.settings.migration\": \"true\"\n  }\n}]]></component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\frontend\\src\\app\\(dashboard)\" />\n      <recent name=\"D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\frontend\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\frontend\\src\\app\\(dashboard)\\page\" />\n    </key>\n  </component>\n  <component name=\"RunManager\" selected=\"npm.Next.js: server-side\">\n    <configuration name=\"Next.js: debug client-side\" type=\"JavascriptDebugType\" uri=\"http://localhost:3000/\">\n      <method v=\"2\" />\n    </configuration>\n    <configuration name=\"Next.js: server-side\" type=\"js.build_tools.npm\">\n      <package-json value=\"$PROJECT_DIR$/package.json\" />\n      <command value=\"run\" />\n      <scripts>\n        <script value=\"dev\" />\n      </scripts>\n      <node-interpreter value=\"project\" />\n      <envs />\n      <method v=\"2\" />\n    </configuration>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-WS-252.26830.93\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"0d19696e-ccce-412c-98cb-f7393b2031c8\" name=\"Changes\" comment=\"\" />\n      <created>1775342136854</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1775342136854</updated>\n      <workItem from=\"1775342137775\" duration=\"4584000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"T014: Scaffold Next.js + TypeScript project\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1775343958949</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1775343958949</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"T015: Create http client instance\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1775345689519</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1775345689519</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"T016: Create smoke-test page component\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1775346862949</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1775346862949</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"T017: Configure .env.local and .env.example\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1775346974600</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1775346974601</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"5\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"T014: Scaffold Next.js + TypeScript project\" />\n    <MESSAGE value=\"T015: Create http client instance\" />\n    <MESSAGE value=\"T016: Create smoke-test page component\" />\n    <MESSAGE value=\"T017: Configure .env.local and .env.example\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"T017: Configure .env.local and .env.example\" />\n  </component>\n  <component name=\"github-copilot-workspace\">\n    <instructionFileLocations>\n      <option value=\".github/instructions\" />\n    </instructionFileLocations>\n    <promptFileLocations>\n      <option value=\".github/prompts\" />\n    </promptFileLocations>\n  </component>\n</project>
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/.idea/workspace.xml b/.idea/workspace.xml
++--- a/.idea/workspace.xml	(revision 34100686334a1f646352353c611f4e58f01eae1e)
+++++ b/.idea/workspace.xml	(date 1775771308743)
++@@ -4,7 +4,9 @@
++     <option name="autoReloadType" value="SELECTIVE" />
++   </component>
++   <component name="ChangeListManager">
++-    <list default="true" id="0d19696e-ccce-412c-98cb-f7393b2031c8" name="Changes" comment="T017: Configure .env.local and .env.example" />
+++    <list default="true" id="0d19696e-ccce-412c-98cb-f7393b2031c8" name="Changes" comment="T017: Configure .env.local and .env.example">
+++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+++    </list>
++     <option name="SHOW_DIALOG" value="false" />
++     <option name="HIGHLIGHT_CONFLICTS" value="true" />
++     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
++@@ -31,9 +33,9 @@
++   <component name="Git.Settings">
++     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
++   </component>
++-  <component name="ProjectColorInfo"><![CDATA[{
++-  "associatedIndex": 5
++-}]]></component>
+++  <component name="ProjectColorInfo">{
+++  &quot;associatedIndex&quot;: 5
+++}</component>
++   <component name="ProjectId" id="3BubvoivVxyX8hVWUJy7AHa4zDf" />
++   <component name="ProjectViewState">
++     <option name="hideEmptyMiddlePackages" value="true" />
++@@ -44,7 +46,8 @@
++     "ModuleVcsDetector.initialDetectionPerformed": "true",
++     "RunOnceActivity.ShowReadmeOnStart": "true",
++     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
++-    "git-widget-placeholder": "003-patient-management-api",
+++    "RunOnceActivity.git.unshallow": "true",
+++    "git-widget-placeholder": "004__Scramble__Docs",
++     "ignore.virus.scanning.warn.message": "true",
++     "js.debugger.nextJs.config.created.client": "true",
++     "js.debugger.nextJs.config.created.server": "true",
++@@ -100,6 +103,7 @@
++       <option name="presentableId" value="Default" />
++       <updated>1775342136854</updated>
++       <workItem from="1775342137775" duration="4584000" />
+++      <workItem from="1775770941535" duration="364000" />
++     </task>
++     <task id="LOCAL-00001" summary="T014: Scaffold Next.js + TypeScript project">
++       <option name="closed" value="true" />
+Index: .idea/shelf/Uncommitted_changes_before_Checkout_at_09_04_2026_23_48__Changes_.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Checkout_at_09_04_2026_23_48__Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Checkout_at_09_04_2026_23_48__Changes_.xml
+new file mode 100644
+--- /dev/null	(date 1775771377146)
++++ b/.idea/shelf/Uncommitted_changes_before_Checkout_at_09_04_2026_23_48__Changes_.xml	(date 1775771377146)
+@@ -0,0 +1,4 @@
++<changelist name="Uncommitted_changes_before_Checkout_at_09_04_2026_23_48_[Changes]" date="1775771325804" recycled="true" deleted="true">
++  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_09_04_2026_23_48_[Changes]/shelved.patch" />
++  <option name="DESCRIPTION" value="Uncommitted changes before Checkout at 09/04/2026 23:48 [Changes]" />
++</changelist>
+\ No newline at end of file
+diff --git a/.idea/codeStyles/codeStyleConfig.xml b/.idea/codeStyles/codeStyleConfig.xml
+new file mode 100644
+diff --git a/.idea/codeStyles/Project.xml b/.idea/codeStyles/Project.xml
+new file mode 100644

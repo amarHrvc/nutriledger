@@ -4,7 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0d19696e-ccce-412c-98cb-f7393b2031c8" name="Changes" comment="T017: Configure .env.local and .env.example" />
+    <list default="true" id="0d19696e-ccce-412c-98cb-f7393b2031c8" name="Changes" comment="T009 Create frontend/orval.config.ts">
+      <change afterPath="$PROJECT_DIR$/src/api/generated/auth/auth.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/generated/default/default.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/generated/nutriBaseAPI.schemas.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/generated/user/user.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/database/database.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/database/database.sqlite" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/public/build/assets/app-BuG9aa18.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/public/build/assets/app-ZEuA-1GE.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/public/build/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/public/build/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,9 +43,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="3BubvoivVxyX8hVWUJy7AHa4zDf" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -44,7 +56,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "git-widget-placeholder": "003-patient-management-api",
+    "git-widget-placeholder": "004__Scramble__Docs",
     "ignore.virus.scanning.warn.message": "true",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
@@ -133,18 +145,47 @@
       <option name="project" value="LOCAL" />
       <updated>1775346974601</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="T017: Configure .env.local and .env.example">
+      <option name="closed" value="true" />
+      <created>1775776139962</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1775776139962</updated>
+    </task>
+    <task id="LOCAL-00006" summary="T009 Create frontend/orval.config.ts">
+      <option name="closed" value="true" />
+      <created>1775776220427</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1775776220427</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="T014: Scaffold Next.js + TypeScript project" />
     <MESSAGE value="T015: Create http client instance" />
     <MESSAGE value="T016: Create smoke-test page component" />
+    <MESSAGE value="009 Create frontend/orval.config.ts" />
     <MESSAGE value="T017: Configure .env.local and .env.example" />
-    <option name="LAST_COMMIT_MESSAGE" value="T017: Configure .env.local and .env.example" />
+    <MESSAGE value="T009 Create frontend/orval.config.ts" />
+    <option name="LAST_COMMIT_MESSAGE" value="T009 Create frontend/orval.config.ts" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

@@ -1,0 +1,211 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Policies/PatientSocioeconomicPolicy.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Policies/VisitPolicy.php
+
+		-
+			message: '#^PHPDoc tag @return with type void\|true is not subtype of native type bool\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: app/Policies/VisitPolicy.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$app\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/Api/AuthTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Patient\:\:\$full_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/PatientModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/Feature/PatientModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/PatientModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$patient\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/Feature/PatientModelTest.php
+
+		-
+			message: '#^Cannot call method format\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/Feature/PatientModelTest.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:can\(\)\.$#'
+			identifier: method.notFound
+			count: 5
+			path: tests/Feature/PatientPolicyTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicFactoryTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$additional_notes\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$dietary_restrictions_cultural\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$education_level\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$employment_status\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$food_security_status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$has_caregiver\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$has_family_support\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$has_health_insurance\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$income_level\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$living_arrangement\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$marital_status\.$#'
+			identifier: property.notFound
+			count: 4
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$number_of_dependents\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$occupation\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$patient\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$patient_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$transportation_access\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/Socioeconomic/PatientSocioeconomicModelTest.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:can\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/Feature/visits/VisitPolicyTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$role\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/visits/VisitsFactoryTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/Feature/visits/VisitsModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$patient_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/visits/VisitsModelTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$role\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Feature/visits/VisitsModelTest.php
+
+		-
+			message: '#^Cannot call method isToday\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/Feature/visits/VisitsModelTest.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/Feature/visits/VisitsModelTest.php

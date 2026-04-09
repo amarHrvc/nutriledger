@@ -29,12 +29,13 @@ trait ApiResponses
     protected function paginated(string $message, ResourceCollection $collection): JsonResponse
     {
         $payload = $collection->response()->getData(true);
+
         return response()->json([
             'message' => $message,
-            'status'  => 200,
-            'data'    => $payload['data'],
-            'meta'    => $payload['meta'],
-            'links'   => $payload['links'],
+            'status' => 200,
+            'data' => $payload['data'],
+            'meta' => $payload['meta'],
+            'links' => $payload['links'],
         ], 200);
     }
 
@@ -47,6 +48,7 @@ trait ApiResponses
     {
         return response()->json(null, 204);
     }
+
     protected function notFound(): JsonResponse
     {
         return response()->json(null, 404);

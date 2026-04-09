@@ -140,6 +140,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/larastan/larastan" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpstan/phpstan" />
       <excludeFolder url="file://$MODULE_DIR$/storage/phpstan" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dedoc/scramble" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-package-tools" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

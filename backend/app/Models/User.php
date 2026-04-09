@@ -17,7 +17,6 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * @property-read int $id
  */
-
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
