@@ -38,10 +38,10 @@ test('patient cannot view other patients visits', function () {
     expect($patient1->user->can('view', $visit))->toBeFalse();
 });
 
-test('admin can create a visit', function () {
+test('admin cannot create a visit', function () {
     $admin = User::factory()->create(['role' => 'admin']);
 
-    expect($admin->can('create', Visit::class))->toBeTrue();
+    expect($admin->can('create', Visit::class))->toBeFalse();
 });
 
 test('doctor can create a visit', function () {
@@ -54,6 +54,27 @@ test('patient can not create a visit', function () {
     $patient = Patient::factory()->create();
 
     expect($patient->user->can('create', Visit::class))->toBeFalse();
+});
+
+// viewAny
+test('admin can view any visits', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $patient = Patient::factory()->create();
+
+    expect($admin->can('viewAny', $patient))->toBeTrue();
+});
+
+test('doctor can view any patients visits', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+
+    expect($doctor->can('viewAny', $patient))->toBeTrue();
+});
+
+test('patient can view their own visits', function () {
+    $patient = Patient::factory()->create();
+
+    expect($patient->user->can('viewAny', $patient))->toBeTrue();
 });
 
 // update
