@@ -1,0 +1,75 @@
+{
+  "id": "nutri-ledger-env",
+  "name": "NutriLabs Local",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "localhost:8000",
+      "enabled": true,
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "enabled": true,
+      "type": "string"
+    },
+    {
+      "key": "admin_user_id",
+      "value": "",
+      "enabled": true,
+      "type": "string"
+    },
+    {
+      "key": "admin_email",
+      "value": "admin@nutrilabs.com",
+      "enabled": true,
+      "type": "string"
+    },
+    {
+      "key": "doctor_token",
+      "value": "",
+      "enabled": true,
+      "type": "string"
+    },
+    {
+      "key": "doctor_user_id",
+      "value": "",
+      "enabled": true,
+      "type": "string"
+    },
+    {
+      "key": "doctor_email",
+      "value": "doctor@nutrilabs.com",
+      "enabled": true,
+      "type": "string"
+    },
+    {
+      "key": "patient_token",
+      "value": "",
+      "enabled": true,
+      "type": "string"
+    },
+    {
+      "key": "patient_user_id",
+      "value": "",
+      "enabled": true,
+      "type": "string"
+    },
+    {
+      "key": "patient_id",
+      "value": "",
+      "enabled": true,
+      "type": "string"
+    },
+    {
+      "key": "visit_id",
+      "value": "",
+      "enabled": true,
+      "type": "string"
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2026-04-10T16:56:00.000Z",
+  "_postman_exported_using": "Postman/11.0.0"
+}
