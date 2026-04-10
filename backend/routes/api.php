@@ -36,4 +36,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->middleware('auth:sanctum')
         ->name('patients.visits.index');
 
+    Route::get('/patients/{patient}/visits/{visit}', [VisitController::class, 'show'])
+        ->middleware('auth:sanctum')
+        ->where('visit', '[0-9]+')
+        ->name('patients.visits.show');
+
 });

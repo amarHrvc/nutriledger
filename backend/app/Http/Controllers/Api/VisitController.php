@@ -26,6 +26,22 @@ class VisitController extends ApiController
         );
     }
 
+    public function show(Patient $patient, Visit $visit): JsonResponse
+    {
+        // Ensure visit belongs to this patient (route scoping)
+        if ($visit->patient_id !== $patient->id) {
+            abort(404);
+        }
+
+        $this->authorize('view', $visit);
+
+        $visit->load('doctor');
+
+        return $this->ok('Visit retrieved successfully.', [
+            'visit' => new VisitResource($visit),
+        ]);
+    }
+
     public function store(StoreVisitRequest $request, Patient $patient): JsonResponse
     {
         $this->authorize('create', Visit::class);
@@ -43,6 +59,11 @@ class VisitController extends ApiController
 
     public function update(StoreVisitRequest $request, Patient $patient, Visit $visit): JsonResponse
     {
+        // Ensure visit belongs to this patient (route scoping)
+        if ($visit->patient_id !== $patient->id) {
+            abort(404);
+        }
+
         $this->authorize('update', $visit);
 
         $visit->update([
