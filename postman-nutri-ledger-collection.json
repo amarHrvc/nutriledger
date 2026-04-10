@@ -6,6 +6,39 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "12345678"
   },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{admin_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Collection-level pre-request script",
+          "// Sets up environment if not already configured",
+          "if (!pm.environment.get('base_url')) {",
+          "    pm.environment.set('base_url', 'localhost:8000');",
+          "}",
+          "",
+          "// Debug: Log current auth token status",
+          "const token = pm.environment.get('admin_token');",
+          "if (token) {",
+          "    console.log('✓ Using token: ' + token.substring(0, 30) + '...');",
+          "} else {",
+          "    console.log('⚠️  admin_token not set - run Login first');",
+          "}"
+        ]
+      }
+    }
+  ],
   "item": [
     {
       "name": "🔐 Authentication",
@@ -783,20 +816,6 @@
           "response": []
         }
       ]
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [
-          "// Global environment setup",
-          "if (!pm.environment.get('base_url')) {",
-          "    pm.environment.set('base_url', 'localhost:8000');",
-          "}"
-        ]
-      }
     }
   ],
   "variable": [
