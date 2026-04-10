@@ -71,4 +71,18 @@ class VisitController extends ApiController
             'visit' => new VisitResource($visit->load(['patient', 'doctor'])),
         ]);
     }
+
+    public function destroy(Patient $patient, Visit $visit): JsonResponse
+    {
+        // Ensure visit belongs to this patient (route scoping)
+        if ($visit->patient_id !== $patient->id) {
+            abort(404);
+        }
+
+        $this->authorize('delete', $visit);
+
+        $visit->delete();
+
+        return $this->noContent();
+    }
 }
