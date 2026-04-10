@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\VisitController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/ping', fn () => response()->json(['status' => 'ok', 'message' => 'ping', 'data' => []]));
@@ -25,8 +26,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     Route::middleware(['role:admin,doktor'])->group(function () {
+        Route::apiResource('patients.visits', VisitController::class)
+            ->only(['store']);
         Route::get('/test/admin-doktor-only', fn () => response()->json(['message' => 'ok', 'status' => 200, 'data' => null]));
-        // Patients + Visits — 002-patients, 003-visits BE
     });
 
 });
