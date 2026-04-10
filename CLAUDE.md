@@ -65,6 +65,39 @@ Use Flux UI free components (`<flux:button>`, `<flux:input>`, `<flux:modal>`, `<
 - Policies, routes, Livewire component rendering, and middleware all have separate test coverage
 - Write tests before or alongside implementation (TDD encouraged)
 
+### API Response Format (ApiResponses Trait)
+- **ALL** API controllers must use the `ApiResponses` trait for consistent response wrapping
+- Never use raw `response()->json()` — use trait methods instead:
+  - `$this->created(resource, message)` — returns 201 with data wrapper
+  - `$this->ok(resource, message)` — returns 200 with data wrapper
+  - `$this->noContent()` — returns 204
+  - `$this->error(message, code)` — returns error response
+  - `$this->paginated(collection, message)` — returns paginated data
+- Response structure: `{ "message": "...", "status": <code>, "data": {...} }`
+- See `app/Http/Controllers/Api/ApiController.php` and existing controllers for examples
+
+### Authorization & Admin Privileges
+- Three roles: `admin`, `doktor` (doctor), `pacijent` (patient)
+- **Critical Rule: Admins have full system access** unless explicitly documented otherwise
+  - Do NOT restrict admin to only "admin-like" actions
+  - If a doctor can do action X, admin can do action X
+  - If a patient can view Y, admin can view Y
+  - Admins should only be denied access where business logic explicitly requires it (e.g., patient's private data)
+- Example: If `VisitPolicy::create()` allows doctors to create visits, it must also allow admins
+- Use `$user->adminOrDoctor()` or similar helpers to group doctor+admin authorization
+- Apply policies consistently across all endpoints (HTTP controllers, Livewire components, service layer)
+
+### Task Tracking (BD/Beads Requirement)
+- **CRITICAL: ALL task/issue tracking MUST go through `bd` (beads) — NEVER use markdown files, internal plans, or external tracking**
+- Workflow for agents:
+  1. Check `bd ready` to find available work
+  2. Claim task: `bd update <task-id> --claim --json`
+  3. Implement work with atomic commits referencing the bd issue ID
+  4. Close task: `bd close <task-id> --reason "Completed" --json`
+- Every commit message must reference the bd issue (e.g., "feat(visits): VS-3.4 Implement store()")
+- Do NOT create `.copilot/plan.md` or other internal tracking files — use bd exclusively
+- Before pushing changes, verify all work is signed off in bd
+
 ===
 
 <laravel-boost-guidelines>

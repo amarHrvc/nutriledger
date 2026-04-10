@@ -3,11 +3,12 @@
 use App\Models\Patient;
 use App\Models\User;
 use App\Models\Visit;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class VisitListTest extends TestCase
 {
-    use \Illuminate\Foundation\Testing\RefreshDatabase;
+    use RefreshDatabase;
 
     /**
      * Test unauthenticated user cannot access list
@@ -34,8 +35,8 @@ class VisitListTest extends TestCase
             ->getJson("/api/patients/{$patient->id}/visits");
 
         $response->assertOk()
-            ->assertJsonStructure(['message', 'status', 'data' => ['visits' => [0 => ['type', 'id', 'attributes', 'relationships']]]])
-            ->assertJsonCount(1, 'data.visits');
+            ->assertJsonStructure(['message', 'status', 'data' => [0 => ['type', 'id', 'attributes', 'relationships']], 'meta', 'links'])
+            ->assertJsonCount(1, 'data');
     }
 
     /**
@@ -51,8 +52,8 @@ class VisitListTest extends TestCase
             ->getJson("/api/patients/{$patient->id}/visits");
 
         $response->assertOk()
-            ->assertJsonStructure(['message', 'status', 'data' => ['visits' => [0 => ['type', 'id', 'attributes', 'relationships']]]])
-            ->assertJsonCount(1, 'data.visits');
+            ->assertJsonStructure(['message', 'status', 'data' => [0 => ['type', 'id', 'attributes', 'relationships']], 'meta', 'links'])
+            ->assertJsonCount(1, 'data');
     }
 
     /**
@@ -69,7 +70,7 @@ class VisitListTest extends TestCase
             ->getJson("/api/patients/{$patient->id}/visits");
 
         $response->assertOk()
-            ->assertJsonCount(1, 'data.visits');
+            ->assertJsonCount(1, 'data');
     }
 
     /**
@@ -106,7 +107,7 @@ class VisitListTest extends TestCase
             ->getJson("/api/patients/{$patient->id}/visits");
 
         $response->assertOk();
-        $dates = collect($response->json('data.visits'))->pluck('attributes.date')->all();
+        $dates = collect($response->json('data'))->pluck('attributes.date')->all();
         $this->assertEquals(['2026-04-10', '2026-04-05', '2026-04-01'], $dates);
     }
 
@@ -123,7 +124,7 @@ class VisitListTest extends TestCase
             ->getJson("/api/patients/{$patient->id}/visits?per_page=10");
 
         $response->assertOk()
-            ->assertJsonStructure(['message', 'status', 'data' => ['visits', 'pagination' => ['total', 'per_page', 'current_page', 'last_page']]]);
+            ->assertJsonStructure(['message', 'status', 'data', 'meta' => ['total', 'per_page', 'current_page', 'last_page'], 'links']);
     }
 
     /**
@@ -139,7 +140,7 @@ class VisitListTest extends TestCase
             ->getJson("/api/patients/{$patient->id}/visits");
 
         $response->assertOk()
-            ->assertJsonPath('data.visits.0.attributes.doctorName', 'Dr. Smith');
+            ->assertJsonPath('data.0.attributes.doctorName', 'Dr. Smith');
     }
 
     /**
@@ -154,6 +155,6 @@ class VisitListTest extends TestCase
             ->getJson("/api/patients/{$patient->id}/visits");
 
         $response->assertOk()
-            ->assertJsonCount(0, 'data.visits');
+            ->assertJsonCount(0, 'data');
     }
 }

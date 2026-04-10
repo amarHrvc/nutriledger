@@ -31,4 +31,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/test/admin-doktor-only', fn () => response()->json(['message' => 'ok', 'status' => 200, 'data' => null]));
     });
 
+    // Patients can view their own visits (checked via policy)
+    Route::get('/patients/{patient}/visits', [VisitController::class, 'index'])
+        ->middleware('auth:sanctum')
+        ->name('patients.visits.index');
+
 });

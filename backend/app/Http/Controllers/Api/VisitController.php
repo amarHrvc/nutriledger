@@ -10,6 +10,22 @@ use Illuminate\Http\JsonResponse;
 
 class VisitController extends ApiController
 {
+    public function index(Patient $patient): JsonResponse
+    {
+        $this->authorize('viewAny', [Visit::class, $patient]);
+
+        $visits = $patient->visits()
+            ->with('doctor')
+            ->orderByDesc('date')
+            ->orderByDesc('created_at')
+            ->paginate();
+
+        return $this->paginated(
+            'Visit history retrieved successfully.',
+            VisitResource::collection($visits)
+        );
+    }
+
     public function store(StoreVisitRequest $request, Patient $patient): JsonResponse
     {
         $this->authorize('create', Visit::class);
