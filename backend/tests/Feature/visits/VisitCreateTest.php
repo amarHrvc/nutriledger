@@ -26,18 +26,24 @@ test('admin can create visit', function () {
 
     $response->assertCreated()
         ->assertJsonStructure([
-            'type',
-            'id',
-            'attributes' => [
-                'date',
-                'notes',
-                'doctorName',
-                'createdAt',
-                'updatedAt',
-            ],
-            'relationships' => [
-                'patient',
-                'doctor',
+            'message',
+            'status',
+            'data' => [
+                'visit' => [
+                    'type',
+                    'id',
+                    'attributes' => [
+                        'date',
+                        'notes',
+                        'doctorName',
+                        'createdAt',
+                        'updatedAt',
+                    ],
+                    'relationships' => [
+                        'patient',
+                        'doctor',
+                    ],
+                ],
             ],
         ]);
 });
@@ -53,18 +59,24 @@ test('doctor can create visit', function () {
 
     $response->assertCreated()
         ->assertJsonStructure([
-            'type',
-            'id',
-            'attributes' => [
-                'date',
-                'notes',
-                'doctorName',
-                'createdAt',
-                'updatedAt',
-            ],
-            'relationships' => [
-                'patient',
-                'doctor',
+            'message',
+            'status',
+            'data' => [
+                'visit' => [
+                    'type',
+                    'id',
+                    'attributes' => [
+                        'date',
+                        'notes',
+                        'doctorName',
+                        'createdAt',
+                        'updatedAt',
+                    ],
+                    'relationships' => [
+                        'patient',
+                        'doctor',
+                    ],
+                ],
             ],
         ]);
 

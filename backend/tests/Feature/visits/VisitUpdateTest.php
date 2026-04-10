@@ -54,18 +54,24 @@ test('doctor can update own visit', function () {
 
     $response->assertOk()
         ->assertJsonStructure([
-            'type',
-            'id',
-            'attributes' => [
-                'date',
-                'notes',
-                'doctorName',
-                'createdAt',
-                'updatedAt',
-            ],
-            'relationships' => [
-                'patient',
-                'doctor',
+            'message',
+            'status',
+            'data' => [
+                'visit' => [
+                    'type',
+                    'id',
+                    'attributes' => [
+                        'date',
+                        'notes',
+                        'doctorName',
+                        'createdAt',
+                        'updatedAt',
+                    ],
+                    'relationships' => [
+                        'patient',
+                        'doctor',
+                    ],
+                ],
             ],
         ]);
 

@@ -20,10 +20,9 @@ class VisitController extends ApiController
             'doctor_id' => auth()->id(),
         ]);
 
-        return response()->json(
-            new VisitResource($visit->load(['patient', 'doctor'])),
-            201
-        );
+        return $this->created('Visit created successfully.', [
+            'visit' => new VisitResource($visit->load(['patient', 'doctor'])),
+        ]);
     }
 
     public function update(StoreVisitRequest $request, Patient $patient, Visit $visit): JsonResponse
@@ -35,8 +34,8 @@ class VisitController extends ApiController
             'notes' => $request->notes,
         ]);
 
-        return response()->json(
-            new VisitResource($visit->load(['patient', 'doctor']))
-        );
+        return $this->ok('Visit updated successfully.', [
+            'visit' => new VisitResource($visit->load(['patient', 'doctor'])),
+        ]);
     }
 }
