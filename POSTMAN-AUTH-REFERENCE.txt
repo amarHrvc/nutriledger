@@ -1,0 +1,153 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║           🔐 POSTMAN COLLECTION-LEVEL AUTH - QUICK REFERENCE                  ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+┌─ HOW IT WORKS ──────────────────────────────────────────────────────────────────┐
+│                                                                                 │
+│  ┌──────────────┐      ┌──────────────────────┐      ┌──────────────────┐    │
+│  │  Request #1  │      │ Collection-Level     │      │  Request #2      │    │
+│  │ Create       │──┐   │ Auth:                │   ┌──│ List Patients    │    │
+│  │ Patient      │  │   │ Bearer Token         │   │  │ (auto-uses token)│    │
+│  └──────────────┘  │   │ {{admin_token}}      │   │  └──────────────────┘    │
+│                    │   │                      │   │                          │
+│  ┌──────────────┐  ├──▶│  Applied to ALL   ◀──┤  ┌──────────────────┐       │
+│  │  Request #3  │  │   │  requests in       │  │  │  Request #4      │       │
+│  │ Get Patient  │──┤   │  collection        │  ├──│ Delete Patient   │       │
+│  │ (auto-uses   │  │   │                    │  │  │ (auto-uses token)│       │
+│  │  token)      │  │   │  No manual headers │  │  └──────────────────┘       │
+│  └──────────────┘  │   │  needed!           │  │                            │
+│                    │   └────────────────────┘  │                            │
+│  ┌──────────────┐  │          ▲               │                            │
+│  │ Request #5   │──┘          │               │                            │
+│  │ Create Visit │        Set once,        Inherited                       │
+│  │ (auto-uses   │        used everywhere     │                            │
+│  │  token)      │                            └────────────────────────────  │
+│  └──────────────┘                                                         │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ THREE WAYS TO USE AUTH ────────────────────────────────────────────────────────┐
+│                                                                                 │
+│  1️⃣  ADMIN OPERATIONS (Default)                                               │
+│  ┌─────────────────────────────────────────────────────────┐                  │
+│  │ Collection Auth:  Bearer {{admin_token}}                │                  │
+│  │ Use for:         All admin operations                   │                  │
+│  │ Requests:        Create patient, List, Update, Delete   │                  │
+│  │ Token source:    "01 - Login (Admin)" request           │                  │
+│  └─────────────────────────────────────────────────────────┘                  │
+│                                                                                │
+│  2️⃣  DOCTOR OPERATIONS (Switch Token)                                         │
+│  ┌─────────────────────────────────────────────────────────┐                  │
+│  │ Collection Auth:  Bearer {{doctor_token}}               │                  │
+│  │ Use for:         Doctor-specific operations            │                  │
+│  │ Requests:        Create visit, View visits, Update     │                  │
+│  │ How:             Change collection auth to doctor_token│                  │
+│  └─────────────────────────────────────────────────────────┘                  │
+│                                                                                │
+│  3️⃣  AUTHORIZATION TESTS (Override to None)                                   │
+│  ┌─────────────────────────────────────────────────────────┐                  │
+│  │ Request Auth:     None (overrides collection)           │                  │
+│  │ Use for:         Test 401/403 error cases              │                  │
+│  │ Requests:        Login, guest test, permission denied   │                  │
+│  └─────────────────────────────────────────────────────────┘                  │
+│                                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ SETUP IN POSTMAN UI ───────────────────────────────────────────────────────────┐
+│                                                                                 │
+│  📍 Location: Collection → Authorization Tab                                   │
+│                                                                                │
+│  Step 1: Right-click collection in sidebar                                    │
+│  Step 2: Select "Edit"                                                        │
+│  Step 3: Go to "Authorization" tab                                            │
+│  Step 4: See configuration:                                                   │
+│          Type: Bearer Token                                                   │
+│          Token: {{admin_token}}                                               │
+│                                                                                │
+│  ✅ Auth is now applied to all requests!                                      │
+│                                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ SWITCH BETWEEN USERS ──────────────────────────────────────────────────────────┐
+│                                                                                 │
+│  SCENARIO: Test same operation as different users                             │
+│                                                                                │
+│  Step 1: Run "01 - Login (Admin)"                                             │
+│          → Sets {{admin_token}} in environment                                │
+│                                                                                │
+│  Step 2: Run "02 - Login (Doctor)"                                            │
+│          → Sets {{doctor_token}} in environment                               │
+│                                                                                │
+│  Step 3a: TEST AS ADMIN                                                       │
+│          Collection Auth: Bearer {{admin_token}}                              │
+│          Run: "04 - Create Patient"                                           │
+│          Result: ✅ 201 Created (admin can create)                            │
+│                                                                                │
+│  Step 3b: TEST AS DOCTOR                                                      │
+│          Collection → Edit → Auth → Change Token to {{doctor_token}}          │
+│          Run: "04 - Create Patient"                                           │
+│          Result: ❌ 403 Forbidden (doctor cannot create)                      │
+│                                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ AUTH HEADER EXAMPLE ───────────────────────────────────────────────────────────┐
+│                                                                                 │
+│  Before (Manual headers on each request):                                     │
+│  ┌──────────────────────────────────────────────────────────┐                │
+│  │ Request 1: Headers → Authorization: Bearer eyJhbGc...   │                │
+│  │ Request 2: Headers → Authorization: Bearer eyJhbGc...   │  ❌ Repetitive │
+│  │ Request 3: Headers → Authorization: Bearer eyJhbGc...   │                │
+│  │ Request 4: Headers → Authorization: Bearer eyJhbGc...   │                │
+│  └──────────────────────────────────────────────────────────┘                │
+│                                                                                │
+│  After (Collection-level auth):                                               │
+│  ┌──────────────────────────────────────────────────────────┐                │
+│  │ Collection Auth: Bearer {{admin_token}}                  │                │
+│  │ ↓                                                         │                │
+│  │ All requests automatically include:                      │  ✅ DRY        │
+│  │ Authorization: Bearer eyJhbGc... (auto-injected)        │  (Don't Repeat) │
+│  └──────────────────────────────────────────────────────────┘                │
+│                                                                                │
+│  Actual header sent (same for all):                                           │
+│  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...               │
+│                                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ TROUBLESHOOTING ───────────────────────────────────────────────────────────────┐
+│                                                                                 │
+│  Problem              │ Cause                │ Fix                            │
+│  ─────────────────────┼──────────────────────┼────────────────────────────   │
+│  401 Unauthorized     │ Empty token          │ Run Login request first       │
+│  403 Forbidden        │ Wrong role/perms     │ Expected! Test authorization  │
+│  No auth header sent  │ Auth not configured  │ Import collection again       │
+│  Token not changing   │ Cached token         │ Logout/Re-login              │
+│  Wrong user's token   │ Using admin token    │ Change to {{doctor_token}}   │
+│                                                                               │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ ADVANCED: DYNAMIC TOKEN REFRESH ──────────────────────────────────────────────┐
+│                                                                                 │
+│  If tokens expire during long test runs, add to Collection Pre-request Script: │
+│                                                                                │
+│  const token = pm.environment.get('admin_token');                             │
+│  if (!token) {                                                                │
+│      // Auto-login to refresh token                                          │
+│      pm.sendRequest({                                                        │
+│          url: '{{base_url}}/api/login',                                      │
+│          method: 'POST',                                                     │
+│          body: { mode: 'raw', raw: JSON.stringify({                         │
+│              email: 'admin@nutrilabs.com', password: 'password'             │
+│          })},                                                               │
+│          header: { 'Content-Type': 'application/json' }                     │
+│      }, (err, res) => {                                                    │
+│          if (!err) pm.environment.set('admin_token', res.json().data.token)│
+│      });                                                                    │
+│  }                                                                          │
+│                                                                             │
+│  This auto-refreshes expired tokens before each request!                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+📚 FULL DOCS: POSTMAN-COLLECTION-AUTH-GUIDE.md
+⚡ QUICK START: POSTMAN-QUICKSTART.txt
+📖 API REFERENCE: POSTMAN-COLLECTION-GUIDE.md
