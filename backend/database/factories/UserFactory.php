@@ -47,6 +47,27 @@ class UserFactory extends Factory
         ]);
     }
 
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'admin',
+        ]);
+    }
+
+    public function doctor(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'doktor',
+        ]);
+    }
+
+    public function patient(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'pacijent',
+        ]);
+    }
+
     /**
      * Indicate that the model does not have two-factor authentication configured.
      */

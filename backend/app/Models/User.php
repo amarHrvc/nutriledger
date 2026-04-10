@@ -11,11 +11,22 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
- * @property-read int $id
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property ?Carbon $email_verified_at
+ * @property string $password
+ * @property string|null $remember_token
+ * @property string $role
+ * @property ?Carbon $deleted_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property-read Patient|null $patient
  */
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -95,6 +106,18 @@ class User extends Authenticatable
         return $this->role === 'pacijent';
     }
 
+    protected static function booted(): void
+    {
+        static::deleted(function (User $user) {
+            $user->patient?->delete();
+        });
+
+        static::restored(function (User $user) {
+            Patient::withTrashed()->where('user_id', $user->id)->first()?->restore();
+        });
+    }
+
+    /** @return HasOne<Patient, $this> */
     public function patient(): HasOne
     {
         return $this->hasOne(Patient::class);

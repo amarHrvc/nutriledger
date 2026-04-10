@@ -77,9 +77,6 @@ class VisitPolicy
         return $user->isAdmin();
     }
 
-    /**
-     * @return true|void
-     */
     public function adminOrDoctor(User $user): bool
     {
         if ($user->isAdmin() || $user->isDoctor()) {

@@ -1,8 +1,10 @@
 includes:
     - vendor/larastan/larastan/extension.neon
-    - phpstan-baseline.neon
+    - vendor/pestphp/pest/extension.neon
 
 parameters:
+    universalObjectCratesClasses:
+        - Pest\Mixins\Expectation
     level: 5
     paths:
         - app
@@ -14,12 +16,12 @@ parameters:
             - app/Http/Middleware/TrustProxies.php (?)
     tmpDir: storage/phpstan
     ignoreErrors:
-        # Pest test helper methods not recognized by PHPStan
-        - message: '#Call to an undefined method PHPUnit\\Framework\\TestCase::(get|getJson|postJson|putJson|deleteJson|patchJson|actingAs|withToken|withoutMiddleware)#'
+        # Pest test helper methods not recognized by PHPStan (Laravel TestCase mixins)
+        - message: '#Call to an undefined method PHPUnit\\Framework\\TestCase::(get|getJson|postJson|putJson|deleteJson|patchJson|actingAs|withToken|withoutMiddleware|assertDatabaseHas|assertDatabaseCount|assertDatabaseMissing|assertSoftDeleted|assertNotSoftDeleted|json)#'
           paths:
               - tests/**
-        # Pest test dynamic properties set in beforeEach
-        - message: '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$tester#'
+        # Pest test dynamic properties not recognized by PHPStan
+        - message: '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$(tester|app)#'
           paths:
-              - tests/Unit/Traits/ApiResponsesTest.php
+              - tests/**
 

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Patient;
+use App\Models\PatientSocioeconomic;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -39,5 +40,10 @@ class PatientFactory extends Factory
             'medical_notes' => fake()->paragraph(),
             //
         ];
+    }
+
+    public function hasSocioeconomic(array $attributes = []): static
+    {
+        return $this->has(PatientSocioeconomic::factory()->state($attributes), 'socioeconomic');
     }
 }

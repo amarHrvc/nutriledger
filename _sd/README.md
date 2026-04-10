@@ -30,6 +30,14 @@ forceDelete), `UserResource` with JSON:API envelope, `UserPolicy` with 7 authori
 `StoreUserRequest` / `UpdateUserRequest` validation, security event logging on sensitive
 operations, rate limiting on auth endpoints. TDD cycle with Pest feature and unit tests.
 
+### 003 — Patient Management API
+Full CRUD for patient records with socioeconomic data. `PatientController` (index, show, store,
+update, destroy), `PatientService` with transactional create/update, `PatientResource` and
+`PatientSocioeconomicResource` with JSON:API envelope and camelCase attributes, `PatientPolicy`
+with role-based authorization (admin/doktor full access, pacijent self-only), soft deletes with
+cascade to socioeconomic record, User→Patient cascade on delete/restore. TDD cycle with Pest
+feature and unit tests (205 passing).
+
 ## Running Locally
 
 ```bash
