@@ -98,6 +98,55 @@ Use Flux UI free components (`<flux:button>`, `<flux:input>`, `<flux:modal>`, `<
 - Do NOT create `.copilot/plan.md` or other internal tracking files — use bd exclusively
 - Before pushing changes, verify all work is signed off in bd
 
+### API Endpoint Patterns (Visits Feature — VS-4 through VS-6)
+
+#### List Endpoint (VS-4: GET /api/patients/{patient}/visits)
+- **Route**: Registered outside role middleware to allow patient access (checked via policy)
+- **Authorization**: `$this->authorize('viewAny', [Visit::class, $patient])` 
+  - Doctor/admin can list any patient's visits
+  - Patient restricted to own visits (403 Forbidden if accessing other patient)
+- **Response**: Use `$this->paginated()` trait method with `VisitResource::collection()`
+  - Includes `data`, `meta` (pagination), `links` (navigation)
+- **Eager Loading**: Load `->with('doctor')` to avoid N+1
+- **Ordering**: `orderByDesc('date')->orderByDesc('created_at')` for chronological history
+- **Example**: See `VisitController::index()` (VS-4.2)
+
+#### Show Endpoint (VS-5: GET /api/patients/{patient}/visits/{visit})
+- **Route**: Registered outside role middleware with `where('visit', '[0-9]+')` constraint
+- **Route Scoping**: Manually check `if ($visit->patient_id !== $patient->id) abort(404);` in controller
+  - Ensures visit belongs to patient before authorization check
+  - Returns 404 (not 403) if visit doesn't belong to patient
+- **Authorization**: `$this->authorize('view', $visit)`
+  - Doctor/admin can view any visit
+  - Patient restricted to own visits
+- **Response**: Use `$this->ok()` with wrapped `new VisitResource($visit)`
+- **Eager Loading**: Load `->load('doctor')` before response
+- **Example**: See `VisitController::show()` (VS-5.2)
+
+#### Update Endpoint (VS-6: PATCH /api/patients/{patient}/visits/{visit})
+- **Route**: Registered via `Route::apiResource()` with only `['store', 'update']`
+- **Request Validation**: Use `StoreVisitRequest` for shared validation rules
+  - Validates `date` (required, before_or_equal:today)
+  - Validates `notes` (nullable, max:10000)
+  - Supports partial updates (not all fields required)
+- **Route Scoping**: Manually check `if ($visit->patient_id !== $patient->id) abort(404);`
+- **Authorization**: `$this->authorize('update', $visit)`
+  - Doctor can update own visits only
+  - Admin can update any visit
+  - Patient gets 403
+- **Response**: Use `$this->ok()` with wrapped `new VisitResource($visit->load(['patient', 'doctor']))`
+- **Example**: See `VisitController::update()` (VS-6.3)
+
+#### Testing Pattern (Pest Functional API)
+- **Test File Structure**: Use Pest's `test()` function syntax (not class-based)
+- **Authorization Tests**: Guest (401), wrong role (403), cross-user access (403)
+- **Response Structure**: Verify JSON structure with `->assertJsonStructure()`
+  - List responses include `data` (array of visits) + `meta` + `links`
+  - Single responses include `data` (wrapped visit object)
+- **Route Scoping Tests**: Verify 404 when visit doesn't belong to patient
+- **Empty Data Tests**: Handle empty lists, null notes gracefully
+- **Example**: See `tests/Feature/visits/VisitListTest.php` (VS-4.1) and `VisitShowTest.php` (VS-5.1)
+
 ===
 
 <laravel-boost-guidelines>
