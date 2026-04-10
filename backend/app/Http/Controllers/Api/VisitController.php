@@ -25,4 +25,18 @@ class VisitController extends ApiController
             201
         );
     }
+
+    public function update(StoreVisitRequest $request, Patient $patient, Visit $visit): JsonResponse
+    {
+        $this->authorize('update', $visit);
+
+        $visit->update([
+            'date' => $request->date,
+            'notes' => $request->notes,
+        ]);
+
+        return response()->json(
+            new VisitResource($visit->load(['patient', 'doctor']))
+        );
+    }
 }

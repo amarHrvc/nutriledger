@@ -27,7 +27,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::middleware(['role:admin,doktor'])->group(function () {
         Route::apiResource('patients.visits', VisitController::class)
-            ->only(['store']);
+            ->only(['store', 'update']);
         Route::get('/test/admin-doktor-only', fn () => response()->json(['message' => 'ok', 'status' => 200, 'data' => null]));
     });
 
