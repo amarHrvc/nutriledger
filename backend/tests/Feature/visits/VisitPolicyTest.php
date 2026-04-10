@@ -38,10 +38,10 @@ test('patient cannot view other patients visits', function () {
     expect($patient1->user->can('view', $visit))->toBeFalse();
 });
 
-test('admin cannot create a visit', function () {
+test('admin can create a visit', function () {
     $admin = User::factory()->create(['role' => 'admin']);
 
-    expect($admin->can('create', Visit::class))->toBeFalse();
+    expect($admin->can('create', Visit::class))->toBeTrue();
 });
 
 test('doctor can create a visit', function () {

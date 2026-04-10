@@ -15,7 +15,7 @@ test('guest cannot create visit', function () {
     $response->assertUnauthorized();
 });
 
-test('admin cannot create visit', function () {
+test('admin can create visit', function () {
     $admin = User::factory()->create(['role' => 'admin']);
     $patient = Patient::factory()->create();
 
@@ -24,7 +24,22 @@ test('admin cannot create visit', function () {
         'notes' => 'Test notes from admin',
     ]);
 
-    $response->assertForbidden();
+    $response->assertCreated()
+        ->assertJsonStructure([
+            'type',
+            'id',
+            'attributes' => [
+                'date',
+                'notes',
+                'doctorName',
+                'createdAt',
+                'updatedAt',
+            ],
+            'relationships' => [
+                'patient',
+                'doctor',
+            ],
+        ]);
 });
 
 test('doctor can create visit', function () {

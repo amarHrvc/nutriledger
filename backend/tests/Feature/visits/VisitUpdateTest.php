@@ -20,7 +20,7 @@ test('guest cannot update visit', function () {
     $response->assertUnauthorized();
 });
 
-test('admin cannot update visit', function () {
+test('admin can update any visit', function () {
     $admin = User::factory()->create(['role' => 'admin']);
     $doctor = User::factory()->create(['role' => 'doktor']);
     $patient = Patient::factory()->create();
@@ -34,7 +34,7 @@ test('admin cannot update visit', function () {
         'notes' => 'Updated by admin',
     ]);
 
-    $response->assertForbidden();
+    $response->assertOk();
 });
 
 test('doctor can update own visit', function () {

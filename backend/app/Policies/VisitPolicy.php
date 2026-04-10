@@ -48,8 +48,8 @@ class VisitPolicy
      */
     public function create(User $user): bool
     {
-        // Only doctors can create visits
-        return $user->isDoctor();
+        // Admins and doctors can create visits
+        return $this->adminOrDoctor($user);
     }
 
     /**
