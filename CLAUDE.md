@@ -98,6 +98,21 @@ Use Flux UI free components (`<flux:button>`, `<flux:input>`, `<flux:modal>`, `<
 - Do NOT create `.copilot/plan.md` or other internal tracking files — use bd exclusively
 - Before pushing changes, verify all work is signed off in bd
 
+### TDD Commit Discipline (CRITICAL)
+- **ONE COMMIT PER TDD PHASE** — RED, GREEN, REFACTOR must be separate atomic commits
+- **RED Phase Commit**: Test file creation
+  - Message: `[TASKID] [TITLE] (RED phase)` — e.g., `VS-7.1 Write failing VisitDeleteTest (7 tests)`
+  - Include: Test file only, all tests failing
+- **GREEN Phase Commit**: Implementation
+  - Message: `[TASKID] [TITLE] (GREEN phase)` — e.g., `VS-7.2 Implement destroy() in VisitController`
+  - Include: Implementation code, all tests passing
+- **REFACTOR Phase Commit**: Route/config cleanup
+  - Message: `[TASKID] [TITLE] (REFACTOR phase)` — e.g., `VS-7.3 Register delete route and verify response format`
+  - Include: Routes, response formatting, documentation updates
+- **Always end with**: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
+- **Why**: Preserves clear history of what was tested (RED) vs implemented (GREEN) vs refactored (REFACTOR)
+- **Lesson**: Commit `7a74c0b` (VS-7.1) mistakenly mixed all 3 phases — future tasks must separate these strictly
+
 ### API Endpoint Patterns (Visits Feature — VS-4 through VS-6)
 
 #### List Endpoint (VS-4: GET /api/patients/{patient}/visits)
