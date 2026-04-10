@@ -118,20 +118,29 @@ test('patient cannot update visit', function () {
     $response->assertForbidden();
 });
 
-test('doctor must provide date when updating', function () {
+test('doctor can update only notes when updating', function () {
     $doctor = User::factory()->create(['role' => 'doktor']);
     $patient = Patient::factory()->create();
     $visit = Visit::factory()->create([
         'patient_id' => $patient->id,
         'doctor_id' => $doctor->id,
+        'date' => '2024-01-15',
+        'notes' => 'Original notes',
     ]);
 
     $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
-        'notes' => 'Updated notes',
+        'notes' => 'Updated notes only',
     ]);
 
-    $response->assertUnprocessable()
-        ->assertJsonValidationErrors(['date']);
+    $response->assertOk();
+
+    $this->assertDatabaseHas('visits', [
+        'id' => $visit->id,
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'date' => '2024-01-15',
+        'notes' => 'Updated notes only',
+    ]);
 });
 
 test('date must be before or equal today when updating', function () {
@@ -150,6 +159,31 @@ test('date must be before or equal today when updating', function () {
 
     $response->assertUnprocessable()
         ->assertJsonValidationErrors(['date']);
+});
+
+test('doctor can update only date when updating', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+    $visit = Visit::factory()->create([
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'date' => '2024-01-15',
+        'notes' => 'Original notes',
+    ]);
+
+    $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
+        'date' => '2024-01-25',
+    ]);
+
+    $response->assertOk();
+
+    $this->assertDatabaseHas('visits', [
+        'id' => $visit->id,
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'date' => '2024-01-25',
+        'notes' => 'Original notes',
+    ]);
 });
 
 test('notes must not exceed 10000 characters when updating', function () {
@@ -191,4 +225,22 @@ test('updated visit has correct values in response', function () {
     expect($updatedVisit->date->toDateString())->toBe('2024-01-25');
     expect($updatedVisit->notes)->toBe('New updated notes');
     expect($updatedVisit->doctor_id)->toBe($doctor->id);
+});
+
+test('visit from different patient returns 404', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient1 = Patient::factory()->create();
+    $patient2 = Patient::factory()->create();
+    $visit = Visit::factory()->create([
+        'patient_id' => $patient1->id,
+        'doctor_id' => $doctor->id,
+    ]);
+
+    // Try to update the visit through a different patient's endpoint
+    $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient2->id.'/visits/'.$visit->id, [
+        'date' => '2024-01-20',
+        'notes' => 'Updated notes',
+    ]);
+
+    $response->assertNotFound();
 });
