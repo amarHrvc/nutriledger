@@ -24,9 +24,15 @@ class StoreVisitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'date' => ['required', 'date'],
-            'notes' => ['nullable', 'string', 'max:500'],
-            'doctor_id' => ['nullable', 'exists:users,id'],
+            'date' => ['required', 'date', 'before_or_equal:today'],
+            'notes' => ['nullable', 'string', 'max:10000'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'date.before_or_equal' => 'The visit date cannot be in the future.',
         ];
     }
 }
