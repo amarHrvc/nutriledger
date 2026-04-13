@@ -1,4 +1,4 @@
-name: tests
+name: backend tests
 
 on:
   push:
@@ -26,29 +26,27 @@ jobs:
           tools: composer:v2
           coverage: xdebug
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install Node Dependencies
-        run: npm i
-
-      - name: Add Flux Credentials Loaded From ENV
-        run: composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
-
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
-
+        working-directory: backend
       - name: Copy Environment File
         run: cp .env.example .env
-
+        working-directory: backend
       - name: Generate Application Key
         run: php artisan key:generate
+        working-directory: backend
 
-      - name: Build Assets
-        run: npm run build
-
-      - name: Run Tests
-        run: ./vendor/bin/pest
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+        working-directory: backend
+      - name: Create Database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+        working-directory: backend
+      - name: Execute tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan test
+        working-directory: backend
