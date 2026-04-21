@@ -176,6 +176,8 @@ dist
 # End of https://www.toptal.com/developers/gitignore/api/node,laravel,composer
 
 .idea/**
+/backend/.idea/**
+/frontend/.idea/**
 .claude/
 .cursor/
 .junie/

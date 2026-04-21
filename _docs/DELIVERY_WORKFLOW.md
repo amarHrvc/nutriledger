@@ -203,6 +203,7 @@ git reset --hard upstream/develop
 # 2. Filter: keep backend/ only — colleague owns frontend/ in se-origin directly
 git filter-repo \
   --path backend/ \
+  --path frontend/ \
   --force
 
 # 3. Push to be-delivery branch in SE repo
@@ -267,6 +268,12 @@ After filter-repo, the repos have the following structure:
 ```
 sd-origin root
 ├── backend/          ← Laravel 12 REST API
+│   ├── app/
+│   ├── database/
+│   ├── routes/
+│   ├── tests/
+│   ├── composer.json
+│   └── ...
 ├── frontend/         ← React SPA
 └── README.md         ← sourced from _sd/README.md in NL
 ```

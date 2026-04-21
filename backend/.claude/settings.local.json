@@ -34,7 +34,8 @@
       "Bash(echo \"Exit: $?\")",
       "Bash(composer run:*)",
       "Edit",
-      "Write"
+      "Write",
+      "Bash(bd create:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

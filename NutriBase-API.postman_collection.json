@@ -1,0 +1,663 @@
+{
+  "info": {
+    "name": "NutriBase API",
+    "description": "Complete NutriBase REST API collection covering Auth, Users, Patients, and Visits.\n\n## Setup\n1. Import this collection\n2. Run **Login as Admin** first — the test script auto-sets `admin_token`\n3. Run **Login as Doctor** — auto-sets `doctor_token`\n4. Run **Login as Patient (Marko)** — auto-sets `patient_token`\n\n## Seeded demo accounts\n| Role | Email | Password |\n|---|---|---|\n| Admin | hajrovica@gmail.com | Test12345 |\n| Doctor | doctor@nutribase.test | password |\n| Patient — Marko Petrović | marko.petrovic@nutribase.test | password |\n| Patient — Fatima Hadžić | fatima.hadzic@nutribase.test | password |\n| Patient — Stefan Jovanović | stefan.jovanovic@nutribase.test | password |\n| Patient — Lejla Kovačev | lejla.kovacev@nutribase.test | password |\n| Patient — Nermin Bašić | nermin.basic@nutribase.test | password |",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000", "type": "string" },
+    { "key": "admin_token", "value": "", "type": "string" },
+    { "key": "doctor_token", "value": "", "type": "string" },
+    { "key": "patient_token", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Login as Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.data && json.data.token) {",
+                  "    pm.collectionVariables.set('admin_token', json.data.token);",
+                  "    console.log('admin_token saved');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"hajrovica@gmail.com\",\n  \"password\": \"Test12345\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/login", "host": ["{{base_url}}"], "path": ["api", "login"] }
+          }
+        },
+        {
+          "name": "Login as Doctor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.data && json.data.token) {",
+                  "    pm.collectionVariables.set('doctor_token', json.data.token);",
+                  "    console.log('doctor_token saved');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"doctor@nutribase.test\",\n  \"password\": \"password\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/login", "host": ["{{base_url}}"], "path": ["api", "login"] }
+          }
+        },
+        {
+          "name": "Login as Patient — Marko",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.data && json.data.token) {",
+                  "    pm.collectionVariables.set('patient_token', json.data.token);",
+                  "    console.log('patient_token saved');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"marko.petrovic@nutribase.test\",\n  \"password\": \"password\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/login", "host": ["{{base_url}}"], "path": ["api", "login"] }
+          }
+        },
+        {
+          "name": "Login — Invalid credentials (401)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"hajrovica@gmail.com\",\n  \"password\": \"wrongpassword\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/login", "host": ["{{base_url}}"], "path": ["api", "login"] }
+          }
+        },
+        {
+          "name": "GET /api/user — Current user (Admin)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/user", "host": ["{{base_url}}"], "path": ["api", "user"] }
+          }
+        },
+        {
+          "name": "GET /api/user — Current user (Doctor)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/user", "host": ["{{base_url}}"], "path": ["api", "user"] }
+          }
+        },
+        {
+          "name": "GET /api/user — Current user (Patient)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/user", "host": ["{{base_url}}"], "path": ["api", "user"] }
+          }
+        },
+        {
+          "name": "POST /api/logout",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/logout", "host": ["{{base_url}}"], "path": ["api", "logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Users (Admin)",
+      "item": [
+        {
+          "name": "GET /api/users — List all (Admin sees trashed too)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/users", "host": ["{{base_url}}"], "path": ["api", "users"] }
+          }
+        },
+        {
+          "name": "GET /api/users — List all (Doctor — active only)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/users", "host": ["{{base_url}}"], "path": ["api", "users"] }
+          }
+        },
+        {
+          "name": "GET /api/users/37 — Get Doctor user",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/users/37", "host": ["{{base_url}}"], "path": ["api", "users", "37"] }
+          }
+        },
+        {
+          "name": "GET /api/users/1 — Get Admin user",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/users/1", "host": ["{{base_url}}"], "path": ["api", "users", "1"] }
+          }
+        },
+        {
+          "name": "POST /api/users — Create new doctor user",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dr. Hana Begić\",\n  \"email\": \"hana.begic@nutribase.test\",\n  \"password\": \"password\",\n  \"password_confirmation\": \"password\",\n  \"role\": \"doktor\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/users", "host": ["{{base_url}}"], "path": ["api", "users"] }
+          }
+        },
+        {
+          "name": "PATCH /api/users/37 — Update Doctor name",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dr. Amina Halilović-Bašić\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/users/37", "host": ["{{base_url}}"], "path": ["api", "users", "37"] }
+          }
+        },
+        {
+          "name": "DELETE /api/users/43 — Soft-delete demo user",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/users/43", "host": ["{{base_url}}"], "path": ["api", "users", "43"] }
+          }
+        },
+        {
+          "name": "POST /api/users/43/restore — Restore soft-deleted user",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/users/43/restore", "host": ["{{base_url}}"], "path": ["api", "users", "43", "restore"] }
+          }
+        },
+        {
+          "name": "DELETE /api/users/43/force — Permanently delete user",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/users/43/force", "host": ["{{base_url}}"], "path": ["api", "users", "43", "force"] }
+          }
+        },
+        {
+          "name": "GET /api/users — Patient tries to list users (403)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/users", "host": ["{{base_url}}"], "path": ["api", "users"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏥 Patients",
+      "item": [
+        {
+          "name": "GET /api/patients — List all (Admin)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] }
+          }
+        },
+        {
+          "name": "GET /api/patients — List (Doctor)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] }
+          }
+        },
+        {
+          "name": "GET /api/patients — Patient sees only self",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/15 — Marko Petrović (obesity + hypertension)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/15", "host": ["{{base_url}}"], "path": ["api", "patients", "15"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/16 — Fatima Hadžić (type 2 diabetes)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/16", "host": ["{{base_url}}"], "path": ["api", "patients", "16"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/17 — Stefan Jovanović (anorexia recovery)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/17", "host": ["{{base_url}}"], "path": ["api", "patients", "17"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/18 — Lejla Kovačev (post-bariatric)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/18", "host": ["{{base_url}}"], "path": ["api", "patients", "18"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/19 — Nermin Bašić (CKD, no visits)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/19", "host": ["{{base_url}}"], "path": ["api", "patients", "19"] }
+          }
+        },
+        {
+          "name": "POST /api/patients — Create new patient (links to user 43)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": 43,\n  \"first_name\": \"Demo\",\n  \"last_name\": \"NewPatient\",\n  \"date_of_birth\": \"1990-05-15\",\n  \"gender\": \"F\",\n  \"phone\": \"+387 61 000 001\",\n  \"address\": \"Titova 1\",\n  \"city\": \"Sarajevo\",\n  \"postal_code\": \"71000\",\n  \"emergency_contact_name\": \"Emergency Contact\",\n  \"emergency_contact_phone\": \"+387 61 000 002\",\n  \"blood_type\": \"O+\",\n  \"allergies\": \"None known\",\n  \"medical_notes\": \"New intake. Initial assessment pending.\",\n  \"socioeconomic\": {\n    \"marital_status\": \"single\",\n    \"employment_status\": \"employed_full_time\",\n    \"income_level\": \"middle\",\n    \"has_health_insurance\": true,\n    \"smoking_status\": \"never\",\n    \"alcohol_consumption\": \"occasional\",\n    \"physical_activity_level\": \"moderately_active\",\n    \"food_security_status\": \"food_secure\"\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] }
+          }
+        },
+        {
+          "name": "PATCH /api/patients/19 — Update Nermin's medical notes",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"medical_notes\": \"CKD stage 3. Updated after latest nephrology consultation — GFR stable at 42. Continue renal diet, added phosphate binder.\",\n  \"socioeconomic\": {\n    \"physical_activity_level\": \"lightly_active\",\n    \"additional_notes\": \"Community nurse increased visits to 3x weekly. Patient enrolled in social support program.\"\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/patients/19", "host": ["{{base_url}}"], "path": ["api", "patients", "19"] }
+          }
+        },
+        {
+          "name": "DELETE /api/patients/19 — Soft-delete Nermin (no visits, safe to delete)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/19", "host": ["{{base_url}}"], "path": ["api", "patients", "19"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/15 — Patient views own profile (allowed)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/15", "host": ["{{base_url}}"], "path": ["api", "patients", "15"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/16 — Patient accesses another patient (403)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/16", "host": ["{{base_url}}"], "path": ["api", "patients", "16"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Visits — Marko Petrović (patient 15, 11 visits)",
+      "item": [
+        {
+          "name": "GET /api/patients/15/visits — Full visit history (paginated)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/15/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "15", "visits"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/15/visits — Patient views own visits",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/15/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "15", "visits"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/15/visits/11 — Show specific visit",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/15/visits/11", "host": ["{{base_url}}"], "path": ["api", "patients", "15", "visits", "11"] }
+          }
+        },
+        {
+          "name": "POST /api/patients/15/visits — Create new visit",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-04-20\",\n  \"notes\": \"Quarterly review. Weight down 2.3kg since last visit. BMI now 31.8. Patient reports consistent gym attendance 3x/week. Adjusted protein targets to support muscle preservation. Reducing caloric deficit slightly to avoid fatigue.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/patients/15/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "15", "visits"] }
+          }
+        },
+        {
+          "name": "PATCH /api/patients/15/visits/11 — Update visit notes",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Weight reviewed. Patient reports improved dietary adherence this week. Adjusted caloric targets. AMENDED: Confirmed with patient that new targets are 1800 kcal/day, not 2000 as initially noted.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/patients/15/visits/11", "host": ["{{base_url}}"], "path": ["api", "patients", "15", "visits", "11"] }
+          }
+        },
+        {
+          "name": "DELETE /api/patients/15/visits/10 — Delete visit",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/15/visits/10", "host": ["{{base_url}}"], "path": ["api", "patients", "15", "visits", "10"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/16/visits/11 — Wrong patient scoping (404)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/16/visits/11", "host": ["{{base_url}}"], "path": ["api", "patients", "16", "visits", "11"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Visits — Fatima Hadžić (patient 16, 10 visits)",
+      "item": [
+        {
+          "name": "GET /api/patients/16/visits — Full history (Admin)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/16/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "16", "visits"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/16/visits/21 — Show visit",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/16/visits/21", "host": ["{{base_url}}"], "path": ["api", "patients", "16", "visits", "21"] }
+          }
+        },
+        {
+          "name": "POST /api/patients/16/visits — New diabetes follow-up",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-04-19\",\n  \"notes\": \"HbA1c result back at 7.2% — significant improvement from 8.1% at referral. Patient has adopted low-GI diet consistently. Discussed carbohydrate counting. Target for next visit: HbA1c below 7.0%.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/patients/16/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "16", "visits"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/16/visits — Marko (patient) tries to access Fatima's visits (403)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/16/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "16", "visits"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Visits — Stefan Jovanović (patient 17, 9 visits)",
+      "item": [
+        {
+          "name": "GET /api/patients/17/visits — Anorexia recovery tracking history",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/17/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "17", "visits"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/17/visits/30 — Show most recent visit",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/17/visits/30", "host": ["{{base_url}}"], "path": ["api", "patients", "17", "visits", "30"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Visits — Lejla Kovačev (patient 18, 2 visits)",
+      "item": [
+        {
+          "name": "GET /api/patients/18/visits — Post-bariatric follow-up history",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/18/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "18", "visits"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/18/visits/32 — Show visit",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/18/visits/32", "host": ["{{base_url}}"], "path": ["api", "patients", "18", "visits", "32"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🚦 Authorization & Error Cases",
+      "item": [
+        {
+          "name": "No token — GET /api/patients (401)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] }
+          }
+        },
+        {
+          "name": "No token — GET /api/users (401)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/users", "host": ["{{base_url}}"], "path": ["api", "users"] }
+          }
+        },
+        {
+          "name": "Patient creates a visit (403 — only doctors/admins allowed)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-04-20\",\n  \"notes\": \"Patient self-reported visit — not allowed.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/patients/15/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "15", "visits"] }
+          }
+        },
+        {
+          "name": "Create visit with future date (422 validation error)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2099-12-31\",\n  \"notes\": \"This should fail validation.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/patients/15/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "15", "visits"] }
+          }
+        },
+        {
+          "name": "Create patient — missing required fields (422 validation)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Incomplete\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/99999 — Non-existent patient (404)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/99999", "host": ["{{base_url}}"], "path": ["api", "patients", "99999"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛠 Utilities",
+      "item": [
+        {
+          "name": "GET /api/ping",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/ping", "host": ["{{base_url}}"], "path": ["api", "ping"] }
+          }
+        },
+        {
+          "name": "GET /api/test/admin-only (admin role gate)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/test/admin-only", "host": ["{{base_url}}"], "path": ["api", "test", "admin-only"] }
+          }
+        },
+        {
+          "name": "GET /api/test/admin-doktor-only (admin+doctor gate)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/test/admin-doktor-only", "host": ["{{base_url}}"], "path": ["api", "test", "admin-doktor-only"] }
+          }
+        }
+      ]
+    }
+  ]
+}

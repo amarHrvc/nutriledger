@@ -1,0 +1,894 @@
+{
+  "info": {
+    "_postman_id": "nutri-ledger-api-2026",
+    "name": "NutriLedger API Testing",
+    "description": "Complete API testing flow: Login → Create Patient → View Patient → Create Visit → View Visits",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12345678"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{admin_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Collection-level pre-request script",
+          "// Handles Laravel Sanctum token format: 2|hash",
+          "",
+          "// Setup base URL if not set",
+          "if (!pm.environment.get('base_url')) {",
+          "    pm.environment.set('base_url', 'localhost:8000');",
+          "}",
+          "",
+          "// Check auth token status (Sanctum format: 2|bmBOPQ5LbGBIMkJY...)",
+          "const adminToken = pm.environment.get('admin_token');",
+          "const doctorToken = pm.environment.get('doctor_token');",
+          "const currentRequest = pm.request.name;",
+          "",
+          "// Validate token format (should contain '|' for Sanctum tokens)",
+          "function isValidSanctumToken(token) {",
+          "    return token && typeof token === 'string' && token.includes('|');",
+          "}",
+          "",
+          "// Log token status",
+          "if (currentRequest && (currentRequest.includes('Login') || currentRequest.includes('Authentication'))) {",
+          "    console.log('🔐 Login request - will create new token');",
+          "} else {",
+          "    if (adminToken) {",
+          "        const tokenType = adminToken.split('|')[0];",
+          "        const tokenHash = adminToken.split('|')[1];",
+          "        console.log('✓ Using Sanctum token: ' + tokenType + '|' + tokenHash.substring(0, 20) + '...');",
+          "    } else if (doctorToken) {",
+          "        const tokenType = doctorToken.split('|')[0];",
+          "        const tokenHash = doctorToken.split('|')[1];",
+          "        console.log('✓ Using Sanctum token: ' + tokenType + '|' + tokenHash.substring(0, 20) + '...');",
+          "    } else {",
+          "        console.log('⚠️  No token set - run Login request first');",
+          "    }",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "01 - Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Check response status",
+                  "pm.test('Login successful (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Extract and store token",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Response contains token', function () {",
+                  "    pm.expect(jsonData.data.token).to.exist;",
+                  "});",
+                  "",
+                  "// Save token to environment",
+                  "pm.environment.set('admin_token', jsonData.data.token);",
+                  "pm.environment.set('admin_user_id', jsonData.data.user.id);",
+                  "pm.environment.set('admin_email', jsonData.data.user.email);",
+                  "",
+                  "// Log for debugging",
+                  "console.log('✓ Admin Token: ' + pm.environment.get('admin_token'));",
+                  "console.log('✓ Admin ID: ' + pm.environment.get('admin_user_id'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@nutrilabs.com\",\n  \"password\": \"password\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "02 - Login (Doctor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Extract and store token",
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set('doctor_token', jsonData.data.token);",
+                  "pm.environment.set('doctor_user_id', jsonData.data.user.id);",
+                  "",
+                  "console.log('✓ Doctor Token: ' + pm.environment.get('doctor_token'));",
+                  "console.log('✓ Doctor ID: ' + pm.environment.get('doctor_user_id'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"doctor@nutrilabs.com\",\n  \"password\": \"password\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03 - Get Current User Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Get user profile (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/user",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "user"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👥 Patient Management",
+      "item": [
+        {
+          "name": "04 - Create Patient (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Patient created (201)', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "// Extract patient ID",
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set('patient_id', jsonData.data.patient.id);",
+                  "pm.environment.set('patient_user_id', jsonData.data.patient.user_id);",
+                  "",
+                  "console.log('✓ Patient ID: ' + pm.environment.get('patient_id'));",
+                  "console.log('✓ Patient User ID: ' + pm.environment.get('patient_user_id'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{patient_user_id}}\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"date_of_birth\": \"1990-05-15\",\n  \"gender\": \"M\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"123 Main Street\",\n  \"city\": \"New York\",\n  \"postal_code\": \"10001\",\n  \"emergency_contact_name\": \"Jane Doe\",\n  \"emergency_contact_phone\": \"+1987654321\",\n  \"blood_type\": \"O+\",\n  \"allergies\": \"Penicillin\",\n  \"medical_notes\": \"Mild hypertension, managed with medication\",\n  \"socioeconomic\": {\n    \"marital_status\": \"married\",\n    \"number_of_dependents\": 2,\n    \"employment_status\": \"employed_full_time\",\n    \"income_level\": \"middle\",\n    \"has_health_insurance\": true,\n    \"smoking_status\": \"never\",\n    \"alcohol_consumption\": \"occasional\",\n    \"physical_activity_level\": \"moderately_active\",\n    \"food_security_status\": \"food_secure\",\n    \"additional_notes\": \"Stable housing and employment\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/patients",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "patients"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "05 - Get All Patients (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Patient list retrieved (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Response has pagination meta', function () {",
+                  "    pm.expect(jsonData.data).to.be.an('array');",
+                  "    pm.expect(jsonData.meta).to.exist;",
+                  "    pm.expect(jsonData.links).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/patients?page=1&per_page=10",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "patients"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "06 - Get Single Patient (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Patient retrieved (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Response contains patient data', function () {",
+                  "    pm.expect(jsonData.data.patient).to.exist;",
+                  "    pm.expect(jsonData.data.patient.first_name).to.equal('John');",
+                  "    pm.expect(jsonData.data.patient.blood_type).to.equal('O+');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/patients/{{patient_id}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                "{{patient_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "07 - Update Patient (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": [
+                "pm.test('Patient updated (200)', function () {",
+                "    pm.response.to.have.status(200);",
+                "});"
+              ]
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{patient_user_id}}\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"date_of_birth\": \"1990-05-15\",\n  \"gender\": \"M\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"456 Oak Avenue\",\n  \"city\": \"New York\",\n  \"postal_code\": \"10001\",\n  \"emergency_contact_name\": \"Jane Doe\",\n  \"emergency_contact_phone\": \"+1987654321\",\n  \"blood_type\": \"O+\",\n  \"allergies\": \"Penicillin, Aspirin\",\n  \"medical_notes\": \"Mild hypertension, managed with medication. Updated allergies.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/patients/{{patient_id}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                "{{patient_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏥 Visit Management",
+      "item": [
+        {
+          "name": "08 - Create Visit (Doctor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Visit created (201)', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set('visit_id', jsonData.data.visit.id);",
+                  "",
+                  "console.log('✓ Visit ID: ' + pm.environment.get('visit_id'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2025-04-10\",\n  \"notes\": \"Patient presented with complaints of fatigue and mild headaches. Blood pressure slightly elevated at 140/90. Recommended increase in physical activity and dietary adjustments. Follow-up in 2 weeks.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/patients/{{patient_id}}/visits",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                "{{patient_id}}",
+                "visits"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "09 - List Patient Visits (Doctor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Visits list retrieved (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Response has visits array and pagination', function () {",
+                  "    pm.expect(jsonData.data).to.be.an('array');",
+                  "    pm.expect(jsonData.meta).to.exist;",
+                  "    pm.expect(jsonData.links).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_token}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/patients/{{patient_id}}/visits?page=1&per_page=10",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                "{{patient_id}}",
+                "visits"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10 - Get Single Visit (Doctor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Visit retrieved (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Response contains visit data with doctor info', function () {",
+                  "    pm.expect(jsonData.data.visit).to.exist;",
+                  "    pm.expect(jsonData.data.visit.attributes.date).to.exist;",
+                  "    pm.expect(jsonData.data.visit.attributes.notes).to.exist;",
+                  "    pm.expect(jsonData.data.visit.attributes.doctorName).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_token}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/patients/{{patient_id}}/visits/{{visit_id}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                "{{patient_id}}",
+                "visits",
+                "{{visit_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "11 - Update Visit (Doctor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Visit updated (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Follow-up visit. Patient reports improved energy levels after dietary changes. Blood pressure now 135/88 (improved). Continue current regimen. Advised on stress management techniques.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/patients/{{patient_id}}/visits/{{visit_id}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                "{{patient_id}}",
+                "visits",
+                "{{visit_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "12 - Delete Visit (Admin Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Visit deleted (204 No Content)', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/patients/{{patient_id}}/visits/{{visit_id}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                "{{patient_id}}",
+                "visits",
+                "{{visit_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔍 Authorization Tests",
+      "item": [
+        {
+          "name": "13 - Doctor Cannot Delete Visit (403)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/patients/{{patient_id}}/visits/999",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                "{{patient_id}}",
+                "visits",
+                "999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "14 - Patient Cannot Create Visit (403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patient_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2025-04-10\",\n  \"notes\": \"Test visit\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/patients/{{patient_id}}/visits",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                "{{patient_id}}",
+                "visits"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "15 - Guest Cannot Access Protected Routes (401)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/patients",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "patients"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📊 Data Collection Summary",
+      "item": [
+        {
+          "name": "16 - Data Summary Report (Console)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Display collected data",
+                  "console.log('');",
+                  "console.log('═══════════════════════════════════════════════════════');",
+                  "console.log('📊 NUTRILABS API TEST DATA SUMMARY');",
+                  "console.log('═══════════════════════════════════════════════════════');",
+                  "console.log('');",
+                  "console.log('🔐 AUTHENTICATION DATA:');",
+                  "console.log('   Admin Email: ' + pm.environment.get('admin_email'));",
+                  "console.log('   Admin ID: ' + pm.environment.get('admin_user_id'));",
+                  "console.log('   Admin Token: ' + pm.environment.get('admin_token').substring(0, 50) + '...');",
+                  "console.log('   Doctor ID: ' + pm.environment.get('doctor_user_id'));",
+                  "console.log('   Doctor Token: ' + pm.environment.get('doctor_token').substring(0, 50) + '...');",
+                  "console.log('');",
+                  "console.log('👥 PATIENT DATA:');",
+                  "console.log('   Patient ID: ' + pm.environment.get('patient_id'));",
+                  "console.log('   Patient User ID: ' + pm.environment.get('patient_user_id'));",
+                  "console.log('   First Name: John');",
+                  "console.log('   Last Name: Doe');",
+                  "console.log('   Date of Birth: 1990-05-15');",
+                  "console.log('   Blood Type: O+');",
+                  "console.log('   Allergies: Penicillin, Aspirin');",
+                  "console.log('');",
+                  "console.log('🏥 VISIT DATA:');",
+                  "console.log('   Visit ID: ' + pm.environment.get('visit_id'));",
+                  "console.log('   Doctor ID: ' + pm.environment.get('doctor_user_id'));",
+                  "console.log('   Visit Date: 2025-04-10');",
+                  "console.log('   Status: Active');",
+                  "console.log('');",
+                  "console.log('═══════════════════════════════════════════════════════');",
+                  "console.log('✅ All test data has been collected in environment variables');",
+                  "console.log('═══════════════════════════════════════════════════════');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ping",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ping"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_email",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "doctor_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "doctor_user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "patient_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "patient_user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "patient_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "visit_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

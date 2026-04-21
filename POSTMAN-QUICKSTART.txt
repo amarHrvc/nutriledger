@@ -1,0 +1,160 @@
+# 🚀 POSTMAN QUICK START CARD
+
+## 📥 Import (30 seconds)
+
+```
+1. Open Postman Desktop
+2. Click "Import" (top-left)
+3. Upload: postman-nutri-ledger-collection.json
+4. Upload: postman-nutri-ledger-env.json
+5. Click collection "Run" button
+```
+
+---
+
+## 🧪 Test Flow (2 minutes)
+
+| # | Request | Token | Input | Output |
+|---|---------|-------|-------|--------|
+| 01 | Login (Admin) | — | email/password | `admin_token` ✓ |
+| 02 | Login (Doctor) | — | email/password | `doctor_token` ✓ |
+| 03 | Get Profile | `admin_token` | — | user data ✓ |
+| 04 | Create Patient | `admin_token` | patient data | `patient_id` ✓ |
+| 05 | List Patients | `admin_token` | page=1 | paginated list ✓ |
+| 06 | Get Patient | `admin_token` | {patient_id} | patient record ✓ |
+| 07 | Update Patient | `admin_token` | patient data | updated ✓ |
+| 08 | Create Visit | `doctor_token` | visit data | `visit_id` ✓ |
+| 09 | List Visits | `doctor_token` | {patient_id} | paginated list ✓ |
+| 10 | Get Visit | `doctor_token` | {patient_id}/{visit_id} | visit record ✓ |
+| 11 | Update Visit | `doctor_token` | visit data | updated ✓ |
+| 12 | Delete Visit | `admin_token` | {patient_id}/{visit_id} | deleted ✓ |
+| 13 | Doctor Cannot Delete | `doctor_token` | {patient_id}/999 | 403 ✓ |
+| 14 | Patient Cannot Create | `patient_token` | {patient_id} | 403 ✓ |
+| 15 | Guest No Access | — | /patients | 401 ✓ |
+| 16 | Data Summary | — | — | logs all data ✓ |
+
+---
+
+## 💡 Key Variables (Auto-Populated)
+
+```
+admin_token    ← Captured from request 01
+doctor_token   ← Captured from request 02
+patient_id     ← Captured from request 04
+visit_id       ← Captured from request 08
+```
+
+Use `{{admin_token}}` in request headers → automatically replaced with value
+
+---
+
+## 📍 Base URL
+
+Default: `localhost:8000`
+
+To change:
+```
+Click environment dropdown → Edit → base_url = your-url:port
+```
+
+---
+
+## ✅ Expected Results
+
+All 16 requests should show:
+- ✓ Status codes correct (200, 201, 204, 401, 403)
+- ✓ Response structure valid (message, status, data)
+- ✓ Tests pass (green checkmarks)
+- ✓ Data captured to environment
+
+---
+
+## 🔐 Test Credentials
+
+```
+Admin:   admin@nutrilabs.com / password
+Doctor:  doctor@nutrilabs.com / password
+Patient: (created as part of test flow)
+```
+
+---
+
+## 📊 Response Examples
+
+### Patient Creation (201)
+```json
+{
+  "message": "Patient created successfully.",
+  "status": 201,
+  "data": {
+    "patient": {
+      "id": 3,
+      "first_name": "John",
+      "blood_type": "O+"
+    }
+  }
+}
+```
+
+### Visit List (200)
+```json
+{
+  "message": "Visits retrieved successfully.",
+  "status": 200,
+  "data": [ { visit records } ],
+  "meta": { "total": 5, "per_page": 10 },
+  "links": { "first": "...", "next": null }
+}
+```
+
+### Delete (204)
+```
+(empty body, just status 204)
+```
+
+---
+
+## 🛠️ Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| "Unauthenticated" | Re-run request 01 (Login Admin) |
+| "Patient not found" | patient_id is empty; create patient first |
+| "Access denied" (403) | Expected for requests 13-14 (auth tests) |
+| "Connection refused" | Start Laravel: `composer run dev` |
+| Variables empty | Ensure "NutriLabs Local" environment is selected |
+
+---
+
+## 📚 Detailed Docs
+
+- **Full Guide:** `POSTMAN-COLLECTION-GUIDE.md`
+- **Setup Help:** `POSTMAN-SETUP.md`
+- **API Reference:** See request descriptions in Postman
+
+---
+
+## 🎯 Common Tasks
+
+**Record Complete Patient & Visit:**
+```
+1. Run 01 (Admin login) → captures admin_token
+2. Run 04 (Create patient) → captures patient_id
+3. Run 02 (Doctor login) → captures doctor_token
+4. Run 08 (Create visit) → captures visit_id
+5. Run 10 (Get visit) → verify complete record
+```
+
+**Test Authorization:**
+```
+Run 13, 14, 15 (should all fail with 403/401)
+```
+
+**View All Patient Data:**
+```
+Run 06 (Get Patient) → shows full record with socioeconomic data
+```
+
+---
+
+**Created:** 2026-04-10 | **Version:** 1.0 | **Status:** ✅ Ready

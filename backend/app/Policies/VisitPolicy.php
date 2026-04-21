@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Patient;
 use App\Models\User;
 use App\Models\Visit;
 
@@ -10,9 +11,19 @@ class VisitPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user, Patient $patient): bool
     {
-        return $this->adminOrDoctor($user);
+        // Admin or doctor can view any patient's visits
+        if ($this->adminOrDoctor($user)) {
+            return true;
+        }
+
+        // Patients can only view their own visits
+        if ($user->isPatient()) {
+            return $user->patient?->id === $patient->id;
+        }
+
+        return false;
     }
 
     /**
@@ -25,7 +36,7 @@ class VisitPolicy
         }
 
         // Patients can view their own visits
-        if ($user->ispatient()) {
+        if ($user->isPatient()) {
             return $user->patient?->id === $visit->patient_id;
         }
 
@@ -37,6 +48,7 @@ class VisitPolicy
      */
     public function create(User $user): bool
     {
+        // Admins and doctors can create visits
         return $this->adminOrDoctor($user);
     }
 

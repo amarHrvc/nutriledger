@@ -6,14 +6,17 @@ use App\Models\Visit;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreVisitRequest extends FormRequest
+class UpdateVisitRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user() !== null && $this->user()->can('create', Visit::class);
+        /** @var Visit $visit */
+        $visit = $this->route('visit');
+
+        return $this->user()->can('update', $visit);
     }
 
     /**
@@ -24,7 +27,7 @@ class StoreVisitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'date' => ['required', 'date', 'before_or_equal:today'],
+            'date' => ['sometimes', 'date', 'before_or_equal:today'],
             'notes' => ['nullable', 'string', 'max:10000'],
         ];
     }

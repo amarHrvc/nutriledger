@@ -1,0 +1,191 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║     🔐 LARAVEL SANCTUM TOKEN FORMAT - QUICK VISUAL GUIDE                      ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+┌─ TOKEN STRUCTURE ───────────────────────────────────────────────────────────────┐
+│                                                                                 │
+│  Complete Token:                                                               │
+│  ┌────────────────────────────────────────────────────────────────────────┐   │
+│  │  2|bmBOPQ5LbGBIMkJYtgLU8OJ32hDjHB7EB4S7BejZ7c01c7b6                   │   │
+│  │  │  └──────────────────────────────────────────────────────────────┘  │   │
+│  │  │                     Token Hash (Base64)                         │   │   │
+│  │  Token ID (Which token number)                                   │   │   │
+│  │  ┌─ This is the format sent in Authorization header             │   │   │
+│  │  Separator                                                       │   │   │
+│  └────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                 │
+│  Example Breakdown:                                                            │
+│  ┌────────────────────────────────────────────────────────────────────────┐   │
+│  │  Token ID:     2                   (Second token created)             │   │
+│  │  Separator:    |                   (Pipe character)                   │   │
+│  │  Hash:         bmBOPQ5LbGBIMkJY... (Unique token value)              │   │
+│  │                                                                        │   │
+│  │  When stored in Postman:                                             │   │
+│  │  {{admin_token}} = 2|bmBOPQ5LbGBIMkJYtgLU8OJ32hDjHB7EB4S7BejZ7c01c7b6 │   │
+│  └────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                 │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ HOW POSTMAN USES THE TOKEN ────────────────────────────────────────────────────┐
+│                                                                                  │
+│  Step 1: Login creates token                                                   │
+│  ┌──────────────────────────────────────────────────────────┐                 │
+│  │ POST /api/login                                          │                 │
+│  │ Body: { "email": "...", "password": "..." }             │                 │
+│  │                                                          │                 │
+│  │ Response:                                                │                 │
+│  │ {                                                        │                 │
+│  │   "data": {                                              │                 │
+│  │     "token": "2|bmBOPQ5LbGBIMkJY...",                   │                 │
+│  │     "user": { ... }                                      │                 │
+│  │   }                                                      │                 │
+│  │ }                                                        │                 │
+│  └──────────────────────────────────────────────────────────┘                 │
+│                      ↓                                                         │
+│                      Postman captures token                                   │
+│                      ↓                                                         │
+│  Step 2: Store in environment variable                                        │
+│  ┌──────────────────────────────────────────────────────────┐                │
+│  │ pm.environment.set('admin_token',                       │                │
+│  │   '2|bmBOPQ5LbGBIMkJYtgLU8OJ32hDjHB7EB4S7BejZ7c01c7b6') │                │
+│  │                                                          │                │
+│  │ Environment now contains:                               │                │
+│  │ {{admin_token}} = 2|bmBOPQ5LbGBIMkJY...                │                │
+│  └──────────────────────────────────────────────────────────┘                │
+│                      ↓                                                        │
+│  Step 3: Use in subsequent requests                                          │
+│  ┌──────────────────────────────────────────────────────────┐               │
+│  │ GET /api/patients                                       │               │
+│  │                                                         │               │
+│  │ Collection Auth Settings:                              │               │
+│  │ ┌─────────────────────────────────────┐               │               │
+│  │ │ Type: Bearer Token                  │               │               │
+│  │ │ Token: {{admin_token}}              │               │               │
+│  │ └─────────────────────────────────────┘               │               │
+│  │         ↓ (Postman substitutes value)                │               │
+│  │ Token: 2|bmBOPQ5LbGBIMkJYtgLU8OJ32hDjHB7EB4S7BejZ7   │               │
+│  │         ↓ (Postman creates header)                   │               │
+│  │ Authorization: Bearer 2|bmBOPQ5LbGBIMkJYtgLU8OJ32...  │               │
+│  └──────────────────────────────────────────────────────────┘               │
+│                      ↓                                                      │
+│  Step 4: Server validates token                                            │
+│  ┌──────────────────────────────────────────────────────────┐              │
+│  │ Laravel receives:                                        │              │
+│  │   Authorization: Bearer 2|bmBOPQ5LbGBIMkJY...          │              │
+│  │                  └─ Validates against database         │              │
+│  │                     (extracted hash, checked against    │              │
+│  │                      user_id on token row)             │              │
+│  │   ✅ Valid → Request processes with authenticated user │              │
+│  │   ❌ Invalid → 401 Unauthorized                        │              │
+│  └──────────────────────────────────────────────────────────┘              │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─ POSTMAN CONSOLE OUTPUT ────────────────────────────────────────────────────────┐
+│                                                                                  │
+│  Pre-Request Script Logs:                                                      │
+│                                                                                 │
+│  ✓ Using Sanctum token: 2|bmBOPQ5LbGBIMkJY...                                 │
+│                         │ └─ Hash first 20 chars                              │
+│                         └─ Token ID                                           │
+│                                                                                │
+│  Shows:                                                                        │
+│  - Token ID (1, 2, 3, etc. = order created)                                  │
+│  - First 20 characters of hash (uniqueness verification)                     │
+│  - Format is valid (contains pipe)                                           │
+│                                                                               │
+│  ⚠️  No token set - run Login request first                                  │
+│     → Environment variable is empty, need to login                           │
+│                                                                               │
+│  ❌ Invalid token format. Expected: ID|Hash                                  │
+│     → Token missing pipe separator (corrupted)                               │
+│                                                                               │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ MULTIPLE USERS / MULTIPLE TOKENS ─────────────────────────────────────────────┐
+│                                                                                  │
+│  Login 1 (Admin):                                                              │
+│  ┌──────────────────────────────────┐                                          │
+│  │ POST /api/login                  │                                          │
+│  │ Body: { email: "admin@..." }     │                                          │
+│  │ Response: { token: "2|abcd..." } │                                          │
+│  │ Stored: {{admin_token}}          │                                          │
+│  └──────────────────────────────────┘                                          │
+│           ↓                                                                     │
+│  Login 2 (Doctor):                                                             │
+│  ┌──────────────────────────────────┐                                          │
+│  │ POST /api/login                  │                                          │
+│  │ Body: { email: "doctor@..." }    │                                          │
+│  │ Response: { token: "3|efgh..." } │                                          │
+│  │ Stored: {{doctor_token}}         │                                          │
+│  └──────────────────────────────────┘                                          │
+│           ↓                                                                     │
+│  Environment Variables:                                                        │
+│  ┌───────────────────────────────────────────────────┐                        │
+│  │ {{admin_token}}  = 2|bmBOPQ5LbGBIMkJY...        │                        │
+│  │ {{doctor_token}} = 3|aB9xCdEfGhIjKlMnOpQrSt...  │                        │
+│  │ {{patient_token}}= 4|zYxWvUtSrQpOnMlKjIhGfEd... │                        │
+│  └───────────────────────────────────────────────────┘                        │
+│           ↓                                                                    │
+│  Switch between users:                                                        │
+│  ┌────────────────────────────────────────────┐                              │
+│  │ Collection → Authorization Tab             │                              │
+│  │                                            │                              │
+│  │ Change: Token: {{admin_token}}            │                              │
+│  │ To:     Token: {{doctor_token}}           │                              │
+│  │                                            │                              │
+│  │ Now all requests use doctor token!         │                              │
+│  └────────────────────────────────────────────┘                              │
+│           ↓                                                                   │
+│  Test Authorization:                                                         │
+│  ┌──────────────────────────────────────────────┐                            │
+│  │ With {{admin_token}}: Can create patient ✓   │                            │
+│  │ With {{doctor_token}}: Cannot create ✗      │                            │
+│  │ Expected behavior verified!                  │                            │
+│  └──────────────────────────────────────────────┘                            │
+│                                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ TOKEN EXPIRATION (60 minutes default) ─────────────────────────────────────────┐
+│                                                                                  │
+│  Timeline:                                                                      │
+│                                                                                 │
+│  17:30:00  Token created (logged in)                                          │
+│  │                                                                             │
+│  │  17:45:00  ✓ Token valid (15 min old)                                      │
+│  │  │                                                                         │
+│  │  │  18:15:00  ✓ Token valid (45 min old)                                  │
+│  │  │  │                                                                     │
+│  │  │  │  18:29:00  ✓ Token valid (59 min old)                              │
+│  │  │  │  │                                                                 │
+│  │  │  │  │  18:31:00  ❌ Expired (1 min past 60)                           │
+│  │  │  │  │  │                                                             │
+│  │  │  │  │  │  Request returns: 401 Unauthorized                          │
+│  │  │  │  │  │                                                             │
+│  │  │  │  │  │  Solution: Run login again → get fresh token                │
+│  │  │  │  │  │                                                             │
+│  └──┴──┴──┴──┴─────────────────────────────────────────────────────────────  │
+│   0   15  30  45     Expired after                                           │
+│                      60 minutes                                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌─ QUICK TROUBLESHOOTING ────────────────────────────────────────────────────────┐
+│                                                                                │
+│  Problem                  Cause                      Fix                      │
+│  ────────────────────────────────────────────────────────────────────────────│
+│  401 Unauthorized         Token empty or expired     Run login again         │
+│  403 Forbidden            Wrong role/permissions    Expected for auth tests  │
+│  Token is empty           Postman didn't capture    Check test script runs   │
+│  Token has spaces         Whitespace in value       .trim() the token       │
+│  "Invalid token format"   Missing pipe (|)          Token corrupted/invalid  │
+│  Request sent without     Collection auth off       Edit → Auth → Set token │
+│  authorization header                                                       │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Key Files:
+📄 POSTMAN-SANCTUM-TOKEN-GUIDE.md - Full technical details
+📄 POSTMAN-COLLECTION-AUTH-GUIDE.md - Setup and switching
+📄 POSTMAN-AUTH-REFERENCE.txt - Visual reference
+📄 postman-nutri-ledger-collection.json - Updated with Sanctum handling

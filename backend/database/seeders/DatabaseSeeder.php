@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'hajrovica@gmail.com',
             'password' => 'Test12345',
             'role' => 'admin',
-
         ]);
+
+        $this->call(DemoDataSeeder::class);
     }
 }
