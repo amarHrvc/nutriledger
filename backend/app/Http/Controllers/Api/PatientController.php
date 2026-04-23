@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
 use App\Http\Resources\Api\PatientResource;
+use App\Http\Resources\Api\PatientSummaryResource;
 use App\Models\Patient;
 use App\Services\PatientService;
 use Illuminate\Http\JsonResponse;
@@ -23,13 +24,19 @@ class PatientController extends ApiController
     {
         $this->authorize('viewAny', Patient::class);
 
-        $query = Patient::with(['socioeconomic', 'user']);
+        $isSummary = $request->query('format') === 'summary';
+
+        $query = $isSummary ? Patient::query() : Patient::with(['socioeconomic', 'user']);
 
         if ($request->user()->isPatient()) {
             $query->where('user_id', $request->user()->id);
         }
 
-        return $this->paginated('Patients retrieved successfully.', PatientResource::collection($query->paginate()));
+        $collection = $isSummary
+            ? PatientSummaryResource::collection($query->paginate())
+            : PatientResource::collection($query->paginate());
+
+        return $this->paginated('Patients retrieved successfully.', $collection);
     }
 
     /**

@@ -69,10 +69,8 @@ class PatientResource extends JsonResource
                 ],
                 'socioeconomic' => [
                     'data' => $this->whenLoaded('socioeconomic', fn () => $this->socioeconomic
-                        ? [
-                            'type' => 'patient_socioeconomic',
-                            'id' => (string) $this->socioeconomic->id,
-                        ] : null),
+                        ? ['type' => 'patient_socioeconomic', 'id' => (string) $this->socioeconomic->id]
+                        : null),
                 ],
             ],
         ];

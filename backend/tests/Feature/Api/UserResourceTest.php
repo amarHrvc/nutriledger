@@ -24,7 +24,7 @@ test('UserResource returns JSON:API shape', function () {
     expect($data)->toHaveKeys(['type', 'id', 'attributes'])
         ->and($data['type'])->toBe('users')
         ->and($data['id'])->toBe($user->id)
-        ->and($data['attributes'])->toHaveKeys(['name', 'email', 'role', 'createdAt', 'updatedAt', 'deletedAt'])
+        ->and($data['attributes'])->toHaveKeys(['name', 'email', 'role', 'createdAt', 'updatedAt', 'deletedAt', 'isDeleted'])
         ->and($data['attributes']['name'])->toBe('John Doe')
         ->and($data['attributes']['email'])->toBe('john@example.com')
         ->and($data['attributes']['role'])->toBe('admin')
@@ -51,8 +51,27 @@ test('UserResource collection returns JSON:API array', function () {
     foreach ($data as $item) {
         expect($item)->toHaveKeys(['type', 'id', 'attributes'])
             ->and($item['type'])->toBe('users')
-            ->and($item['attributes'])->toHaveKeys(['name', 'email', 'role',  'createdAt', 'updatedAt', 'deletedAt']);
+            ->and($item['attributes'])->toHaveKeys(['name', 'email', 'role', 'createdAt', 'updatedAt', 'deletedAt', 'isDeleted']);
     }
+});
+
+test('UserResource isDeleted is false for active user', function () {
+    $user = User::factory()->create();
+    $data = (new UserResource($user))->resolve();
+
+    expect($data['attributes']['isDeleted'])->toBeFalse()
+        ->and($data['attributes']['deletedAt'])->toBeNull();
+});
+
+test('UserResource isDeleted is true for soft-deleted user', function () {
+    $user = User::factory()->create();
+    $user->delete();
+    $user->refresh();
+
+    $data = (new UserResource($user))->resolve();
+
+    expect($data['attributes']['isDeleted'])->toBeTrue()
+        ->and($data['attributes']['deletedAt'])->not()->toBeNull();
 });
 
 test('UserResource has related data', function () {

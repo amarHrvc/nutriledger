@@ -314,6 +314,69 @@ it('returns only own record when patient lists patients', function () {
     expect($ids)->toBe([$ownPatient->id]);
 });
 
+// T028
+it('returns summary format when format=summary is requested', function () {
+    $admin = User::factory()->admin()->create();
+    Patient::factory()->count(3)->create();
+
+    $response = $this->actingAs($admin)
+        ->getJson('/api/patients?format=summary');
+
+    $response->assertOk()
+        ->assertJsonStructure([
+            'data' => [['id', 'fullName', 'dateOfBirth', 'gender', 'city', 'phone']],
+            'meta' => ['current_page', 'last_page', 'per_page', 'total'],
+        ]);
+
+    $first = $response->json('data.0');
+    expect($first)->toHaveKeys(['id', 'fullName', 'dateOfBirth', 'gender', 'city', 'phone'])
+        ->not->toHaveKey('attributes')
+        ->not->toHaveKey('relationships');
+});
+
+// T029
+it('summary format omits full attributes and relationships', function () {
+    $admin = User::factory()->admin()->create();
+    Patient::factory()->hasSocioeconomic()->create();
+
+    $response = $this->actingAs($admin)
+        ->getJson('/api/patients?format=summary');
+
+    $response->assertOk();
+
+    $item = $response->json('data.0');
+    expect(array_keys($item))->toBe(['id', 'fullName', 'dateOfBirth', 'gender', 'city', 'phone']);
+});
+
+// T030
+it('returns full format by default (no format param)', function () {
+    $admin = User::factory()->admin()->create();
+    Patient::factory()->create();
+
+    $response = $this->actingAs($admin)
+        ->getJson('/api/patients');
+
+    $response->assertOk()
+        ->assertJsonStructure([
+            'data' => [['type', 'id', 'attributes', 'relationships']],
+        ]);
+});
+
+// T031
+it('summary format respects patient scope restriction', function () {
+    $patientUser = User::factory()->patient()->create();
+    $ownPatient = Patient::factory()->create(['user_id' => $patientUser->id]);
+    Patient::factory()->count(2)->create();
+
+    $response = $this->actingAs($patientUser)
+        ->getJson('/api/patients?format=summary');
+
+    $response->assertOk();
+
+    $ids = collect($response->json('data'))->pluck('id')->map(fn ($id) => (int) $id)->all();
+    expect($ids)->toBe([$ownPatient->id]);
+});
+
 // T027
 it('returns 403 when patient tries to delete any patient', function () {
     $patientUser = User::factory()->patient()->create();

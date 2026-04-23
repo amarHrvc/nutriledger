@@ -132,9 +132,12 @@ git checkout develop
 git reset --hard upstream/develop
 
 # 2. Filter: keep backend/, frontend/, and _sd/README.md (renamed to root README.md)
+# Remove already_ran so filter-repo treats this as a fresh run (required for repeated deliveries)
+rm -f .git/filter-repo/already_ran
 git filter-repo \
   --path backend/ \
   --path frontend/ \
+  --path .github/workflows/ \
   --path _sd/README.md \
   --path-rename _sd/README.md:README.md \
   --force
@@ -201,6 +204,7 @@ git checkout develop
 git reset --hard upstream/develop
 
 # 2. Filter: keep backend/ only — colleague owns frontend/ in se-origin directly
+rm -f .git/filter-repo/already_ran
 git filter-repo \
   --path backend/ \
   --path frontend/ \
@@ -350,13 +354,15 @@ git branch -d feature/xxx
 cd ../nutri-ledger-sd-delivery
 git fetch upstream
 git reset --hard upstream/develop
-git filter-repo --path backend/ --path frontend/ --path _sd/README.md --path-rename _sd/README.md:README.md --force
+rm -f .git/filter-repo/already_ran
+git filter-repo --path backend/ --path frontend/ --path .github/workflows/ --path _sd/README.md --path-rename _sd/README.md:README.md --force
 git push sd-origin develop:main
 
 # 5. Deliver to SE (backend only — colleague owns frontend in se-origin)
 cd ../nutri-ledger-se-delivery
 git fetch upstream
 git reset --hard upstream/develop
+rm -f .git/filter-repo/already_ran
 git filter-repo --path backend/ --force
 git push se-origin develop:be-delivery --force-with-lease
 # then open PR on GitHub: be-delivery → main
@@ -368,6 +374,19 @@ cd ../nutri-ledger
 ---
 
 ## Troubleshooting
+
+### `AssertionError` or "already_ran" prompt from filter-repo
+
+Cause: `.git/filter-repo/already_ran` exists from a previous run. Answering Y triggers
+continuation mode which hits an internal assertion (`usoa == intermediate`) when the repo
+was reset with `git reset --hard` between runs.
+
+Fix: delete `already_ran` before each filter-repo invocation (already included in the commands above):
+
+```bash
+rm -f .git/filter-repo/already_ran
+git filter-repo --path backend/ ... --force
+```
 
 ### `git filter-repo` can't find remote after running
 
@@ -424,12 +443,14 @@ merge it. Check GitHub for an open `be-delivery → main` PR.
 # SD delivery (after squash merge to develop in NL)
 cd nutri-ledger-sd-delivery
 git fetch upstream && git reset --hard upstream/develop
-git filter-repo --path backend/ --path frontend/ --path _sd/README.md --path-rename _sd/README.md:README.md --force
+rm -f .git/filter-repo/already_ran
+git filter-repo --path backend/ --path frontend/ --path .github/workflows/ --path _sd/README.md --path-rename _sd/README.md:README.md --force
 git push sd-origin develop:main
 
 # SE delivery (after squash merge to develop in NL) — backend only
 cd nutri-ledger-se-delivery
 git fetch upstream && git reset --hard upstream/develop
+rm -f .git/filter-repo/already_ran
 git filter-repo --path backend/ --force
 git push se-origin develop:be-delivery --force-with-lease
 # → open PR on GitHub: be-delivery → main

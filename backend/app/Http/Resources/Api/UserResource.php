@@ -37,6 +37,7 @@ class UserResource extends JsonResource
                 'createdAt' => $this->created_at->toIso8601String(),
                 'updatedAt' => $this->updated_at?->toIso8601String(),
                 'deletedAt' => $this->deleted_at?->toIso8601String() ?? null,
+                'isDeleted' => ! is_null($this->deleted_at),
             ],
             'relationships' => [
                 'patient' => $this->whenLoaded('patient', fn () => $this->patient),
