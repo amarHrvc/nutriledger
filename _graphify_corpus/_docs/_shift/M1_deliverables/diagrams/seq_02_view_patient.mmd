@@ -1,0 +1,26 @@
+---
+title: Sequence 2 - GET /api/patients/{id} (View Patient)
+---
+sequenceDiagram
+    actor Client as Authenticated Client
+    participant API as Laravel API
+    participant MW as Auth Middleware
+    participant Policy as PatientPolicy
+    participant DB as Database
+
+    Client->>API: GET /api/patients/{id} Authorization Bearer token
+    API->>MW: Verify Sanctum token
+    MW-->>API: Authenticated
+    API->>API: Resolve Patient via route model binding
+    API->>Policy: authorize('view', patient)
+    alt admin or doktor
+        Policy-->>API: Allowed
+    else pacijent requesting own record
+        Policy-->>API: Allowed
+    else pacijent requesting another patient
+        Policy-->>API: Denied
+        API-->>Client: 403 Forbidden
+    end
+    API->>DB: SELECT patient with socioeconomic eager load
+    DB-->>API: Patient + PatientSocioeconomic
+    API-->>Client: 200 PatientResource JSON

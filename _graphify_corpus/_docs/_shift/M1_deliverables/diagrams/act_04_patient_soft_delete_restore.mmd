@@ -1,0 +1,19 @@
+---
+title: Activity 4 - Patient Soft Delete and Restore Flow
+---
+flowchart TD
+    A([Start]) --> B[Admin views active patient list]
+    B --> C[Selects patient to deactivate]
+    C --> D{Authorized?\nadmin only}
+    D -- No --> E[403 Forbidden]
+    E --> Z([End])
+    D -- Yes --> F[Soft delete patient\ndeleted_at timestamp set]
+    F --> G[Patient removed from active list]
+    G --> H[Admin navigates to deleted patients]
+    H --> I{Restore patient?}
+    I -- No --> Z
+    I -- Yes --> J{Authorized?\nadmin only}
+    J -- No --> E
+    J -- Yes --> K[Restore patient\ndeleted_at cleared]
+    K --> L[Patient reappears in active list]
+    L --> Z

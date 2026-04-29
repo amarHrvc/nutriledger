@@ -1,0 +1,866 @@
+{
+  "communities": {
+    "0": [
+      "apiresponses_created",
+      "apiresponses_nocontent",
+      "apiresponses_notfound",
+      "apiresponses_ok",
+      "apiresponses_paginated",
+      "apiresponses_success",
+      "authcontroller_authcontroller",
+      "authcontroller_authcontroller_login",
+      "authcontroller_authcontroller_logout",
+      "authcontroller_authcontroller_me",
+      "authcontroller_authcontroller_register",
+      "graphify_corpus_be_app_http_controllers_api_authcontroller_php",
+      "graphify_corpus_be_app_http_controllers_api_usercontroller_php",
+      "graphify_corpus_be_app_http_controllers_api_visitcontroller_php",
+      "graphify_corpus_be_app_http_requests_updatepatientrequest_php",
+      "graphify_corpus_be_app_http_resources_api_visitresource_php",
+      "graphify_corpus_be_app_models_user_php",
+      "graphify_corpus_be_app_traits_apiresponses_php",
+      "patient_patient_visits",
+      "patientcontroller_patientcontroller_destroy",
+      "updatepatientrequest_updatepatientrequest",
+      "updatepatientrequest_updatepatientrequest_authorize",
+      "updatepatientrequest_updatepatientrequest_rules",
+      "updateuserrequest_updateuserrequest_authorize",
+      "user_user",
+      "user_user_booted",
+      "user_user_casts",
+      "user_user_initials",
+      "user_user_patient",
+      "user_user_tosimpledata",
+      "usercontroller_usercontroller",
+      "usercontroller_usercontroller_create",
+      "usercontroller_usercontroller_destroy",
+      "usercontroller_usercontroller_edit",
+      "usercontroller_usercontroller_forcedelete",
+      "usercontroller_usercontroller_index",
+      "usercontroller_usercontroller_restore",
+      "usercontroller_usercontroller_show",
+      "usercontroller_usercontroller_store",
+      "usercontroller_usercontroller_update",
+      "visitcontroller_visitcontroller",
+      "visitcontroller_visitcontroller_destroy",
+      "visitcontroller_visitcontroller_index",
+      "visitcontroller_visitcontroller_show",
+      "visitcontroller_visitcontroller_store",
+      "visitcontroller_visitcontroller_update",
+      "visitpolicy_visitpolicy_delete",
+      "visitresource_visitresource"
+    ],
+    "1": [
+      "graphify_corpus_be_app_policies_patientpolicy_php",
+      "graphify_corpus_be_app_policies_patientsocioeconomicpolicy_php",
+      "graphify_corpus_be_app_policies_userpolicy_php",
+      "patientpolicy_patientpolicy",
+      "patientpolicy_patientpolicy_create",
+      "patientpolicy_patientpolicy_delete",
+      "patientpolicy_patientpolicy_forcedelete",
+      "patientpolicy_patientpolicy_restore",
+      "patientpolicy_patientpolicy_update",
+      "patientpolicy_patientpolicy_view",
+      "patientpolicy_patientpolicy_viewany",
+      "patientsocioeconomicpolicy_patientsocioeconomicpolicy",
+      "patientsocioeconomicpolicy_patientsocioeconomicpolicy_create",
+      "patientsocioeconomicpolicy_patientsocioeconomicpolicy_delete",
+      "patientsocioeconomicpolicy_patientsocioeconomicpolicy_update",
+      "patientsocioeconomicpolicy_patientsocioeconomicpolicy_view",
+      "patientsocioeconomicpolicy_patientsocioeconomicpolicy_viewany",
+      "user_user_isadmin",
+      "user_user_isdoctor",
+      "user_user_ispatient",
+      "userpolicy_userpolicy",
+      "userpolicy_userpolicy_create",
+      "userpolicy_userpolicy_delete",
+      "userpolicy_userpolicy_forcedelete",
+      "userpolicy_userpolicy_restore",
+      "userpolicy_userpolicy_update",
+      "userpolicy_userpolicy_view",
+      "userpolicy_userpolicy_viewany"
+    ],
+    "2": [
+      "accordion_accordion",
+      "autocomplete_autocomplete",
+      "card_card",
+      "colorschemes_colorschemes",
+      "customshadows_customshadows",
+      "dialog_dialog",
+      "drawer_drawer",
+      "graphify_corpus_fe_core_theme_colorschemes_ts",
+      "graphify_corpus_fe_core_theme_customshadows_ts",
+      "graphify_corpus_fe_core_theme_index_ts",
+      "graphify_corpus_fe_core_theme_overrides_accordion_tsx",
+      "graphify_corpus_fe_core_theme_overrides_autocomplete_tsx",
+      "graphify_corpus_fe_core_theme_overrides_card_ts",
+      "graphify_corpus_fe_core_theme_overrides_dialog_ts",
+      "graphify_corpus_fe_core_theme_overrides_drawer_ts",
+      "graphify_corpus_fe_core_theme_overrides_index_ts",
+      "graphify_corpus_fe_core_theme_overrides_menu_ts",
+      "graphify_corpus_fe_core_theme_overrides_popover_ts",
+      "graphify_corpus_fe_core_theme_overrides_snackbar_ts",
+      "graphify_corpus_fe_core_theme_shadows_ts",
+      "graphify_corpus_fe_core_theme_typography_ts",
+      "index_overrides",
+      "index_theme",
+      "menu_menu",
+      "popover_popover",
+      "shadows_shadows",
+      "snackbar_snackbar",
+      "typography_typography"
+    ],
+    "3": [
+      "graphify_corpus_be_app_http_controllers_api_patientcontroller_php",
+      "graphify_corpus_be_app_http_resources_api_patientresource_php",
+      "graphify_corpus_be_app_http_resources_api_patientsummaryresource_php",
+      "graphify_corpus_be_app_models_visit_php",
+      "graphify_corpus_be_app_services_patientservice_php",
+      "patient_patient_socioeconomic",
+      "patientcontroller_patientcontroller",
+      "patientcontroller_patientcontroller_construct",
+      "patientcontroller_patientcontroller_index",
+      "patientcontroller_patientcontroller_show",
+      "patientcontroller_patientcontroller_store",
+      "patientcontroller_patientcontroller_update",
+      "patientresource_patientresource",
+      "patientresource_patientresource_toarray",
+      "patientservice_patientservice",
+      "patientservice_patientservice_createpatient",
+      "patientservice_patientservice_updatepatient",
+      "patientsummaryresource_patientsummaryresource",
+      "patientsummaryresource_patientsummaryresource_toarray",
+      "visit_visit",
+      "visit_visit_casts",
+      "visit_visit_doctor",
+      "visit_visit_patient",
+      "visitpolicy_visitpolicy_update",
+      "visitresource_visitresource_toarray"
+    ],
+    "4": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_horizontal_header_tsx",
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_shared_logo_tsx",
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_theme_modechanger_tsx",
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_components_horizontal_footer_tsx",
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_components_horizontal_header_tsx",
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_components_horizontal_layoutcontent_tsx",
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_components_vertical_footer_tsx",
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_components_vertical_layoutcontent_tsx",
+      "footer_footer",
+      "graphify_corpus_fe_core_hooks_useimagevariant_ts",
+      "graphify_corpus_fe_core_hooks_uselayoutinit_ts",
+      "graphify_corpus_fe_core_hooks_usesettings_tsx",
+      "graphify_corpus_fe_core_svg_logo_tsx",
+      "header_header",
+      "layoutcontent_layoutcontent",
+      "logo_logo",
+      "modechanger_modechanger",
+      "useimagevariant_useimagevariant",
+      "uselayoutinit_uselayoutinit",
+      "usesettings_usesettings"
+    ],
+    "5": [
+      "graphify_corpus_be_app_policies_visitpolicy_php",
+      "graphify_corpus_fe_core_styles_vertical_navigationcustomstyles_ts",
+      "graphify_corpus_fe_core_theme_overrides_select_tsx",
+      "navigationcustomstyles_navigationcustomstyles",
+      "select_iconstyles",
+      "select_selecticon",
+      "visitpolicy_visitpolicy",
+      "visitpolicy_visitpolicy_adminordoctor",
+      "visitpolicy_visitpolicy_create",
+      "visitpolicy_visitpolicy_forcedelete",
+      "visitpolicy_visitpolicy_restore",
+      "visitpolicy_visitpolicy_view",
+      "visitpolicy_visitpolicy_viewany"
+    ],
+    "6": [
+      "graphify_corpus_be_app_models_patient_php",
+      "graphify_corpus_be_app_models_patientsocioeconomic_php",
+      "patient_patient",
+      "patient_patient_booted",
+      "patient_patient_casts",
+      "patient_patient_fullname",
+      "patient_patient_user",
+      "patientsocioeconomic_patientsocioeconomic",
+      "patientsocioeconomic_patientsocioeconomic_casts",
+      "patientsocioeconomic_patientsocioeconomic_patient"
+    ],
+    "7": [
+      "graphify_corpus_be_app_http_requests_storevisitrequest_php",
+      "graphify_corpus_be_app_http_requests_updatevisitrequest_php",
+      "storevisitrequest_storevisitrequest",
+      "storevisitrequest_storevisitrequest_authorize",
+      "storevisitrequest_storevisitrequest_messages",
+      "storevisitrequest_storevisitrequest_rules",
+      "updatevisitrequest_updatevisitrequest",
+      "updatevisitrequest_updatevisitrequest_authorize",
+      "updatevisitrequest_updatevisitrequest_messages",
+      "updatevisitrequest_updatevisitrequest_rules"
+    ],
+    "8": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_providers_tsx",
+      "graphify_corpus_fe_core_utils_serverhelpers_ts",
+      "providers_providers",
+      "serverhelpers_getmode",
+      "serverhelpers_getservermode",
+      "serverhelpers_getsettingsfromcookie",
+      "serverhelpers_getskin",
+      "serverhelpers_getsystemmode"
+    ],
+    "9": [
+      "graphify_corpus_be_app_http_requests_api_storeuserrequest_php",
+      "storeuserrequest_storeuserrequest",
+      "storeuserrequest_storeuserrequest_authorize",
+      "storeuserrequest_storeuserrequest_messages",
+      "storeuserrequest_storeuserrequest_rules"
+    ],
+    "10": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_shared_modedropdown_tsx",
+      "modedropdown_getmodeicon",
+      "modedropdown_handleclose",
+      "modedropdown_handlemodeswitch",
+      "modedropdown_handletoggle"
+    ],
+    "11": [
+      "graphify_corpus_be_app_http_requests_storepatientrequest_php",
+      "storepatientrequest_storepatientrequest",
+      "storepatientrequest_storepatientrequest_authorize",
+      "storepatientrequest_storepatientrequest_rules"
+    ],
+    "12": [
+      "graphify_corpus_be_app_http_requests_storesocioeconomicrequest_php",
+      "storesocioeconomicrequest_storesocioeconomicrequest",
+      "storesocioeconomicrequest_storesocioeconomicrequest_authorize",
+      "storesocioeconomicrequest_storesocioeconomicrequest_rules"
+    ],
+    "13": [
+      "graphify_corpus_be_app_http_requests_api_loginrequest_php",
+      "loginrequest_loginrequest",
+      "loginrequest_loginrequest_authorize",
+      "loginrequest_loginrequest_rules"
+    ],
+    "14": [
+      "graphify_corpus_be_app_http_requests_api_registerrequest_php",
+      "registerrequest_registerrequest",
+      "registerrequest_registerrequest_authorize",
+      "registerrequest_registerrequest_rules"
+    ],
+    "15": [
+      "appserviceprovider_appserviceprovider",
+      "appserviceprovider_appserviceprovider_boot",
+      "appserviceprovider_appserviceprovider_register",
+      "graphify_corpus_be_app_providers_appserviceprovider_php"
+    ],
+    "16": [
+      "apiresponses_error",
+      "graphify_corpus_be_app_http_middleware_rolemiddleware_php",
+      "rolemiddleware_rolemiddleware",
+      "rolemiddleware_rolemiddleware_handle"
+    ],
+    "17": [
+      "graphify_corpus_fe_core_contexts_settingscontext_tsx",
+      "graphify_corpus_fe_core_hooks_useobjectcookie_ts",
+      "settingscontext_settingsprovider",
+      "useobjectcookie_useobjectcookie"
+    ],
+    "18": [
+      "checkbox_checkedicon",
+      "checkbox_icon",
+      "checkbox_indeterminateicon",
+      "graphify_corpus_fe_core_theme_overrides_checkbox_tsx"
+    ],
+    "19": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_shared_userdropdown_tsx",
+      "userdropdown_handledropdownclose",
+      "userdropdown_handledropdownopen",
+      "userdropdown_handleuserlogout"
+    ],
+    "20": [
+      "graphify_corpus_be_app_http_resources_api_userresource_php",
+      "userresource_userresource",
+      "userresource_userresource_toarray"
+    ],
+    "21": [
+      "graphify_corpus_be_app_http_resources_api_patientsocioeconomicresource_php",
+      "patientsocioeconomicresource_patientsocioeconomicresource",
+      "patientsocioeconomicresource_patientsocioeconomicresource_toarray"
+    ],
+    "22": [
+      "graphify_corpus_be_app_http_requests_api_updateuserrequest_php",
+      "updateuserrequest_updateuserrequest",
+      "updateuserrequest_updateuserrequest_rules"
+    ],
+    "23": [
+      "graphify_corpus_fe_core_components_option_menu_index_tsx",
+      "index_handleclose",
+      "index_handletoggle"
+    ],
+    "24": [
+      "graphify_corpus_fe_core_styles_horizontal_menuitemstyles_ts",
+      "graphify_corpus_fe_core_styles_vertical_menuitemstyles_ts",
+      "menuitemstyles_menuitemstyles"
+    ],
+    "25": [
+      "graphify_corpus_fe_core_theme_overrides_radio_tsx",
+      "radio_iconchecked",
+      "radio_uncheckedicon"
+    ],
+    "26": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_horizontal_horizontalmenu_tsx",
+      "horizontalmenu_renderexpandicon",
+      "horizontalmenu_renderverticalexpandicon"
+    ],
+    "27": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_horizontal_navbarcontent_tsx",
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_vertical_navbarcontent_tsx",
+      "navbarcontent_navbarcontent"
+    ],
+    "28": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_horizontal_navtoggle_tsx",
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_vertical_navtoggle_tsx",
+      "navtoggle_handleclick"
+    ],
+    "29": [
+      "graphify_corpus_be_app_helpers_php",
+      "helpers_format_enum_label"
+    ],
+    "30": [
+      "controller_controller",
+      "graphify_corpus_be_app_http_controllers_controller_php"
+    ],
+    "31": [
+      "apicontroller_apicontroller",
+      "graphify_corpus_be_app_http_controllers_api_apicontroller_php"
+    ],
+    "32": [
+      "graphify_corpus_fe_core_components_customizer_index_tsx",
+      "index_getlocalepath"
+    ],
+    "33": [
+      "badge_custombadge",
+      "graphify_corpus_fe_core_components_mui_badge_tsx"
+    ],
+    "34": [
+      "chip_customchip",
+      "graphify_corpus_fe_core_components_mui_chip_tsx"
+    ],
+    "35": [
+      "graphify_corpus_fe_core_components_mui_tablist_tsx",
+      "tablist_customtablist"
+    ],
+    "36": [
+      "graphify_corpus_fe_core_components_scroll_to_top_index_tsx",
+      "index_scrolltotop"
+    ],
+    "37": [
+      "graphify_corpus_fe_core_styles_horizontal_menurootstyles_ts",
+      "menurootstyles_menurootstyles"
+    ],
+    "38": [
+      "graphify_corpus_fe_core_styles_vertical_menusectionstyles_ts",
+      "menusectionstyles_menusectionstyles"
+    ],
+    "39": [
+      "button_iconstyles",
+      "graphify_corpus_fe_core_theme_overrides_button_ts"
+    ],
+    "40": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_horizontallayout_tsx",
+      "horizontallayout_horizontallayout"
+    ],
+    "41": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_components_horizontal_navbar_tsx",
+      "navbar_navbar"
+    ],
+    "42": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_link_tsx",
+      "link_link"
+    ],
+    "43": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_horizontal_verticalnavcontent_tsx",
+      "verticalnavcontent_scrollmenu"
+    ],
+    "44": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_vertical_navigation_tsx",
+      "navigation_scrollmenu"
+    ],
+    "45": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_vertical_verticalmenu_tsx",
+      "verticalmenu_renderexpandicon"
+    ],
+    "46": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_stepper_dot_index_tsx",
+      "index_steppercustomdot"
+    ],
+    "47": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_theme_mergedtheme_ts",
+      "mergedtheme_mergedtheme"
+    ],
+    "48": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_theme_usertheme_ts",
+      "usertheme_usertheme"
+    ],
+    "49": [
+      "graphify_corpus_fe_core_types_ts"
+    ],
+    "50": [
+      "graphify_corpus_fe_core_components_custom_inputs_horizontal_tsx"
+    ],
+    "51": [
+      "graphify_corpus_fe_core_components_custom_inputs_image_tsx"
+    ],
+    "52": [
+      "graphify_corpus_fe_core_components_custom_inputs_types_ts"
+    ],
+    "53": [
+      "graphify_corpus_fe_core_components_custom_inputs_vertical_tsx"
+    ],
+    "54": [
+      "graphify_corpus_fe_core_components_mui_autocomplete_tsx"
+    ],
+    "55": [
+      "graphify_corpus_fe_core_components_mui_avatar_tsx"
+    ],
+    "56": [
+      "graphify_corpus_fe_core_components_mui_iconbutton_tsx"
+    ],
+    "57": [
+      "graphify_corpus_fe_core_components_mui_textfield_tsx"
+    ],
+    "58": [
+      "graphify_corpus_fe_core_components_option_menu_types_ts"
+    ],
+    "59": [
+      "graphify_corpus_fe_core_styles_stepper_ts"
+    ],
+    "60": [
+      "graphify_corpus_fe_core_svg_contentcompact_tsx"
+    ],
+    "61": [
+      "graphify_corpus_fe_core_svg_contentwide_tsx"
+    ],
+    "62": [
+      "graphify_corpus_fe_core_svg_directionltr_tsx"
+    ],
+    "63": [
+      "graphify_corpus_fe_core_svg_directionrtl_tsx"
+    ],
+    "64": [
+      "graphify_corpus_fe_core_svg_layoutcollapsed_tsx"
+    ],
+    "65": [
+      "graphify_corpus_fe_core_svg_layouthorizontal_tsx"
+    ],
+    "66": [
+      "graphify_corpus_fe_core_svg_layoutvertical_tsx"
+    ],
+    "67": [
+      "graphify_corpus_fe_core_svg_skinbordered_tsx"
+    ],
+    "68": [
+      "graphify_corpus_fe_core_svg_skindefault_tsx"
+    ],
+    "69": [
+      "graphify_corpus_fe_core_theme_spacing_ts"
+    ],
+    "70": [
+      "graphify_corpus_fe_core_theme_overrides_alert_tsx"
+    ],
+    "71": [
+      "graphify_corpus_fe_core_theme_overrides_avatar_ts"
+    ],
+    "72": [
+      "graphify_corpus_fe_core_theme_overrides_backdrop_ts"
+    ],
+    "73": [
+      "graphify_corpus_fe_core_theme_overrides_badges_ts"
+    ],
+    "74": [
+      "graphify_corpus_fe_core_theme_overrides_breadcrumbs_ts"
+    ],
+    "75": [
+      "graphify_corpus_fe_core_theme_overrides_button_group_ts"
+    ],
+    "76": [
+      "graphify_corpus_fe_core_theme_overrides_chip_ts"
+    ],
+    "77": [
+      "graphify_corpus_fe_core_theme_overrides_fab_ts"
+    ],
+    "78": [
+      "graphify_corpus_fe_core_theme_overrides_form_control_label_ts"
+    ],
+    "79": [
+      "graphify_corpus_fe_core_theme_overrides_icon_button_ts"
+    ],
+    "80": [
+      "graphify_corpus_fe_core_theme_overrides_input_ts"
+    ],
+    "81": [
+      "graphify_corpus_fe_core_theme_overrides_list_ts"
+    ],
+    "82": [
+      "graphify_corpus_fe_core_theme_overrides_pagination_ts"
+    ],
+    "83": [
+      "graphify_corpus_fe_core_theme_overrides_paper_ts"
+    ],
+    "84": [
+      "graphify_corpus_fe_core_theme_overrides_progress_ts"
+    ],
+    "85": [
+      "graphify_corpus_fe_core_theme_overrides_rating_tsx"
+    ],
+    "86": [
+      "graphify_corpus_fe_core_theme_overrides_slider_ts"
+    ],
+    "87": [
+      "graphify_corpus_fe_core_theme_overrides_switch_ts"
+    ],
+    "88": [
+      "graphify_corpus_fe_core_theme_overrides_table_pagination_ts"
+    ],
+    "89": [
+      "graphify_corpus_fe_core_theme_overrides_tabs_ts"
+    ],
+    "90": [
+      "graphify_corpus_fe_core_theme_overrides_timeline_ts"
+    ],
+    "91": [
+      "graphify_corpus_fe_core_theme_overrides_toggle_button_ts"
+    ],
+    "92": [
+      "graphify_corpus_fe_core_theme_overrides_tooltip_ts"
+    ],
+    "93": [
+      "graphify_corpus_fe_core_theme_overrides_typography_ts"
+    ],
+    "94": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_blanklayout_tsx"
+    ],
+    "95": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_layoutwrapper_tsx"
+    ],
+    "96": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_verticallayout_tsx"
+    ],
+    "97": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_components_vertical_navbar_tsx"
+    ],
+    "98": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_styles_horizontal_styledcontentwrapper_tsx"
+    ],
+    "99": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_styles_horizontal_styledfooter_tsx"
+    ],
+    "100": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_styles_horizontal_styledheader_tsx"
+    ],
+    "101": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_styles_shared_styledmain_tsx"
+    ],
+    "102": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_styles_vertical_styledcontentwrapper_tsx"
+    ],
+    "103": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_styles_vertical_styledfooter_tsx"
+    ],
+    "104": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_styles_vertical_styledheader_tsx"
+    ],
+    "105": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_layouts_utils_layoutclasses_ts"
+    ],
+    "106": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_generatemenu_tsx"
+    ],
+    "107": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_horizontal_footer_tsx"
+    ],
+    "108": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_horizontal_footercontent_tsx"
+    ],
+    "109": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_horizontal_navigation_tsx"
+    ],
+    "110": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_vertical_footer_tsx"
+    ],
+    "111": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_vertical_footercontent_tsx"
+    ],
+    "112": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_layout_vertical_navbar_tsx"
+    ],
+    "113": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_theme_index_tsx"
+    ],
+    "114": [
+      "d_learn_phpstormprojects_nutri_ledger_graphify_corpus_fe_components_theme_types_ts"
+    ]
+  },
+  "cohesion": {
+    "0": 0.08,
+    "1": 0.15,
+    "2": 0.07,
+    "3": 0.09,
+    "4": 0.1,
+    "5": 0.19,
+    "6": 0.2,
+    "7": 0.18,
+    "8": 0.5,
+    "9": 0.4,
+    "10": 0.5,
+    "11": 0.5,
+    "12": 0.5,
+    "13": 0.5,
+    "14": 0.5,
+    "15": 0.5,
+    "16": 0.5,
+    "17": 0.5,
+    "18": 0.5,
+    "19": 0.5,
+    "20": 0.67,
+    "21": 0.67,
+    "22": 0.67,
+    "23": 0.67,
+    "24": 0.67,
+    "25": 0.67,
+    "26": 0.67,
+    "27": 0.67,
+    "28": 0.67,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0,
+    "84": 1.0,
+    "85": 1.0,
+    "86": 1.0,
+    "87": 1.0,
+    "88": 1.0,
+    "89": 1.0,
+    "90": 1.0,
+    "91": 1.0,
+    "92": 1.0,
+    "93": 1.0,
+    "94": 1.0,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0
+  },
+  "gods": [
+    {
+      "id": "user_user",
+      "label": "User",
+      "degree": 26
+    },
+    {
+      "id": "apiresponses_ok",
+      "label": "ok()",
+      "degree": 12
+    },
+    {
+      "id": "usercontroller_usercontroller",
+      "label": "UserController",
+      "degree": 10
+    },
+    {
+      "id": "index_overrides",
+      "label": "overrides()",
+      "degree": 10
+    },
+    {
+      "id": "visitpolicy_visitpolicy",
+      "label": "VisitPolicy",
+      "degree": 9
+    },
+    {
+      "id": "patientpolicy_patientpolicy",
+      "label": "PatientPolicy",
+      "degree": 8
+    },
+    {
+      "id": "userpolicy_userpolicy",
+      "label": "UserPolicy",
+      "degree": 8
+    },
+    {
+      "id": "usesettings_usesettings",
+      "label": "useSettings()",
+      "degree": 8
+    },
+    {
+      "id": "patientcontroller_patientcontroller",
+      "label": "PatientController",
+      "degree": 7
+    },
+    {
+      "id": "patient_patient",
+      "label": "Patient",
+      "degree": 7
+    }
+  ],
+  "surprises": [
+    {
+      "source": "useImageVariant()",
+      "target": "useSettings()",
+      "source_files": [
+        "_graphify_corpus\\FE\\@core\\hooks\\useImageVariant.ts",
+        "_graphify_corpus\\FE\\@core\\hooks\\useSettings.tsx"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `useImageVariant()` unexpectedly reaches hub `useSettings()`"
+    },
+    {
+      "source": "useLayoutInit()",
+      "target": "useSettings()",
+      "source_files": [
+        "_graphify_corpus\\FE\\@core\\hooks\\useLayoutInit.ts",
+        "_graphify_corpus\\FE\\@core\\hooks\\useSettings.tsx"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `useLayoutInit()` unexpectedly reaches hub `useSettings()`"
+    },
+    {
+      "source": "ModeChanger()",
+      "target": "useSettings()",
+      "source_files": [
+        "D:\\_Learn\\_PhpstormProjects\\nutri-ledger\\_graphify_corpus\\FE\\components\\theme\\ModeChanger.tsx",
+        "_graphify_corpus\\FE\\@core\\hooks\\useSettings.tsx"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `ModeChanger()` unexpectedly reaches hub `useSettings()`"
+    },
+    {
+      "source": "theme()",
+      "target": "colorSchemes()",
+      "source_files": [
+        "_graphify_corpus\\FE\\@core\\theme\\index.ts",
+        "_graphify_corpus\\FE\\@core\\theme\\colorSchemes.ts"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `colorSchemes()` unexpectedly reaches hub `theme()`"
+    },
+    {
+      "source": "theme()",
+      "target": "customShadows()",
+      "source_files": [
+        "_graphify_corpus\\FE\\@core\\theme\\index.ts",
+        "_graphify_corpus\\FE\\@core\\theme\\customShadows.ts"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `customShadows()` unexpectedly reaches hub `theme()`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `User` connect `Community 0` to `Community 1`, `Community 3`, `Community 7`, `Community 9`, `Community 11`?",
+      "why": "High betweenness centrality (0.067) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Patient` connect `Community 6` to `Community 0`, `Community 3`?",
+      "why": "High betweenness centrality (0.020) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `ok()` connect `Community 0` to `Community 3`?",
+      "why": "High betweenness centrality (0.009) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 17 inferred relationships involving `User` (e.g. with `.login()` and `.logout()`) actually correct?",
+      "why": "`User` has 17 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 10 inferred relationships involving `ok()` (e.g. with `.login()` and `.register()`) actually correct?",
+      "why": "`ok()` has 10 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 9 inferred relationships involving `overrides()` (e.g. with `theme()` and `accordion()`) actually correct?",
+      "why": "`overrides()` has 9 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `Controller`, `ApiController` to the rest of the system?",
+      "why": "2 weakly-connected nodes found - possible documentation gaps or missing edges."
+    }
+  ]
+}

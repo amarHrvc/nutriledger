@@ -1,0 +1,17 @@
+---
+title: Activity 2 - Visit Creation Flow
+---
+flowchart TD
+    A([Start]) --> B[Doctor selects patient from list]
+    B --> C[Navigate to Patient Visit History]
+    C --> D[Click Create New Visit]
+    D --> E{Authorized?\ndoctor or admin only}
+    E -- No --> F[403 Forbidden response]
+    F --> Z([End])
+    E -- Yes --> G[Fill visit form\ndate and clinical notes]
+    G --> H{Validation passes?}
+    H -- No --> I[Show validation errors]
+    I --> G
+    H -- Yes --> J[Save Visit record\nwith patient_id and doctor_id]
+    J --> K[Redirect to Patient Visit List]
+    K --> Z

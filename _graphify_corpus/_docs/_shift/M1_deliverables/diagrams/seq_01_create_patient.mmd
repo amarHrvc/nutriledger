@@ -1,0 +1,31 @@
+---
+title: Sequence 1 - POST /api/patients (Create Patient)
+---
+sequenceDiagram
+    actor Client as Admin/Doctor Client
+    participant API as Laravel API
+    participant MW as Auth + Role Middleware
+    participant Policy as PatientPolicy
+    participant Request as StorePatientRequest
+    participant Service as PatientService
+    participant DB as Database
+
+    Client->>API: POST /api/patients {first_name, last_name, dob, ...}
+    API->>MW: Verify Sanctum token
+    MW-->>API: Authenticated (admin or doktor)
+    API->>Request: Validate request data
+    alt Validation fails
+        Request-->>API: Validation errors
+        API-->>Client: 422 Unprocessable Entity
+    else Validation passes
+        Request-->>API: Validated data
+        API->>Policy: authorize('create', Patient)
+        Policy-->>API: Allowed
+        API->>Service: createPatient(validatedData)
+        Service->>DB: INSERT INTO patients
+        DB-->>Service: Patient record
+        Service->>DB: INSERT INTO patient_socioeconomic
+        DB-->>Service: Socioeconomic record
+        Service-->>API: Patient with socioeconomic
+        API-->>Client: 201 PatientResource JSON
+    end

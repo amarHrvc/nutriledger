@@ -1,0 +1,76 @@
+erDiagram
+    users {
+        bigint id PK
+        varchar name
+        varchar email
+        timestamp email_verified_at
+        varchar password
+        enum role "admin | doktor | pacijent"
+        text two_factor_secret
+        text two_factor_recovery_codes
+        timestamp two_factor_confirmed_at
+        varchar remember_token
+        timestamp deleted_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    patients {
+        bigint id PK
+        bigint user_id FK
+        varchar first_name
+        varchar last_name
+        date date_of_birth
+        enum gender "M | F"
+        varchar phone
+        varchar address
+        varchar city
+        varchar postal_code
+        varchar emergency_contact_name
+        varchar emergency_contact_phone
+        enum blood_type "A+ | A- | B+ | B- | AB+ | AB- | O+ | O-"
+        text allergies
+        text medical_notes
+        timestamp deleted_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    patient_socioeconomic {
+        bigint id PK
+        bigint patient_id FK
+        enum marital_status "single | married | divorced | widowed | separated | other"
+        integer number_of_dependents
+        enum living_arrangement "alone | with_family | with_partner | shared_housing | care_facility | other"
+        enum employment_status "employed_full_time | employed_part_time | self_employed | unemployed | retired | student | unable_to_work | other"
+        varchar occupation
+        enum income_level "low | lower_middle | middle | upper_middle | high"
+        boolean has_health_insurance
+        enum education_level "no_formal | primary | secondary | vocational | bachelors | masters | doctorate | other"
+        enum smoking_status "never | former | current_light | current_heavy"
+        enum alcohol_consumption "none | occasional | moderate | heavy"
+        enum physical_activity_level "sedentary | lightly_active | moderately_active | very_active"
+        boolean has_family_support
+        boolean has_caregiver
+        enum transportation_access "own_vehicle | public_transport | rideshare | walking | limited | none"
+        enum food_security_status "food_secure | marginally_secure | food_insecure | severely_insecure"
+        text dietary_restrictions_cultural
+        text additional_notes
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    visits {
+        bigint id PK
+        bigint patient_id FK
+        bigint doctor_id FK
+        date date
+        text notes
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    users ||--|| patients : "has profile"
+    patients ||--|| patient_socioeconomic : "has socioeconomic"
+    patients ||--o{ visits : "has visits"
+    users ||--o{ visits : "conducts as doctor"

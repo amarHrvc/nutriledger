@@ -1,0 +1,17 @@
+---
+title: Activity 1 - Patient Registration Flow
+---
+flowchart TD
+    A([Start]) --> B[Admin or Doctor logs in]
+    B --> C[Navigate to Create Patient]
+    C --> D[Fill patient form\nname, dob, gender,\ncontact info, medical info]
+    D --> E{Validation passes?}
+    E -- No --> F[Show validation errors]
+    F --> D
+    E -- Yes --> G{User account exists\nfor patient?}
+    G -- No --> H[Create User account\nwith role: pacijent]
+    H --> I[Create Patient record\nlinked to User]
+    G -- Yes --> I
+    I --> J[Create PatientSocioeconomic\nrecord linked to Patient]
+    J --> K[Redirect to Patient Detail page]
+    K --> L([End])
