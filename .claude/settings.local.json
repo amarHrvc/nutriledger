@@ -22,7 +22,12 @@
       "Bash(bd update:*)",
       "Bash(bd close:*)",
       "Bash(bd blocked:*)",
-      "Bash(vendor/bin/pint --dirty)"
+      "Bash(vendor/bin/pint --dirty)",
+      "PowerShell(.specify/scripts/powershell/create-new-feature.ps1 \"in frontend i have simple nextjs application based on vuexy template. You have graph db where full application is documented as well as frontend/_knowledge index of full app, i want to create dashboard for app with login and logout screens, which will use sanctum token for auth. There is also a poc of api call in current FE. Do recommended nextjs approach for this\" -Json -ShortName \"fe-auth-dashboard\" \"Dashboard with Login/Logout \\(Sanctum Token\\)\")",
+      "PowerShell(.specify/scripts/powershell/create-new-feature.ps1 -Json -ShortName \"fe-auth-dashboard\" -FeatureDescription \"Frontend dashboard with login and logout screens using Sanctum bearer token auth for Nextjs App Router Vuexy template app\")",
+      "PowerShell(.specify/scripts/powershell/setup-plan.ps1 -Json)",
+      "PowerShell(.specify/scripts/powershell/update-agent-context.ps1 -AgentType claude)",
+      "PowerShell(.specify/scripts/powershell/check-prerequisites.ps1 -Json)"
     ]
   },
   "enableAllProjectMcpServers": true,
