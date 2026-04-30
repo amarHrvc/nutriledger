@@ -1,3 +1,5 @@
+import DashboardHome from '@views/home'
+
 export default function Page() {
-  return <h1>Home page!</h1>
+  return <DashboardHome />
 }
