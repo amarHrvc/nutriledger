@@ -1,3 +1,5 @@
+'use client'
+
 // MUI Imports
 import { useTheme } from '@mui/material/styles'
 
@@ -12,6 +14,7 @@ import { Menu, MenuItem } from '@menu/vertical-menu'
 
 // Hook Imports
 import useVerticalNav from '@menu/hooks/useVerticalNav'
+import { useAuth } from '@/context/AuthContext'
 
 // Styled Component Imports
 import StyledVerticalNavExpandIcon from '@menu/styles/vertical/StyledVerticalNavExpandIcon'
@@ -39,6 +42,8 @@ const VerticalMenu = ({ scrollMenu }: Props) => {
   // Hooks
   const theme = useTheme()
   const verticalNavOptions = useVerticalNav()
+  const { user } = useAuth()
+  const role = user?.role
 
   // Vars
   const { isBreakpointReached, transitionDuration } = verticalNavOptions
@@ -68,12 +73,31 @@ const VerticalMenu = ({ scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='tabler-circle text-xs' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        <MenuItem href='/home' icon={<i className='tabler-smart-home' />}>
-          Home
+        {/* All roles */}
+        <MenuItem href='/dashboard/home' icon={<i className='tabler-smart-home' />}>
+          Dashboard
         </MenuItem>
-        <MenuItem href='/about' icon={<i className='tabler-info-circle' />}>
-          About
-        </MenuItem>
+
+        {/* Admin + Doctor only */}
+        {(role === 'admin' || role === 'doktor') && (
+          <MenuItem href='/dashboard/patients' icon={<i className='tabler-users' />}>
+            Patients
+          </MenuItem>
+        )}
+
+        {/* Admin + Doctor only */}
+        {(role === 'admin' || role === 'doktor') && (
+          <MenuItem href='/dashboard/visits' icon={<i className='tabler-stethoscope' />}>
+            Visits
+          </MenuItem>
+        )}
+
+        {/* Admin only */}
+        {role === 'admin' && (
+          <MenuItem href='/dashboard/users' icon={<i className='tabler-user-cog' />}>
+            Users
+          </MenuItem>
+        )}
       </Menu>
       {/* <Menu
         popoutMenuOffset={{ mainAxis: 23 }}
