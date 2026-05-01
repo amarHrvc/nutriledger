@@ -26,7 +26,7 @@ export const getGetPingUrl = () => {
 
 
 
-  return `/ping`
+  return `http://localhost:8000/api/ping`
 }
 
 export const getPing = async ( options?: RequestInit): Promise<getPingResponse> => {

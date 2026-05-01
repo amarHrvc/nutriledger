@@ -8,7 +8,8 @@ export default defineConfig({
     output: {
       target: './src/api/generated',
       client: 'fetch',
-      mode: 'tags-split'
+      mode: 'tags-split',
+      baseUrl: process.env.INTERNAL_API_URL ?? 'http://localhost:8000/api'
     }
   }
 })

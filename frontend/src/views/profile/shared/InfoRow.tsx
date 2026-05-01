@@ -14,8 +14,8 @@ export default function InfoRow(props: InfoRowProps) {
         {props.label}
       </Typography>
 
-      <Typography variant='caption' color='text.secondary'>
-        {props.label}
+      <Typography variant='body2' color={props.value ? 'text.primary' : 'text.disabled'} fontStyle={props.value ? 'normal' : 'italic'}>
+        {props.value ?? 'Not provided'}
       </Typography>
     </Box>
   )

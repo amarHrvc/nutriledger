@@ -44,7 +44,7 @@ export const getLoginUrl = () => {
 
 
 
-  return `/login`
+  return `http://localhost:8000/api/login`
 }
 
 export const login = async (loginRequest: LoginRequest, options?: RequestInit): Promise<loginResponse> => {
@@ -83,7 +83,7 @@ export const getRegisterUrl = () => {
 
 
 
-  return `/register`
+  return `http://localhost:8000/api/register`
 }
 
 export const register = async ( options?: RequestInit): Promise<registerResponse> => {
@@ -128,7 +128,7 @@ export const getLogoutUrl = () => {
 
 
 
-  return `/logout`
+  return `http://localhost:8000/api/logout`
 }
 
 export const logout = async ( options?: RequestInit): Promise<logoutResponse> => {
@@ -173,7 +173,7 @@ export const getUserMeUrl = () => {
 
 
 
-  return `/user`
+  return `http://localhost:8000/api/user`
 }
 
 export const userMe = async ( options?: RequestInit): Promise<userMeResponse> => {

@@ -22,6 +22,9 @@ export async function POST(request: Request) {
 
   const payload = await laravelRes.json()
 
+  console.log('###########[payload.data]', payload.data)
+
+
   if (!laravelRes.ok) {
     return NextResponse.json(
       { message: payload.message ?? 'Authentication failed' },
@@ -30,6 +33,7 @@ export async function POST(request: Request) {
   }
 
   const cookieStore = await cookies()
+
 
   cookieStore.set('auth_token', payload.data.token, {
     httpOnly: true,

@@ -57,7 +57,7 @@ export const getPatientsVisitsStoreUrl = (patient: number,) => {
 
 
 
-  return `/patients/${patient}/visits`
+  return `http://localhost:8000/api/patients/${patient}/visits`
 }
 
 export const patientsVisitsStore = async (patient: number,
@@ -114,7 +114,7 @@ export const getPatientsVisitsIndexUrl = (patient: number,) => {
 
 
 
-  return `/patients/${patient}/visits`
+  return `http://localhost:8000/api/patients/${patient}/visits`
 }
 
 export const patientsVisitsIndex = async (patient: number, options?: RequestInit): Promise<patientsVisitsIndexResponse> => {
@@ -175,7 +175,7 @@ export const getPatientsVisitsUpdateUrl = (patient: number,
 
 
 
-  return `/patients/${patient}/visits/${visit}`
+  return `http://localhost:8000/api/patients/${patient}/visits/${visit}`
 }
 
 export const patientsVisitsUpdate = async (patient: number,
@@ -234,7 +234,7 @@ export const getPatientsVisitsDestroyUrl = (patient: number,
 
 
 
-  return `/patients/${patient}/visits/${visit}`
+  return `http://localhost:8000/api/patients/${patient}/visits/${visit}`
 }
 
 export const patientsVisitsDestroy = async (patient: number,
@@ -291,7 +291,7 @@ export const getPatientsVisitsShowUrl = (patient: number,
 
 
 
-  return `/patients/${patient}/visits/${visit}`
+  return `http://localhost:8000/api/patients/${patient}/visits/${visit}`
 }
 
 export const patientsVisitsShow = async (patient: number,

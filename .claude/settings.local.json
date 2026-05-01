@@ -45,7 +45,9 @@
       "Bash(Get-ChildItem -Path \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\\\\frontend\\\\src\\\\app\" -Recurse -Force)",
       "Bash(Select-Object FullName, PSIsContainer)",
       "Bash(Sort-Object FullName)",
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Bash(git -C D:/_Learn/_PhpstormProjects/nutri-ledger diff HEAD --stat -- frontend/)",
+      "Bash(git -C D:/_Learn/_PhpstormProjects/nutri-ledger status --short -- frontend/)"
     ]
   },
   "enableAllProjectMcpServers": true,

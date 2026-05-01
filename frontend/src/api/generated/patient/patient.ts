@@ -47,7 +47,7 @@ export const getPatientsIndexUrl = () => {
 
 
 
-  return `/patients`
+  return `http://localhost:8000/api/patients`
 }
 
 export const patientsIndex = async ( options?: RequestInit): Promise<patientsIndexResponse> => {
@@ -105,7 +105,7 @@ export const getPatientsStoreUrl = () => {
 
 
 
-  return `/patients`
+  return `http://localhost:8000/api/patients`
 }
 
 export const patientsStore = async (storePatientRequest: StorePatientRequest, options?: RequestInit): Promise<patientsStoreResponse> => {
@@ -164,7 +164,7 @@ export const getPatientsShowUrl = (patient: number,) => {
 
 
 
-  return `/patients/${patient}`
+  return `http://localhost:8000/api/patients/${patient}`
 }
 
 export const patientsShow = async (patient: number, options?: RequestInit): Promise<patientsShowResponse> => {
@@ -227,7 +227,7 @@ export const getPatientsUpdateUrl = (patient: number,) => {
 
 
 
-  return `/patients/${patient}`
+  return `http://localhost:8000/api/patients/${patient}`
 }
 
 export const patientsUpdate = async (patient: number,
@@ -287,7 +287,7 @@ export const getPatientsDestroyUrl = (patient: number,) => {
 
 
 
-  return `/patients/${patient}`
+  return `http://localhost:8000/api/patients/${patient}`
 }
 
 export const patientsDestroy = async (patient: number, options?: RequestInit): Promise<patientsDestroyResponse> => {

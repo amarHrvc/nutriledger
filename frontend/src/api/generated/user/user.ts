@@ -50,7 +50,7 @@ export const getUsersIndexUrl = () => {
 
 
 
-  return `/users`
+  return `http://localhost:8000/api/users`
 }
 
 export const usersIndex = async ( options?: RequestInit): Promise<usersIndexResponse> => {
@@ -108,7 +108,7 @@ export const getUsersStoreUrl = () => {
 
 
 
-  return `/users`
+  return `http://localhost:8000/api/users`
 }
 
 export const usersStore = async (storeUserRequest: StoreUserRequest, options?: RequestInit): Promise<usersStoreResponse> => {
@@ -162,7 +162,7 @@ export const getUsersShowUrl = (id: string,) => {
 
 
 
-  return `/users/${id}`
+  return `http://localhost:8000/api/users/${id}`
 }
 
 export const usersShow = async (id: string, options?: RequestInit): Promise<usersShowResponse> => {
@@ -220,7 +220,7 @@ export const getUsersUpdateUrl = (id: string,) => {
 
 
 
-  return `/users/${id}`
+  return `http://localhost:8000/api/users/${id}`
 }
 
 export const usersUpdate = async (id: string,
@@ -275,7 +275,7 @@ export const getUsersDestroyUrl = (id: string,) => {
 
 
 
-  return `/users/${id}`
+  return `http://localhost:8000/api/users/${id}`
 }
 
 export const usersDestroy = async (id: string, options?: RequestInit): Promise<usersDestroyResponse> => {
@@ -328,7 +328,7 @@ export const getUsersRestoreUrl = (id: string,) => {
 
 
 
-  return `/users/${id}/restore`
+  return `http://localhost:8000/api/users/${id}/restore`
 }
 
 export const usersRestore = async (id: string, options?: RequestInit): Promise<usersRestoreResponse> => {
@@ -381,7 +381,7 @@ export const getUsersForceDeleteUrl = (id: string,) => {
 
 
 
-  return `/users/${id}/force`
+  return `http://localhost:8000/api/users/${id}/force`
 }
 
 export const usersForceDelete = async (id: string, options?: RequestInit): Promise<usersForceDeleteResponse> => {
