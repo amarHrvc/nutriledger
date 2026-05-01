@@ -22,6 +22,7 @@ import Button from '@mui/material/Button'
 // Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
 import { useAuth } from '@/context/AuthContext'
+import MenuItem from '@mui/material/MenuItem'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -110,6 +111,7 @@ const UserDropdown = () => {
                       <Typography variant='caption'>{user?.email ?? ''}</Typography>
                     </div>
                   </div>
+                  <MenuItem onClick={e => handleDropdownClose(e, '/dashboard/profile')}>Profile</MenuItem>
                   <div className='flex items-center plb-2 pli-3'>
                     <Button
                       fullWidth
