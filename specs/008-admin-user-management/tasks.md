@@ -9,7 +9,7 @@ MVP: User Story 1 (Browse and Search Users)
 Phase 1 — Setup
 
 - [X] T001 Initialize frontend page entry at frontend/src/app/(dashboard)/dashboard/users/page.tsx
-- [ ] T002 Create BFF route folder at frontend/src/app/api/users/ and add route.ts (GET list, POST create)
+- [X] T002 Create BFF route folder at frontend/src/app/api/users/ and add route.ts (GET list, POST create)
 - [ ] T003 Create BFF route folder at frontend/src/app/api/users/[id]/ and add route.ts, restore/route.ts, force/route.ts (GET show, PATCH update, DELETE soft-delete, POST restore, DELETE force-delete)
 
 Phase 2 — Foundational
