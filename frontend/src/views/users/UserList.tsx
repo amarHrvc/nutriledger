@@ -9,15 +9,21 @@ export default function UserList() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
+  // console.log('[UserList] @@@@@@@@@@@', users)
+
   useEffect(() => {
     let mounted = true;
+
     setLoading(true);
+
     const load = () => {
       fetch(`/api/users?page=${page}&search=${encodeURIComponent(search)}`)
         .then(r => r.json())
         .then((json) => {
+          console.log('[UserList - json] @@@@@@@@@@@', json.data)
           if (!mounted) return;
           setUsers(json.data ?? []);
+          console.log('[UserList] @@@@@@@@@@@', users);
         })
         .catch(() => setUsers([]))
         .finally(() => mounted && setLoading(false));
