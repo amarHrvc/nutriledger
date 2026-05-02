@@ -1,5 +1,7 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
+import UserStatusChip from './shared/UserStatusChip';
 
 interface User { id: string; name?: string; email?: string; role?: string; active?: boolean }
 
@@ -9,24 +11,27 @@ export default function UserList() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // console.log('[UserList] @@@@@@@@@@@', users)
-
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
     let mounted = true;
-
     setLoading(true);
 
-    const load = () => {
-      fetch(`/api/users?page=${page}&search=${encodeURIComponent(search)}`)
-        .then(r => r.json())
-        .then((json) => {
-          console.log('[UserList - json] @@@@@@@@@@@', json.data)
-          if (!mounted) return;
-          setUsers(json.data ?? []);
-          console.log('[UserList] @@@@@@@@@@@', users);
-        })
-        .catch(() => setUsers([]))
-        .finally(() => mounted && setLoading(false));
+    const load = async () => {
+      try {
+        const res = await fetch(`/api/users?page=${page}&search=${encodeURIComponent(search)}`, { signal });
+        const json = await res.json();
+        console.log('[UserList - json] snapshot', JSON.stringify(json.data));
+        if (!mounted) return;
+        setUsers(json.data ?? []);
+        console.log('[UserList] setUsers ->', json.data ?? []);
+      } catch (err: any) {
+        if (err.name === 'AbortError') return; // expected on cancel
+        console.error('UserList load error', err);
+        if (mounted) setUsers([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
     };
 
     load();
@@ -34,8 +39,25 @@ export default function UserList() {
     const handler = () => { setLoading(true); load(); };
     window.addEventListener('users:changed', handler);
 
-    return () => { mounted = false; window.removeEventListener('users:changed', handler); };
+    return () => {
+      mounted = false;
+      window.removeEventListener('users:changed', handler);
+      controller.abort();
+    };
   }, [search, page]);
+
+  const columns = useMemo(() => [
+    { accessorKey: 'name', header: 'Name' },
+    { accessorKey: 'email', header: 'Email' },
+    { accessorKey: 'role', header: 'Role' },
+    {
+      accessorKey: 'active',
+      header: 'Status',
+      cell: (info: any) => <UserStatusChip active={!!info.getValue()} />,
+    },
+  ], []);
+
+  const table = useReactTable({ data: users, columns, getCoreRowModel: getCoreRowModel() });
 
   return (
     <div>
@@ -50,24 +72,29 @@ export default function UserList() {
       {!loading && users.length > 0 && (
         <table>
           <thead>
-            <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th></tr>
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <th key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</th>
+                ))}
+              </tr>
+            ))}
           </thead>
           <tbody>
-            {users.map(u => (
-              <tr key={u.id}>
-                <td>{u.name}</td>
-                <td>{u.email}</td>
-                <td>{u.role}</td>
-                <td>{u.active ? 'Active' : 'Deactivated'}</td>
+            {table.getRowModel().rows.map(row => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map(cell => (
+                  <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                ))}
               </tr>
             ))}
           </tbody>
         </table>
       )}
 
-      <div>
+      <div style={{ marginTop: 8 }}>
         <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>Prev</button>
-        <span>Page {page}</span>
+        <span style={{ margin: '0 8px' }}>Page {page}</span>
         <button onClick={() => setPage(p => p + 1)}>Next</button>
       </div>
     </div>
