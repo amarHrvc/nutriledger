@@ -49,7 +49,7 @@ Independent test: Open edit for a user, change role or fields, save → list and
 Phase 7 — US5: Deactivate and Restore Users (Priority: P4)
 Independent test: Deactivate user → remains visible with deactivated status; Restore returns to active.
 
-- [ ] T019 [US5] Implement deactivate action in UserDetail (button + confirmation dialog) at frontend/src/views/users/UserDetail.tsx
+- [X] T019 [US5] Implement deactivate action in UserDetail (button + confirmation dialog) at frontend/src/views/users/UserDetail.tsx
 - [ ] T020 [US5] Wire BFF DELETE soft-delete in frontend/src/app/api/users/[id]/route.ts to call backend soft-delete endpoint
 - [ ] T021 [US5] Implement restore action UI and wire frontend/src/app/api/users/[id]/restore/route.ts to call backend restore endpoint
 
