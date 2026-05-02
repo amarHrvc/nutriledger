@@ -12,15 +12,23 @@ export default function UserList() {
   useEffect(() => {
     let mounted = true;
     setLoading(true);
-    fetch(`/api/users?page=${page}&search=${encodeURIComponent(search)}`)
-      .then(r => r.json())
-      .then((json) => {
-        if (!mounted) return;
-        setUsers(json.data ?? []);
-      })
-      .catch(() => setUsers([]))
-      .finally(() => mounted && setLoading(false));
-    return () => { mounted = false; };
+    const load = () => {
+      fetch(`/api/users?page=${page}&search=${encodeURIComponent(search)}`)
+        .then(r => r.json())
+        .then((json) => {
+          if (!mounted) return;
+          setUsers(json.data ?? []);
+        })
+        .catch(() => setUsers([]))
+        .finally(() => mounted && setLoading(false));
+    };
+
+    load();
+
+    const handler = () => { setLoading(true); load(); };
+    window.addEventListener('users:changed', handler);
+
+    return () => { mounted = false; window.removeEventListener('users:changed', handler); };
   }, [search, page]);
 
   return (

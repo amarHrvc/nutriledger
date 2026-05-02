@@ -37,7 +37,7 @@ Independent test: Submit create form with valid data → new user appears in lis
 
 - [X] T013 [US3] Create UserForm component at frontend/src/views/users/UserForm.tsx (create mode) with validation and inline error display
 - [X] T014 [US3] Wire BFF POST create in frontend/src/app/api/users/route.ts to call backend create endpoint via Orval client
-- [ ] T015 [US3] On success, refresh UserList from frontend/src/views/users/index.tsx and show success feedback/toast
+- [X] T015 [US3] On success, refresh UserList from frontend/src/views/users/index.tsx and show success feedback/toast
 
 Phase 6 — US4: Edit User (Priority: P3)
 Independent test: Open edit for a user, change role or fields, save → list and detail reflect updates.
