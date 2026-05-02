@@ -15,7 +15,7 @@ Phase 1 — Setup
 Phase 2 — Foundational
 
 - [X] T004 [P] Add Orval typed client import and helper at frontend/src/api/generated/user/user.ts (ensure client used by BFF routes)
-- [ ] T005 [P] Add shared UI components: frontend/src/views/users/shared/ConfirmDialog.tsx and UserStatusChip.tsx
+- [X] T005 [P] Add shared UI components: frontend/src/views/users/shared/ConfirmDialog.tsx and UserStatusChip.tsx
 - [ ] T006 [P] Add reusable view orchestrator: frontend/src/views/users/index.tsx (client orchestrator entry)
 
 Phase 3 — US1: Browse and Search Users (Priority: P1)
