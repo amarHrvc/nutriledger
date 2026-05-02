@@ -29,7 +29,7 @@ Independent test: Open Users page as admin; list (including deactivated) shows; 
 Phase 4 — US2: View User Detail (Priority: P2)
 Independent test: Click a user row → detail view shows attributes, patient link for pacijent role, deactivated state shows Restore action.
 
-- [ ] T011 [US2] Implement UserDetail component at frontend/src/views/users/UserDetail.tsx (render name, email, role, status, timestamps)
+- [X] T011 [US2] Implement UserDetail component at frontend/src/views/users/UserDetail.tsx (render name, email, role, status, timestamps)
 - [ ] T012 [US2] Wire BFF GET show in frontend/src/app/api/users/[id]/route.ts to return full user payload to the detail view
 
 Phase 5 — US3: Create New User (Priority: P3)
