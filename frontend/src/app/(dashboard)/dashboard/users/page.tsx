@@ -1,10 +1,10 @@
+import UsersView from '../../../../views/users/index';
+
 export default function Page() {
-    // Placeholder server component for Admin Users page.
-    // T008 will render the client orchestrator from frontend/src/views/users/index.tsx
+    // Server component entry for Admin Users page — delegates to client UsersView
     return (
         <div>
-            <h1>Admin Users</h1>
-            <p>Users page (placeholder). Client view will be rendered here.</p>
+            <UsersView />
         </div>
     );
 }
