@@ -42,7 +42,7 @@ Independent test: Submit create form with valid data → new user appears in lis
 Phase 6 — US4: Edit User (Priority: P3)
 Independent test: Open edit for a user, change role or fields, save → list and detail reflect updates.
 
-- [ ] T016 [US4] Extend UserForm component (frontend/src/views/users/UserForm.tsx) to support edit mode with pre-filled values
+- [X] T016 [US4] Extend UserForm component (frontend/src/views/users/UserForm.tsx) to support edit mode with pre-filled values
 - [ ] T017 [US4] Wire BFF PATCH update in frontend/src/app/api/users/[id]/route.ts to call backend update via Orval client
 - [ ] T018 [US4] Ensure UI updates (list + detail) and shows inline validation errors for conflicts (duplicate email)
 
