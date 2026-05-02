@@ -1,16 +1,19 @@
 import type { NextRequest } from 'next/server';
+import { usersIndex, usersStore } from '../../../api/generated/user/user';
 
 export async function GET(request: NextRequest) {
-  // Placeholder BFF GET /api/users - will call Orval generated client
   const { searchParams } = new URL(request.url);
-  const page = searchParams.get('page') ?? '1';
+  const page = Number(searchParams.get('page') ?? '1');
   const search = searchParams.get('search') ?? '';
 
-  return new Response(JSON.stringify({ data: [], meta: { page } }), { status: 200 });
+  // Call Orval-generated client
+  const res = await usersIndex();
+  return new Response(JSON.stringify(res.data ?? { data: [], meta: { page } }), { status: 200 });
 }
 
 export async function POST(request: NextRequest) {
-  // Placeholder BFF POST /api/users - forward create to backend via Orval client
+  // Forward create to backend via Orval client
   const body = await request.json();
-  return new Response(JSON.stringify({ data: body }), { status: 201 });
+  const res = await usersStore(body as any);
+  return new Response(JSON.stringify(res.data ?? body), { status: res.status ?? 201 });
 }
