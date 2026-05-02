@@ -35,7 +35,7 @@ Independent test: Click a user row → detail view shows attributes, patient lin
 Phase 5 — US3: Create New User (Priority: P3)
 Independent test: Submit create form with valid data → new user appears in list; invalid inputs show inline errors.
 
-- [ ] T013 [US3] Create UserForm component at frontend/src/views/users/UserForm.tsx (create mode) with validation and inline error display
+- [X] T013 [US3] Create UserForm component at frontend/src/views/users/UserForm.tsx (create mode) with validation and inline error display
 - [ ] T014 [US3] Wire BFF POST create in frontend/src/app/api/users/route.ts to call backend create endpoint via Orval client
 - [ ] T015 [US3] On success, refresh UserList from frontend/src/views/users/index.tsx and show success feedback/toast
 
