@@ -24,7 +24,7 @@ Independent test: Open Users page as admin; list (including deactivated) shows; 
 - [X] T007 [US1] Implement UserList component at frontend/src/views/users/UserList.tsx with search input and pagination wired to BFF GET /api/users
 - [X] T008 [US1] Implement server page at frontend/src/app/(dashboard)/dashboard/users/page.tsx to render views/users/index.tsx and pass server-side data via BFF
 - [X] T009 [US1] Wire BFF GET list to Orval client in frontend/src/app/api/users/route.ts, accept query params (page, search)
-- [ ] T010 [US1] Add empty-state UX and loading indicators in frontend/src/views/users/UserList.tsx
+- [X] T010 [US1] Add empty-state UX and loading indicators in frontend/src/views/users/UserList.tsx
 
 Phase 4 — US2: View User Detail (Priority: P2)
 Independent test: Click a user row → detail view shows attributes, patient link for pacijent role, deactivated state shows Restore action.
