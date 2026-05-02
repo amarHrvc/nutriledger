@@ -51,7 +51,7 @@ Independent test: Deactivate user → remains visible with deactivated status; R
 
 - [X] T019 [US5] Implement deactivate action in UserDetail (button + confirmation dialog) at frontend/src/views/users/UserDetail.tsx
 - [X] T020 [US5] Wire BFF DELETE soft-delete in frontend/src/app/api/users/[id]/route.ts to call backend soft-delete endpoint
-- [ ] T021 [US5] Implement restore action UI and wire frontend/src/app/api/users/[id]/restore/route.ts to call backend restore endpoint
+- [X] T021 [US5] Implement restore action UI and wire frontend/src/app/api/users/[id]/restore/route.ts to call backend restore endpoint
 
 Phase 8 — US6: Permanently Delete User (Priority: P5)
 Independent test: Permanently delete a deactivated user → user removed from lists; option unavailable for active users.
