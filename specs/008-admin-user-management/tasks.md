@@ -56,7 +56,7 @@ Independent test: Deactivate user → remains visible with deactivated status; R
 Phase 8 — US6: Permanently Delete User (Priority: P5)
 Independent test: Permanently delete a deactivated user → user removed from lists; option unavailable for active users.
 
-- [ ] T022 [US6] Add Force Delete button in UserDetail (visible only for deactivated users) with ConfirmDialog at frontend/src/views/users/UserDetail.tsx
+- [X] T022 [US6] Add Force Delete button in UserDetail (visible only for deactivated users) with ConfirmDialog at frontend/src/views/users/UserDetail.tsx
 - [ ] T023 [US6] Wire BFF DELETE force-delete in frontend/src/app/api/users/[id]/force/route.ts to call backend force-delete endpoint
 
 Final Phase — Polish & Cross-Cutting Concerns
