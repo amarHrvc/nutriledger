@@ -1,13 +1,14 @@
 import React from 'react';
 
 interface Props {
-  active: boolean;
+  deletedAt: boolean;
 }
 
 
-export default function UserStatusChip({ active }: Props) {
+export default function UserStatusChip({ deletedAt }: Props) {
 
-  const label = !active ? 'Active' : 'Deactivated';
-  const style = { padding: '0.25rem 0.5rem', borderRadius: '0.25rem', background: !active ? '#d1fae5' : '#fee2e2' };
+  const label = deletedAt ? 'Deactivated' : 'Active' ;
+  const style = { padding: '0.25rem 0.5rem', borderRadius: '0.25rem', background: !deletedAt ? '#d1fae5' : '#fee2e2' };
+
   return <span style={style}>{label}</span>;
 }

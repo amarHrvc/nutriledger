@@ -88,7 +88,7 @@ export default function UserList() {
       {
         accessorKey: 'attributes.deletedAt',
         header: 'Status',
-        cell: (info: any) => <UserStatusChip active={!!info.getValue()} />
+        cell: (deletedAt: any) => <UserStatusChip deletedAt={deletedAt.getValue()} />
       }
     ],
     []

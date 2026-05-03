@@ -65,16 +65,13 @@ export default function UserDetailsCard({ user, onActionComplete }: Props) {
     try {
       if (confirmAction === 'deactivate') {
         await fetch(`/api/users/${user.id}`, { method: 'DELETE' })
-        router.refresh()
       } else if (confirmAction === 'restore') {
         await fetch(`/api/users/${user.id}/restore`, { method: 'POST' })
-        router.refresh()
       } else if (confirmAction === 'force') {
         await fetch(`/api/users/${user.id}/force`, { method: 'DELETE' })
-        router.back()
-        return
       }
 
+      console.log('toast success!!!')
       toast.success(`User ${ACTION_LABELS[confirmAction].toLowerCase()}d successfully.`)
       window.dispatchEvent(new CustomEvent('users:changed'))
       onActionComplete?.()
@@ -91,13 +88,10 @@ export default function UserDetailsCard({ user, onActionComplete }: Props) {
     <>
       <Card>
         <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 6, pt: 6 }}>
-
           {/* Avatar + name + role chip */}
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-              <Avatar sx={{ width: 120, height: 120, fontSize: 42, bgcolor: 'primary.main' }}>
-                {initials(name)}
-              </Avatar>
+              <Avatar sx={{ width: 120, height: 120, fontSize: 42, bgcolor: 'primary.main' }}>{initials(name)}</Avatar>
               <Typography variant='h5'>{name}</Typography>
             </Box>
             <Chip label={role} color={ROLE_COLOR[role] ?? 'default'} size='small' variant='outlined' />
@@ -106,49 +100,72 @@ export default function UserDetailsCard({ user, onActionComplete }: Props) {
           {/* Stats row */}
           <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 4 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Avatar variant='rounded' sx={{ bgcolor: 'primary.light', color: 'primary.main', width: 44, height: 44 }}>
+              <Avatar variant='rounded' sx={{ bgcolor: 'white', color: 'primary.main', width: 44, height: 44 }}>
                 <IconCalendarStats size={22} />
               </Avatar>
               <Box>
                 <Typography variant='h5'>—</Typography>
-                <Typography variant='body2' color='text.secondary'>Visits</Typography>
+                <Typography variant='body2' color='text.secondary'>
+                  Visits
+                </Typography>
               </Box>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Avatar variant='rounded' sx={{ bgcolor: 'primary.light', color: 'primary.main', width: 44, height: 44 }}>
+              <Avatar
+                variant='rounded'
+                sx={{ bgcolor: 'white', color: 'primary.main', borderColor: 'primary.main', width: 44, height: 44 }}
+              >
                 <IconStethoscope size={22} />
               </Avatar>
               <Box>
                 <Typography variant='h5'>—</Typography>
-                <Typography variant='body2' color='text.secondary'>Patients</Typography>
+                <Typography variant='body2' color='text.secondary'>
+                  Patients
+                </Typography>
               </Box>
             </Box>
           </Box>
 
           {/* Details */}
           <Box>
-            <Typography variant='h5' sx={{ mb: 1 }}>Details</Typography>
+            <Typography variant='h5' sx={{ mb: 1 }}>
+              Details
+            </Typography>
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                <Typography fontWeight={500} color='text.primary'>Email:</Typography>
+                <Typography fontWeight={500} color='text.primary'>
+                  Email:
+                </Typography>
                 <Typography>{email}</Typography>
               </Box>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                <Typography fontWeight={500} color='text.primary'>Status:</Typography>
-                <Chip label={isDeleted ? 'Deactivated' : 'Active'} color={isDeleted ? 'error' : 'success'} size='small' />
+                <Typography fontWeight={500} color='text.primary'>
+                  Status:
+                </Typography>
+                <Chip
+                  label={isDeleted ? 'Deactivated' : 'Active'}
+                  color={isDeleted ? 'error' : 'success'}
+                  size='small'
+                />
               </Box>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                <Typography fontWeight={500} color='text.primary'>Role:</Typography>
+                <Typography fontWeight={500} color='text.primary'>
+                  Role:
+                </Typography>
                 <Typography color='text.primary'>{role}</Typography>
               </Box>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                <Typography fontWeight={500} color='text.primary'>Member since:</Typography>
+                <Typography fontWeight={500} color='text.primary'>
+                  Member since:
+                </Typography>
                 <Typography color='text.primary'>{createdAt}</Typography>
               </Box>
               {deletedAt && (
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                  <Typography fontWeight={500} color='text.primary'>Deactivated:</Typography>
+                  <Typography fontWeight={500} color='text.primary'>
+                    Deactivated:
+                  </Typography>
                   <Typography color='text.primary'>{deletedAt}</Typography>
                 </Box>
               )}
@@ -168,7 +185,8 @@ export default function UserDetailsCard({ user, onActionComplete }: Props) {
               </>
             ) : (
               <Button
-                variant='tonal' color='error'
+                variant='tonal'
+                color='error'
                 onClick={() => openConfirm('deactivate')}
                 startIcon={<IconUserCancel size={18} />}
                 disabled={loading}
@@ -185,7 +203,10 @@ export default function UserDetailsCard({ user, onActionComplete }: Props) {
         title={`${confirmAction ? ACTION_LABELS[confirmAction] : ''} User`}
         message={`Are you sure you want to ${confirmAction ? ACTION_LABELS[confirmAction]?.toLowerCase() : ''} this user?`}
         onConfirm={onConfirm}
-        onCancel={() => { setConfirmOpen(false); setConfirmAction(null) }}
+        onCancel={() => {
+          setConfirmOpen(false)
+          setConfirmAction(null)
+        }}
       />
     </>
   )

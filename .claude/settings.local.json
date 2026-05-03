@@ -51,7 +51,8 @@
       "Bash(Get-ChildItem -Path \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\" -Filter \"_knowledge\" -Recurse -Depth 3)",
       "Bash(Select-Object FullName)",
       "Bash(dir /s /b \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\")",
-      "Bash(findstr /i \"UserController\")"
+      "Bash(findstr /i \"UserController\")",
+      "Bash(git log *)"
     ]
   },
   "enableAllProjectMcpServers": true,
