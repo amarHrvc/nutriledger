@@ -46,16 +46,15 @@ export default function UserList() {
 
     const load = async () => {
       try {
-        const res = await fetch(`/api/users?page=${apiPage}&search=${encodeURIComponent(search)}`, { signal });
+        const res = await fetch(`/api/users`, { signal });
         const json = await res.json();
 
-        console.log('[JSON] :::', json)
+        if (!res.ok) throw new Error(json?.message ?? `HTTP ${res.status}`);
 
         if (!mounted) return;
-        setUsers(json.users ?? []);
-        console.log('[UserList] setUsers ->', json ?? []);
+        setUsers(json.data?.users ?? []);
       } catch (err: any) {
-        if (err?.name === 'AbortError') return; // expected on cancel
+        if (err?.name === 'AbortError') return;
         console.error('UserList load error', err);
         if (mounted) setUsers([]);
       } finally {
@@ -103,6 +102,7 @@ export default function UserList() {
   });
 
   const visibleRows = table.getRowModel().rows.slice(pageIndex * rowsPerPage, (pageIndex + 1) * rowsPerPage);
+
   return (
     <Card>
       <CardHeader title='Users' />

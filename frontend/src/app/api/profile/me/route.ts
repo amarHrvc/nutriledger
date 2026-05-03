@@ -4,7 +4,6 @@ import { userMe } from '@/api/generated/auth/auth'
 
 export async function GET() {
   const userData = await userMe()
-  console.log("userData $$$$$", userData)
 
   if (userData.status !== 200) {
     return NextResponse.json({ message: 'Failed to load profile' }, { status: userData.status })

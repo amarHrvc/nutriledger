@@ -20,7 +20,7 @@ export default function Page() {
       .then(json => {
         console.log('[user] --> ', json)
 
-        setUser(json.user ?? null)
+        setUser(json.data.user ?? null)
       })
   }, [id, refreshKey])
 
