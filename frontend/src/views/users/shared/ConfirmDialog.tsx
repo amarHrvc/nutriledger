@@ -1,4 +1,10 @@
-import React from 'react';
+"use client";
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 interface Props {
   open: boolean;
@@ -9,13 +15,16 @@ interface Props {
 }
 
 export default function ConfirmDialog({ open, title = 'Confirm', message = '', onConfirm, onCancel }: Props) {
-  if (!open) return null;
   return (
-    <div role="dialog" aria-modal="true" aria-labelledby="confirm-title">
-      <h2 id="confirm-title">{title}</h2>
-      <p>{message}</p>
-      <button onClick={onConfirm}>Confirm</button>
-      <button onClick={onCancel}>Cancel</button>
-    </div>
+    <Dialog open={open} onClose={onCancel}>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{message}</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onCancel}>Cancel</Button>
+        <Button onClick={onConfirm} color='error' variant='contained'>Confirm</Button>
+      </DialogActions>
+    </Dialog>
   );
 }

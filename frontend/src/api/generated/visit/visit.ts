@@ -17,6 +17,7 @@ import type {
   ValidationExceptionResponse
 } from '../nutriBaseAPI.schemas';
 
+import { customFetchMutator } from '../../auth.mutator';
 
 export type patientsVisitsStoreResponse201 = {
   data: PatientsVisitsStore201
@@ -63,7 +64,7 @@ export const getPatientsVisitsStoreUrl = (patient: number,) => {
 export const patientsVisitsStore = async (patient: number,
     storeVisitRequest: StoreVisitRequest, options?: RequestInit): Promise<patientsVisitsStoreResponse> => {
 
-  const res = await fetch(getPatientsVisitsStoreUrl(patient),
+  return customFetchMutator<patientsVisitsStoreResponse>(getPatientsVisitsStoreUrl(patient),
   {
     ...options,
     method: 'POST',
@@ -71,13 +72,7 @@ export const patientsVisitsStore = async (patient: number,
     body: JSON.stringify(
       storeVisitRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: patientsVisitsStoreResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as patientsVisitsStoreResponse
-}
+);}
 
 
 export type patientsVisitsIndexResponse200 = {
@@ -119,20 +114,14 @@ export const getPatientsVisitsIndexUrl = (patient: number,) => {
 
 export const patientsVisitsIndex = async (patient: number, options?: RequestInit): Promise<patientsVisitsIndexResponse> => {
 
-  const res = await fetch(getPatientsVisitsIndexUrl(patient),
+  return customFetchMutator<patientsVisitsIndexResponse>(getPatientsVisitsIndexUrl(patient),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: patientsVisitsIndexResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as patientsVisitsIndexResponse
-}
+);}
 
 
 export type patientsVisitsUpdateResponse200 = {
@@ -182,7 +171,7 @@ export const patientsVisitsUpdate = async (patient: number,
     visit: number,
     updateVisitRequest: UpdateVisitRequest, options?: RequestInit): Promise<patientsVisitsUpdateResponse> => {
 
-  const res = await fetch(getPatientsVisitsUpdateUrl(patient,visit),
+  return customFetchMutator<patientsVisitsUpdateResponse>(getPatientsVisitsUpdateUrl(patient,visit),
   {
     ...options,
     method: 'PUT',
@@ -190,13 +179,7 @@ export const patientsVisitsUpdate = async (patient: number,
     body: JSON.stringify(
       updateVisitRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: patientsVisitsUpdateResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as patientsVisitsUpdateResponse
-}
+);}
 
 
 export type patientsVisitsDestroyResponse204 = {
@@ -240,20 +223,14 @@ export const getPatientsVisitsDestroyUrl = (patient: number,
 export const patientsVisitsDestroy = async (patient: number,
     visit: number, options?: RequestInit): Promise<patientsVisitsDestroyResponse> => {
 
-  const res = await fetch(getPatientsVisitsDestroyUrl(patient,visit),
+  return customFetchMutator<patientsVisitsDestroyResponse>(getPatientsVisitsDestroyUrl(patient,visit),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: patientsVisitsDestroyResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as patientsVisitsDestroyResponse
-}
+);}
 
 
 export type patientsVisitsShowResponse200 = {
@@ -297,19 +274,13 @@ export const getPatientsVisitsShowUrl = (patient: number,
 export const patientsVisitsShow = async (patient: number,
     visit: number, options?: RequestInit): Promise<patientsVisitsShowResponse> => {
 
-  const res = await fetch(getPatientsVisitsShowUrl(patient,visit),
+  return customFetchMutator<patientsVisitsShowResponse>(getPatientsVisitsShowUrl(patient,visit),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: patientsVisitsShowResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as patientsVisitsShowResponse
-}
+);}
 
 

@@ -48,7 +48,10 @@ export default function AdminProfile({ user }: AdminProfileProps) {
 
         return res.json()
       })
-      .then(data => setStats(data.stats ?? null))
+      .then(data => {
+        console.log(data)
+        setStats(data.stats ?? null)
+      })
       .catch(err => setError(err.message ?? 'Something went wrong'))
       .finally(() => setIsLoading(false))
   }, [])

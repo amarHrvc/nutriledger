@@ -18,6 +18,7 @@ import type {
   ValidationExceptionResponse
 } from '../nutriBaseAPI.schemas';
 
+import { customFetchMutator } from '../../auth.mutator';
 
 /**
  * @summary Display a listing of the resource
@@ -68,20 +69,14 @@ export const getUsersIndexUrl = (params?: UsersIndexParams,) => {
 
 export const usersIndex = async (params?: UsersIndexParams, options?: RequestInit): Promise<usersIndexResponse> => {
 
-  const res = await fetch(getUsersIndexUrl(params),
+  return customFetchMutator<usersIndexResponse>(getUsersIndexUrl(params),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersIndexResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersIndexResponse
-}
+);}
 
 
 /**
@@ -126,7 +121,7 @@ export const getUsersStoreUrl = () => {
 
 export const usersStore = async (storeUserRequest: StoreUserRequest, options?: RequestInit): Promise<usersStoreResponse> => {
 
-  const res = await fetch(getUsersStoreUrl(),
+  return customFetchMutator<usersStoreResponse>(getUsersStoreUrl(),
   {
     ...options,
     method: 'POST',
@@ -134,13 +129,7 @@ export const usersStore = async (storeUserRequest: StoreUserRequest, options?: R
     body: JSON.stringify(
       storeUserRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersStoreResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersStoreResponse
-}
+);}
 
 
 /**
@@ -180,20 +169,14 @@ export const getUsersShowUrl = (id: string,) => {
 
 export const usersShow = async (id: string, options?: RequestInit): Promise<usersShowResponse> => {
 
-  const res = await fetch(getUsersShowUrl(id),
+  return customFetchMutator<usersShowResponse>(getUsersShowUrl(id),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersShowResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersShowResponse
-}
+);}
 
 
 /**
@@ -239,7 +222,7 @@ export const getUsersUpdateUrl = (id: string,) => {
 export const usersUpdate = async (id: string,
     updateUserRequest: UpdateUserRequest, options?: RequestInit): Promise<usersUpdateResponse> => {
 
-  const res = await fetch(getUsersUpdateUrl(id),
+  return customFetchMutator<usersUpdateResponse>(getUsersUpdateUrl(id),
   {
     ...options,
     method: 'PUT',
@@ -247,13 +230,7 @@ export const usersUpdate = async (id: string,
     body: JSON.stringify(
       updateUserRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersUpdateResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersUpdateResponse
-}
+);}
 
 
 /**
@@ -293,20 +270,14 @@ export const getUsersDestroyUrl = (id: string,) => {
 
 export const usersDestroy = async (id: string, options?: RequestInit): Promise<usersDestroyResponse> => {
 
-  const res = await fetch(getUsersDestroyUrl(id),
+  return customFetchMutator<usersDestroyResponse>(getUsersDestroyUrl(id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersDestroyResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersDestroyResponse
-}
+);}
 
 
 /**
@@ -346,20 +317,14 @@ export const getUsersRestoreUrl = (id: string,) => {
 
 export const usersRestore = async (id: string, options?: RequestInit): Promise<usersRestoreResponse> => {
 
-  const res = await fetch(getUsersRestoreUrl(id),
+  return customFetchMutator<usersRestoreResponse>(getUsersRestoreUrl(id),
   {
     ...options,
     method: 'POST'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersRestoreResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersRestoreResponse
-}
+);}
 
 
 /**
@@ -399,19 +364,13 @@ export const getUsersForceDeleteUrl = (id: string,) => {
 
 export const usersForceDelete = async (id: string, options?: RequestInit): Promise<usersForceDeleteResponse> => {
 
-  const res = await fetch(getUsersForceDeleteUrl(id),
+  return customFetchMutator<usersForceDeleteResponse>(getUsersForceDeleteUrl(id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersForceDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersForceDeleteResponse
-}
+);}
 
 

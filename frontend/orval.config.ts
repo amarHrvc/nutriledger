@@ -9,7 +9,14 @@ export default defineConfig({
       target: './src/api/generated',
       client: 'fetch',
       mode: 'tags-split',
-      baseUrl: process.env.INTERNAL_API_URL ?? 'http://localhost:8000/api'
+      baseUrl: process.env.INTERNAL_API_URL ?? 'http://localhost:8000/api',
+      override: {
+        //custom wrapper
+        mutator: {
+          path: './src/api/auth.mutator.ts',
+          name: 'customFetchMutator'
+        }
+      }
     }
   }
 })

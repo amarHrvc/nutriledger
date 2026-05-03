@@ -14,6 +14,7 @@ import type {
   ValidationExceptionResponse
 } from '../nutriBaseAPI.schemas';
 
+import { customFetchMutator } from '../../auth.mutator';
 
 export type loginResponse200 = {
   data: Login200
@@ -49,7 +50,7 @@ export const getLoginUrl = () => {
 
 export const login = async (loginRequest: LoginRequest, options?: RequestInit): Promise<loginResponse> => {
 
-  const res = await fetch(getLoginUrl(),
+  return customFetchMutator<loginResponse>(getLoginUrl(),
   {
     ...options,
     method: 'POST',
@@ -57,13 +58,7 @@ export const login = async (loginRequest: LoginRequest, options?: RequestInit): 
     body: JSON.stringify(
       loginRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: loginResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as loginResponse
-}
+);}
 
 
 export type registerResponse200 = {
@@ -88,20 +83,14 @@ export const getRegisterUrl = () => {
 
 export const register = async ( options?: RequestInit): Promise<registerResponse> => {
 
-  const res = await fetch(getRegisterUrl(),
+  return customFetchMutator<registerResponse>(getRegisterUrl(),
   {
     ...options,
     method: 'POST'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: registerResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as registerResponse
-}
+);}
 
 
 export type logoutResponse204 = {
@@ -133,20 +122,14 @@ export const getLogoutUrl = () => {
 
 export const logout = async ( options?: RequestInit): Promise<logoutResponse> => {
 
-  const res = await fetch(getLogoutUrl(),
+  return customFetchMutator<logoutResponse>(getLogoutUrl(),
   {
     ...options,
     method: 'POST'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: logoutResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as logoutResponse
-}
+);}
 
 
 export type userMeResponse200 = {
@@ -178,19 +161,13 @@ export const getUserMeUrl = () => {
 
 export const userMe = async ( options?: RequestInit): Promise<userMeResponse> => {
 
-  const res = await fetch(getUserMeUrl(),
+  return customFetchMutator<userMeResponse>(getUserMeUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: userMeResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as userMeResponse
-}
+);}
 
 

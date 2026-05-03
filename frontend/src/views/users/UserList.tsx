@@ -2,6 +2,8 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 
+import { useRouter } from 'next/navigation'
+
 import { useReactTable, getCoreRowModel, flexRender, getFilteredRowModel } from '@tanstack/react-table'
 
 import Card from '@mui/material/Card';
@@ -20,6 +22,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import UserStatusChip from './shared/UserStatusChip';
 
+
 interface User { id: string; attributes?: { name?: string; email?: string; role?: string }; active?: boolean }
 
 export default function UserList() {
@@ -28,6 +31,7 @@ export default function UserList() {
   const [pageIndex, setPageIndex] = useState(0); // zero-based for MUI TablePagination
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -45,9 +49,11 @@ export default function UserList() {
         const res = await fetch(`/api/users?page=${apiPage}&search=${encodeURIComponent(search)}`, { signal });
         const json = await res.json();
 
+        console.log('[JSON] :::', json)
+
         if (!mounted) return;
-        setUsers(json.data.users ?? []);
-        console.log('[UserList] setUsers ->', json.data ?? []);
+        setUsers(json.users ?? []);
+        console.log('[UserList] setUsers ->', json ?? []);
       } catch (err: any) {
         if (err?.name === 'AbortError') return; // expected on cancel
         console.error('UserList load error', err);
@@ -99,25 +105,27 @@ export default function UserList() {
   const visibleRows = table.getRowModel().rows.slice(pageIndex * rowsPerPage, (pageIndex + 1) * rowsPerPage);
   return (
     <Card>
-      <CardHeader title="Users" />
+      <CardHeader title='Users' />
       <Box sx={{ display: 'flex', gap: 2, p: 2, alignItems: 'center' }}>
         <TextField
-          size="small"
-          placeholder="Search by name or email"
+          size='small'
+          placeholder='Search by name or email'
           value={search}
           onChange={e => {
-
             console.log('[search] ::: ', search)
 
-            setSearch(e.target.value);
-            setPageIndex(0); }}
+            setSearch(e.target.value)
+            setPageIndex(0)
+          }}
         />
         <Box sx={{ flex: 1 }} />
-        <Button variant="contained">Add New User</Button>
+        <Button variant='contained'>Add New User</Button>
       </Box>
 
       {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+          <CircularProgress />
+        </Box>
       ) : users.length === 0 ? (
         <Box sx={{ p: 4, textAlign: 'center' }}>No users found.</Box>
       ) : (
@@ -129,7 +137,14 @@ export default function UserList() {
                   {headerGroup.headers.map(header => (
                     <TableCell key={header.id}>
                       {header.isPlaceholder ? null : (
-                        <Box onClick={header.column.getToggleSortingHandler()} sx={{ display: 'inline-flex', alignItems: 'center', cursor: header.column.getCanSort() ? 'pointer' : 'default' }}>
+                        <Box
+                          onClick={header.column.getToggleSortingHandler()}
+                          sx={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            cursor: header.column.getCanSort() ? 'pointer' : 'default'
+                          }}
+                        >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {{ asc: ' ↑', desc: ' ↓' }[header.column.getIsSorted() as 'asc' | 'desc'] ?? null}
                         </Box>
@@ -141,7 +156,12 @@ export default function UserList() {
             </TableHead>
             <TableBody>
               {visibleRows.map(row => (
-                <TableRow key={row.id} hover>
+                <TableRow
+                  key={row.id}
+                  hover
+                  sx={{ cursor: 'pointer' }}
+                  onClick={() => router.push(`/dashboard/users/${row.original.id}`)}
+                >
                   {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
@@ -153,13 +173,16 @@ export default function UserList() {
       )}
 
       <TablePagination
-        component="div"
+        component='div'
         count={table.getRowModel().rows.length}
         page={pageIndex}
         onPageChange={(_, newPage) => setPageIndex(newPage)}
         rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={e => { setRowsPerPage(Number(e.target.value)); setPageIndex(0); }}
+        onRowsPerPageChange={e => {
+          setRowsPerPage(Number(e.target.value))
+          setPageIndex(0)
+        }}
       />
     </Card>
-  );
+  )
 }

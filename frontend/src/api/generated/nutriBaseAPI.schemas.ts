@@ -745,7 +745,7 @@ export type UsersIndex200 = {
   meta: string;
   links: string;
 } | {
-  message: 'Users retrieved successfully.';
+  message: 'Users retrieved successfully (No pagination).';
   status: 200;
   data: {
   users: UserResource[];

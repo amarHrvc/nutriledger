@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     { headers: { Authorization: 'Bearer ' + token, Accept: 'application/json' } }
   )
 
-  console.log("| Users-route | ############", res)
+  console.log("| Users-route | ############", res.data)
 
   return new Response(JSON.stringify(res.data ?? { data: [], meta: { page } }), { status: 200 });
 }
@@ -29,5 +29,6 @@ export async function POST(request: NextRequest) {
   // Forward create to backend via Orval client
   const body = await request.json();
   const res = await usersStore(body as any);
+
   return new Response(JSON.stringify(res.data ?? body), { status: res.status ?? 201 });
 }

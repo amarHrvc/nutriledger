@@ -1,63 +1,156 @@
-"use client";
-import React, { useState } from 'react';
-import UserStatusChip from './shared/UserStatusChip';
-import ConfirmDialog from './shared/ConfirmDialog';
+'use client'
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 
-interface User {
-  id: string;
-  name?: string;
-  email?: string;
-  role?: string;
-  active?: boolean;
-  created_at?: string;
-  deleted_at?: string | null;
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Chip from '@mui/material/Chip'
+import Divider from '@mui/material/Divider'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+
+import type { UserResource } from '@/api/generated/nutriBaseAPI.schemas'
+import ConfirmDialog from './shared/ConfirmDialog'
+import { IconUserCancel } from '@tabler/icons-react'
+import { useRouter } from 'next/navigation'
+
+type Action = 'deactivate' | 'restore' | 'force'
+
+const ACTION_LABELS: Record<Action, string> = {
+  deactivate: 'Deactivate',
+  restore: 'Restore',
+  force: 'Permanently Delete'
 }
 
-export default function UserDetail({ user }: { user: User }) {
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [confirmAction, setConfirmAction] = useState<null | 'deactivate' | 'force' | 'restore'>(null);
+export default function UserDetail({ user, onActionComplete }: { user: UserResource; onActionComplete?: () => void }) {
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [confirmAction, setConfirmAction] = useState<Action | null>(null)
+  const router = useRouter()
+
+  const isDeleted = user.attributes.isDeleted
+
+  const openConfirm = (action: Action) => {
+    setConfirmAction(action)
+    setConfirmOpen(true)
+  }
+
+  let isLoading = false
 
   const onConfirm = async () => {
-    if (!confirmAction) return;
+    if (!confirmAction) return
+
     try {
       if (confirmAction === 'deactivate') {
-        await fetch(`/api/users/${user.id}`, { method: 'DELETE' });
+        isLoading = true
+        await fetch(`/api/users/${user.id}`, { method: 'DELETE' })
+        isLoading = false
+        router.refresh()
       } else if (confirmAction === 'restore') {
-        await fetch(`/api/users/${user.id}/restore`, { method: 'POST' });
+        isLoading = true
+        await fetch(`/api/users/${user.id}/restore`, { method: 'POST' })
+        isLoading = false
+        router.refresh()
       } else if (confirmAction === 'force') {
-        await fetch(`/api/users/${user.id}/force`, { method: 'DELETE' });
+        await fetch(`/api/users/${user.id}/force`, { method: 'DELETE' })
+        router.back()
+        isLoading = false
       }
-      window.dispatchEvent(new CustomEvent('users:changed'));
+
+      toast.success(`User ${ACTION_LABELS[confirmAction].toLowerCase()}d successfully.`)
+      window.dispatchEvent(new CustomEvent('users:changed'))
+      onActionComplete?.()
+    } catch {
+      toast.error(`Failed to ${ACTION_LABELS[confirmAction].toLowerCase()} user.`)
     } finally {
-      setConfirmOpen(false);
-      setConfirmAction(null);
+      setConfirmOpen(false)
+      setConfirmAction(null)
     }
-  };
+  }
 
   return (
-    <div>
-      <h2>{user.name}</h2>
-      <p>{user.email}</p>
-      <p>Role: {user.role}</p>
-      <p>Status: <UserStatusChip active={!!user.active} /></p>
-      <p>Created: {user.created_at}</p>
-      {user.deleted_at && <p>Deactivated: {user.deleted_at}</p>}
+    <>
+      <Card>
+        <CardHeader title='User Details' />
+        <Divider />
+        <CardContent>
+          <Stack spacing={2}>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
+                Name
+              </Typography>
+              <Typography variant='body1'>{user.attributes.name}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
+                Email
+              </Typography>
+              <Typography variant='body1'>{user.attributes.email}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
+                Role
+              </Typography>
+              <Chip label={user.attributes.role} size='small' variant='outlined' />
+            </Box>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
+                Status
+              </Typography>
+              <Chip label={isDeleted ? 'Deactivated' : 'Active'} color={isDeleted ? 'error' : 'success'} size='small' />
+            </Box>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
+                Created
+              </Typography>
+              <Typography variant='body1'>{user.attributes.createdAt}</Typography>
+            </Box>
+            {user.attributes.deletedAt && (
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
+                  Deactivated
+                </Typography>
+                <Typography variant='body1'>{user.attributes.deletedAt}</Typography>
+              </Box>
+            )}
+          </Stack>
+        </CardContent>
+        <Divider />
+        <Box sx={{ display: 'flex', gap: 2, p: 2 }}>
+          {isDeleted ? (
+            <>
+              <Button variant='contained' color='success' onClick={() => openConfirm('restore')}>
+                Restore
+              </Button>
+              <Button variant='outlined' color='error' onClick={() => openConfirm('force')}>
+                Permanently Delete
+              </Button>
+            </>
+          ) : (
+            <Button
+              variant='outlined'
+              color='warning'
+              onClick={() => openConfirm('deactivate')}
+              startIcon={<IconUserCancel />}
+            >
+              Deactivate
+            </Button>
+          )}
+        </Box>
+      </Card>
 
-      <div>
-        {!user.active && (
-          <button onClick={() => { setConfirmAction('restore'); setConfirmOpen(true); }}>Restore</button>
-        )}
-
-        {user.active && (
-          <button onClick={() => { setConfirmAction('deactivate'); setConfirmOpen(true); }}>Deactivate</button>
-        )}
-
-        {!user.active && (
-          <button onClick={() => { setConfirmAction('force'); setConfirmOpen(true); }}>Permanently Delete</button>
-        )}
-      </div>
-
-      <ConfirmDialog open={confirmOpen} title="Confirm Action" message={`Are you sure you want to ${confirmAction}?`} onConfirm={onConfirm} onCancel={() => { setConfirmOpen(false); setConfirmAction(null); }} />
-    </div>
-  );
+      <ConfirmDialog
+        open={confirmOpen}
+        title={`${confirmAction ? ACTION_LABELS[confirmAction] : ''} User`}
+        message={`Are you sure you want to ${confirmAction ? ACTION_LABELS[confirmAction].toLowerCase() : ''} this user?`}
+        onConfirm={onConfirm}
+        onCancel={() => {
+          setConfirmOpen(false)
+          setConfirmAction(null)
+        }}
+      />
+    </>
+  )
 }

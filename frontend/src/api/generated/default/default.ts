@@ -8,6 +8,7 @@ import type {
   GetPing200
 } from '../nutriBaseAPI.schemas';
 
+import { customFetchMutator } from '../../auth.mutator';
 
 export type getPingResponse200 = {
   data: GetPing200
@@ -31,19 +32,13 @@ export const getGetPingUrl = () => {
 
 export const getPing = async ( options?: RequestInit): Promise<getPingResponse> => {
 
-  const res = await fetch(getGetPingUrl(),
+  return customFetchMutator<getPingResponse>(getGetPingUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getPingResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getPingResponse
-}
+);}
 
 
