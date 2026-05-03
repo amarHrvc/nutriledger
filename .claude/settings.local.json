@@ -49,7 +49,9 @@
       "Bash(git -C D:/_Learn/_PhpstormProjects/nutri-ledger diff HEAD --stat -- frontend/)",
       "Bash(git -C D:/_Learn/_PhpstormProjects/nutri-ledger status --short -- frontend/)",
       "Bash(Get-ChildItem -Path \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\" -Filter \"_knowledge\" -Recurse -Depth 3)",
-      "Bash(Select-Object FullName)"
+      "Bash(Select-Object FullName)",
+      "Bash(dir /s /b \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\")",
+      "Bash(findstr /i \"UserController\")"
     ]
   },
   "enableAllProjectMcpServers": true,
