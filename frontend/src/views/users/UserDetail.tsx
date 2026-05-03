@@ -4,7 +4,6 @@ import Grid from '@mui/material/Grid'
 
 import type { UserResource } from '@/api/generated/nutriBaseAPI.schemas'
 import UserLeftCard from './user-left'
-// user-left/index.tsx now orchestrates UserDetailsCard + UserPlanCard
 import UserRightTabs from './user-right'
 
 interface Props {

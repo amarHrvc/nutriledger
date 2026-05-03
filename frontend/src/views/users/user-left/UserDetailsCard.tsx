@@ -62,15 +62,29 @@ export default function UserDetailsCard({ user }: Props) {
     setLoading(true)
 
     try {
+      let res: Response
+
       if (confirmAction === 'deactivate') {
-        await fetch(`/api/users/${user.id}`, { method: 'DELETE' })
+        res = await fetch(`/api/users/${user.id}`, { method: 'DELETE' })
       } else if (confirmAction === 'restore') {
-        await fetch(`/api/users/${user.id}/restore`, { method: 'POST' })
-      } else if (confirmAction === 'force') {
-        await fetch(`/api/users/${user.id}/force`, { method: 'DELETE' })
+        res = await fetch(`/api/users/${user.id}/restore`, { method: 'POST' })
+      } else {
+        res = await fetch(`/api/users/${user.id}/force`, { method: 'DELETE' })
+      }
+
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}))
+        toast.error(json?.message ?? `Failed to ${ACTION_LABELS[confirmAction].toLowerCase()} user.`)
+        return
       }
 
       toast.success(`User ${ACTION_LABELS[confirmAction].toLowerCase()}d successfully.`)
+
+      if (confirmAction === 'force') {
+        router.push('/dashboard/users')
+        return
+      }
+
       window.dispatchEvent(new CustomEvent('users:changed'))
     } catch {
       toast.error(`Failed to ${ACTION_LABELS[confirmAction].toLowerCase()} user.`)

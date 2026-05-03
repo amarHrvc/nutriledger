@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface Props {
-  deletedAt: boolean;
+  deletedAt: string | null | undefined;
 }
 
 

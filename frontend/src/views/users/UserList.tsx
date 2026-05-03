@@ -43,10 +43,6 @@ export default function UserList() {
     const signal = controller.signal;
     let mounted = true;
 
-    const apiPage = pageIndex + 1; // backend is 1-based
-
-    console.log('[search] :::', search)
-
     setLoading(true);
 
     const load = async () => {
@@ -118,8 +114,6 @@ export default function UserList() {
             placeholder='Search by name or email'
             value={search}
             onChange={e => {
-              console.log('[search] ::: ', search)
-
               setSearch(e.target.value)
               setPageIndex(0)
             }}
@@ -200,7 +194,5 @@ export default function UserList() {
         </DialogContent>
       </Dialog>
     </Box>
-
-    // // at the bottom of the return:
   )
 }
