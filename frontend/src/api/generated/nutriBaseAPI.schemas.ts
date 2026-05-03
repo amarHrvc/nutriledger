@@ -713,12 +713,43 @@ export type PatientsUpdate200 = {
   data: PatientsUpdate200Data;
 };
 
+export type UsersIndexParams = {
+/**
+ * @nullable
+ */
+paginate?: UsersIndexPaginate;
+/**
+ * @minimum 1
+ * @nullable
+ */
+page?: number | null;
+/**
+ * @minimum 1
+ * @maximum 100
+ * @nullable
+ */
+per_page?: number | null;
+};
+
+export type UsersIndexPaginate = typeof UsersIndexPaginate[keyof typeof UsersIndexPaginate] | null;
+
+
+export const UsersIndexPaginate = {
+  false: 'false',
+} as const;
+
 export type UsersIndex200 = {
   message: 'Users retrieved successfully.';
   status: 200;
   data: string;
   meta: string;
   links: string;
+} | {
+  message: 'Users retrieved successfully.';
+  status: 200;
+  data: {
+  users: UserResource[];
+};
 };
 
 export type UsersStore201Data = {

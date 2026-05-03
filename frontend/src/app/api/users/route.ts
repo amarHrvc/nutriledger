@@ -1,13 +1,27 @@
-import type { NextRequest } from 'next/server';
-import { usersIndex, usersStore } from '../../../api/generated/user/user';
+import  { NextRequest, NextResponse } from 'next/server';
+import { usersIndex, usersStore } from '@/api/generated/user/user';
+import { cookies } from 'next/headers'
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const page = Number(searchParams.get('page') ?? '1');
-  const search = searchParams.get('search') ?? '';
+  const search = searchParams.get('search') ?? ''
+
+  const cookieStore = await cookies()
+  const token = cookieStore.get('auth_token')?.value?.split('|')[1]
+
+  if (!token) {
+    return NextResponse.json({ message: 'Unauthenticated' }, { status: 401 })
+  }
 
   // Call Orval-generated client
-  const res = await usersIndex();
+  const res = await usersIndex(
+    { paginate: 'false' },
+    { headers: { Authorization: 'Bearer ' + token, Accept: 'application/json' } }
+  )
+
+  console.log("| Users-route | ############", res)
+
   return new Response(JSON.stringify(res.data ?? { data: [], meta: { page } }), { status: 200 });
 }
 

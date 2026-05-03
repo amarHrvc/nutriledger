@@ -24,6 +24,7 @@
     "@mui/lab": "7.0.1-beta.19",
     "@mui/material": "7.3.6",
     "@mui/material-nextjs": "7.3.6",
+    "@tanstack/react-table": "^8.21.3",
     "classnames": "2.5.1",
     "next": "16.1.1",
     "react": "19.2.3",

@@ -10,6 +10,7 @@ import type {
   StoreUserRequest,
   UpdateUserRequest,
   UsersIndex200,
+  UsersIndexParams,
   UsersRestore200,
   UsersShow200,
   UsersStore201,
@@ -36,26 +37,38 @@ export type usersIndexResponse403 = {
   status: 403
 }
 
+export type usersIndexResponse422 = {
+  data: ValidationExceptionResponse
+  status: 422
+}
+
 export type usersIndexResponseSuccess = (usersIndexResponse200) & {
   headers: Headers;
 };
-export type usersIndexResponseError = (usersIndexResponse401 | usersIndexResponse403) & {
+export type usersIndexResponseError = (usersIndexResponse401 | usersIndexResponse403 | usersIndexResponse422) & {
   headers: Headers;
 };
 
 export type usersIndexResponse = (usersIndexResponseSuccess | usersIndexResponseError)
 
-export const getUsersIndexUrl = () => {
+export const getUsersIndexUrl = (params?: UsersIndexParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `http://localhost:8000/api/users`
+  return stringifiedParams.length > 0 ? `http://localhost:8000/api/users?${stringifiedParams}` : `http://localhost:8000/api/users`
 }
 
-export const usersIndex = async ( options?: RequestInit): Promise<usersIndexResponse> => {
+export const usersIndex = async (params?: UsersIndexParams, options?: RequestInit): Promise<usersIndexResponse> => {
 
-  const res = await fetch(getUsersIndexUrl(),
+  const res = await fetch(getUsersIndexUrl(params),
   {
     ...options,
     method: 'GET'
