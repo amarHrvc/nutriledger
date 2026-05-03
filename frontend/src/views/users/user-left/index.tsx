@@ -8,14 +8,13 @@ import UserPlanCard from './UserPlanCard'
 
 interface Props {
   user: UserResource
-  onActionComplete?: () => void
 }
 
-export default function UserLeftOverview({ user, onActionComplete }: Props) {
+export default function UserLeftOverview({ user }: Props) {
   return (
     <Grid container spacing={6}>
       <Grid size={{ xs: 12 }}>
-        <UserDetailsCard user={user} onActionComplete={onActionComplete} />
+        <UserDetailsCard user={user} />
       </Grid>
       <Grid size={{ xs: 12 }}>
         <UserPlanCard />

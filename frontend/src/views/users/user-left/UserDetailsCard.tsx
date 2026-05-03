@@ -42,10 +42,9 @@ function initials(name: string): string {
 
 interface Props {
   user: UserResource
-  onActionComplete?: () => void
 }
 
-export default function UserDetailsCard({ user, onActionComplete }: Props) {
+export default function UserDetailsCard({ user }: Props) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmAction, setConfirmAction] = useState<Action | null>(null)
   const [loading, setLoading] = useState(false)
@@ -71,10 +70,8 @@ export default function UserDetailsCard({ user, onActionComplete }: Props) {
         await fetch(`/api/users/${user.id}/force`, { method: 'DELETE' })
       }
 
-      console.log('toast success!!!')
       toast.success(`User ${ACTION_LABELS[confirmAction].toLowerCase()}d successfully.`)
       window.dispatchEvent(new CustomEvent('users:changed'))
-      onActionComplete?.()
     } catch {
       toast.error(`Failed to ${ACTION_LABELS[confirmAction].toLowerCase()} user.`)
     } finally {
