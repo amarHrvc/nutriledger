@@ -17,11 +17,7 @@ export default function Page() {
   useEffect(() => {
     fetch(`/api/users/${id}`)
       .then(res => res.json())
-      .then(json => {
-        console.log('[user] --> ', json)
-
-        setUser(json.data.user ?? null)
-      })
+      .then(json => setUser(json.data?.user ?? null))
   }, [id, refreshKey])
 
 
