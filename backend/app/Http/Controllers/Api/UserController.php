@@ -36,7 +36,7 @@ class UserController extends ApiController
 
 
         if ($request->has('paginate') && $request->paginate === 'false') {
-            $users = User::query()->get();
+            $users = User::withTrashed()->get();
             return $this->ok('Users retrieved successfully (No pagination).',  ['users' => UserResource::collection($users)]);
         }else{
             return $this->paginated('Users retrieved successfully.', UserResource::collection($users));
