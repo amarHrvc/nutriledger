@@ -16,8 +16,8 @@ export async function GET() {
 
   return NextResponse.json({
     stats: {
-      totalUsers: (usersResult.meta as any)?.total ?? 0,
-      totalPatients: (patientsResult.meta as any)?.total ?? 0,
+      totalUsers: ((usersResult.data as any)?.meta as any)?.total ?? 0,
+      totalPatients: ((patientsResult.data as any)?.meta as any)?.total ?? 0,
     },
   })
 }

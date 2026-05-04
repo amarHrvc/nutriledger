@@ -6,7 +6,7 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CircularProgress from '@mui/material/CircularProgress'
-import Grid from '@mui/material/Grid'
+
 import Typography from '@mui/material/Typography'
 
 import ProfileHeader from './shared/ProfileHeader'
@@ -73,14 +73,10 @@ export default function AdminProfile({ user }: AdminProfileProps) {
       )}
 
       {!isLoading && !error && stats && (
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <StatBlock label='Total Users' value={stats.totalUsers} />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <StatBlock label='Total Patients' value={stats.totalPatients} />
-          </Grid>
-        </Grid>
+        <Box className='grid gap-4 grid-cols-1 sm:grid-cols-2'>
+          <StatBlock label='Total Users' value={stats.totalUsers} />
+          <StatBlock label='Total Patients' value={stats.totalPatients} />
+        </Box>
       )}
     </Box>
   )

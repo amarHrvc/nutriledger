@@ -8,7 +8,15 @@
       "Bash(bd ready:*)",
       "Bash(bd list:*)",
       "Bash(bd stats:*)",
-      "Bash(bd remember:*)"
+      "Bash(bd remember:*)",
+      "Read(//d/_Learn/_PhpstormProjects/nutri-ledger/**)",
+      "Bash(bd --help)",
+      "Bash(bd create *)",
+      "Bash(bd link *)",
+      "Bash(bd graph *)",
+      "Bash(Get-ChildItem -Path \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\\\\frontend\\\\src\\\\views\\\\users\" -Recurse -File)",
+      "Bash(Select-Object FullName)",
+      "Bash(python3 -c ' *)"
     ]
   },
   "disabledMcpjsonServers": [
