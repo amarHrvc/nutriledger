@@ -40,8 +40,8 @@ export default function PatientDetailsCard({ patient }: Props) {
 	const [loading, setLoading] = useState(false)
 	const router = useRouter()
 
-	const { fullName = '', dateOfBirth = '', gender = '', phone = '', createdAt = '', email = '' } = patient.attributes
-	const linkedUserEmail = patient.attributes.linked_user?.attributes?.email || email
+	const { fullName = '', dateOfBirth = '', gender = '', phone = '', createdAt = '' } = patient.attributes
+	const linkedUserEmail = '—' // TODO: get email from linked user via relationships
 
 	const openConfirm = () => {
 		setConfirmOpen(true)
