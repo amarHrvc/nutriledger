@@ -21,12 +21,11 @@ import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 
+import type { PatientResource } from '@/api/generated/nutriBaseAPI.schemas'
 import PatientForm from './PatientForm'
 
-interface Patient { id: string; attributes?: { fullName?: string; dateOfBirth?: string; gender?: string; phone?: string } }
-
 export default function PatientList() {
-  const [patients, setPatients] = useState<Patient[]>([]);
+  const [patients, setPatients] = useState<PatientResource[]>([]);
   const [search, setSearch] = useState('');
   const [pageIndex, setPageIndex] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);

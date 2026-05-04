@@ -720,18 +720,26 @@ export const PatientsIndexFormat = {
   summary: 'summary',
 } as const;
 
+export type PatientsIndex200Meta = {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+};
+
+export type PatientsIndex200Links = {
+  first: string | null;
+  last: string | null;
+  prev: string | null;
+  next: string | null;
+};
+
 export type PatientsIndex200 = {
   message: 'Patients retrieved successfully.';
   status: 200;
-  data: string;
-  meta: string;
-  links: string;
-} | {
-  message: 'Patients retrieved successfully.';
-  status: 200;
-  data: {
-  patients: PatientSummaryResource[] | PatientResource[];
-};
+  data: PatientResource[];
+  meta: PatientsIndex200Meta;
+  links: PatientsIndex200Links;
 };
 
 export type PatientsStore201Data = {

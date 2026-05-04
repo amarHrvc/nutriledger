@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 import { patientsIndex, patientsStore } from '@/api/generated/patient/patient'
 import { usersStore } from '@/api/generated/user/user'
