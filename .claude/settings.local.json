@@ -52,7 +52,10 @@
       "Bash(Select-Object FullName)",
       "Bash(dir /s /b \"D:\\\\_Learn\\\\_PhpstormProjects\\\\nutri-ledger\")",
       "Bash(findstr /i \"UserController\")",
-      "Bash(git log *)"
+      "Bash(git log *)",
+      "Bash(sed -n '43,110p' src/api/generated/nutriBaseAPI.schemas.ts)",
+      "Bash(sed -n '675,720p' src/api/generated/nutriBaseAPI.schemas.ts)",
+      "Bash(bd add *)"
     ]
   },
   "enableAllProjectMcpServers": true,

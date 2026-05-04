@@ -100,6 +100,15 @@ export interface PatientResource {
   relationships: PatientResourceRelationships;
 }
 
+export interface PatientSummaryResource {
+  id: string;
+  fullName: string;
+  dateOfBirth: string;
+  gender: string;
+  city: string;
+  phone: string;
+}
+
 export type StorePatientRequestGender = typeof StorePatientRequestGender[keyof typeof StorePatientRequestGender];
 
 
@@ -675,12 +684,54 @@ export type UserMe200 = {
   data: UserMe200Data;
 };
 
+export type PatientsIndexParams = {
+/**
+ * @nullable
+ */
+paginate?: PatientsIndexPaginate;
+/**
+ * @nullable
+ */
+format?: PatientsIndexFormat;
+/**
+ * @minimum 1
+ * @nullable
+ */
+page?: number | null;
+/**
+ * @minimum 1
+ * @maximum 100
+ * @nullable
+ */
+per_page?: number | null;
+};
+
+export type PatientsIndexPaginate = typeof PatientsIndexPaginate[keyof typeof PatientsIndexPaginate] | null;
+
+
+export const PatientsIndexPaginate = {
+  false: 'false',
+} as const;
+
+export type PatientsIndexFormat = typeof PatientsIndexFormat[keyof typeof PatientsIndexFormat] | null;
+
+
+export const PatientsIndexFormat = {
+  summary: 'summary',
+} as const;
+
 export type PatientsIndex200 = {
   message: 'Patients retrieved successfully.';
   status: 200;
   data: string;
   meta: string;
   links: string;
+} | {
+  message: 'Patients retrieved successfully.';
+  status: 200;
+  data: {
+  patients: PatientSummaryResource[] | PatientResource[];
+};
 };
 
 export type PatientsStore201Data = {
