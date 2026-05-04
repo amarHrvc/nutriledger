@@ -10,12 +10,16 @@ import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import { IconUserCancel } from '@tabler/icons-react'
 
 import type { PatientResource } from '@/api/generated/nutriBaseAPI.schemas'
 import ConfirmDialog from '@views/users/shared/ConfirmDialog'
+import PatientEditForm from '../PatientEditForm'
 
 function initials(name: string): string {
 	return name
@@ -161,6 +165,17 @@ export default function PatientDetailsCard({ patient }: Props) {
 					setConfirmOpen(false)
 				}}
 			/>
+
+			<Dialog open={editOpen} onClose={() => setEditOpen(false)} fullWidth maxWidth='sm'>
+				<DialogTitle>Edit Patient</DialogTitle>
+				<DialogContent sx={{ pt: 2 }}>
+					<PatientEditForm
+						patient={patient}
+						onSuccess={() => setEditOpen(false)}
+						onCancel={() => setEditOpen(false)}
+					/>
+				</DialogContent>
+			</Dialog>
 		</>
 	)
 }
