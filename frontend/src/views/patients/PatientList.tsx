@@ -1,25 +1,27 @@
-"use client";
+'use client'
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useReactTable, getCoreRowModel, flexRender, getFilteredRowModel } from '@tanstack/react-table'
 
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
-import TableBody from '@mui/material/TableBody';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TablePagination from '@mui/material/TablePagination';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import Table from '@mui/material/Table'
+import TableHead from '@mui/material/TableHead'
+import TableBody from '@mui/material/TableBody'
+import TableRow from '@mui/material/TableRow'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TablePagination from '@mui/material/TablePagination'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
+
+import PatientForm from './PatientForm'
 
 interface Patient { id: string; attributes?: { fullName?: string; dateOfBirth?: string; gender?: string; phone?: string } }
 
@@ -167,8 +169,8 @@ export default function PatientList() {
 
       <Dialog open={formOpen} onClose={() => setFormOpen(false)} fullWidth maxWidth='sm'>
         <DialogTitle>Create Patient</DialogTitle>
-        <DialogContent>
-          <div />
+        <DialogContent sx={{ pt: 2 }}>
+          <PatientForm onSuccess={() => setFormOpen(false)} onCancel={() => setFormOpen(false)} />
         </DialogContent>
       </Dialog>
     </Box>
