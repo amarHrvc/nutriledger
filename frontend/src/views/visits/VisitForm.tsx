@@ -13,10 +13,20 @@ import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 
+import { useAuth } from '@/context/AuthContext'
+
 interface Patient {
 	id: string
 	attributes: {
 		fullName: string
+	}
+}
+
+interface Doctor {
+	id: string
+	attributes: {
+		name: string
+		role: string
 	}
 }
 
@@ -27,11 +37,15 @@ interface Props {
 }
 
 export default function VisitForm({ patientId, onSuccess, onCancel }: Props) {
+	const { user } = useAuth()
 	const [datetimeValue, setDatetimeValue] = useState('')
 	const [notes, setNotes] = useState('')
 	const [selectedPatientId, setSelectedPatientId] = useState(patientId || '')
+	const [selectedDoctorId, setSelectedDoctorId] = useState('')
 	const [patients, setPatients] = useState<Patient[]>([])
+	const [doctors, setDoctors] = useState<Doctor[]>([])
 	const [patientsLoading, setPatientsLoading] = useState(true)
+	const [doctorsLoading, setDoctorsLoading] = useState(true)
 
 	const [errors, setErrors] = useState<Record<string, string[]>>({})
 	const [formError, setFormError] = useState('')
@@ -55,6 +69,28 @@ export default function VisitForm({ patientId, onSuccess, onCancel }: Props) {
 		fetchPatients()
 	}, [])
 
+	// Fetch doctors when admin
+	useEffect(() => {
+		if (user?.role === 'admin') {
+			const fetchDoctors = async () => {
+				try {
+					const res = await fetch('/api/users')
+					const json = await res.json()
+					const allUsers = json.data?.users || []
+					const doctorUsers = allUsers.filter((u: Doctor) => u.attributes?.role === 'doktor')
+					setDoctors(doctorUsers)
+				} catch (error) {
+					console.error('Failed to load doctors:', error)
+				} finally {
+					setDoctorsLoading(false)
+				}
+			}
+			fetchDoctors()
+		} else {
+			setDoctorsLoading(false)
+		}
+	}, [user?.role])
+
 	const submit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		setLoading(true)
@@ -72,10 +108,15 @@ export default function VisitForm({ patientId, onSuccess, onCancel }: Props) {
 			// Split datetime-local format: "2025-01-15T14:30" -> ["2025-01-15", "14:30"]
 			const [date, time] = datetimeValue.split('T')
 
-			const payload = {
+			const payload: Record<string, any> = {
 				date,
 				time,
 				notes,
+			}
+
+			// Include doctor_id only when admin and a doctor is selected
+			if (user?.role === 'admin' && selectedDoctorId) {
+				payload.doctor_id = parseInt(selectedDoctorId, 10)
 			}
 
 			const res = await fetch(`/api/patients/${resolvedPatientId}/visits`, {
@@ -127,6 +168,25 @@ export default function VisitForm({ patientId, onSuccess, onCancel }: Props) {
 					</FormControl>
 				)}
 
+				{/* Show doctor select only for admin */}
+				{user?.role === 'admin' && (
+					<FormControl fullWidth disabled={doctorsLoading}>
+						<InputLabel>Doctor</InputLabel>
+						<Select
+							value={selectedDoctorId}
+							label='Doctor'
+							onChange={e => setSelectedDoctorId(e.target.value)}
+						>
+							<MenuItem value=''>No specific doctor</MenuItem>
+							{doctors.map(doctor => (
+								<MenuItem key={doctor.id} value={doctor.id}>
+									{doctor.attributes?.name}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				)}
+
 				{/* DateTime field */}
 				<TextField
 					label='Date & Time'
@@ -155,11 +215,11 @@ export default function VisitForm({ patientId, onSuccess, onCancel }: Props) {
 				{/* Action buttons */}
 				<Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
 					{onCancel && (
-						<Button variant='outlined' onClick={onCancel} disabled={loading || patientsLoading}>
+						<Button variant='outlined' onClick={onCancel} disabled={loading || patientsLoading || doctorsLoading}>
 							Cancel
 						</Button>
 					)}
-					<Button type='submit' variant='contained' disabled={loading || patientsLoading} startIcon={loading ? <CircularProgress size={16} /> : null}>
+					<Button type='submit' variant='contained' disabled={loading || patientsLoading || doctorsLoading} startIcon={loading ? <CircularProgress size={16} /> : null}>
 						Create Visit
 					</Button>
 				</Box>
