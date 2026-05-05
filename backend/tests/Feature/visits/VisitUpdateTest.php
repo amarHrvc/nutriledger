@@ -246,3 +246,87 @@ test('visit from different patient returns 404', function () {
 
     $response->assertNotFound();
 });
+
+test('doctor can update visit dated today - boundary editable', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+    $visit = Visit::factory()->create([
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'date' => now()->toDateString(),
+        'notes' => 'Original notes',
+    ]);
+
+    $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
+        'date' => now()->toDateString(),
+        'notes' => 'Updated today notes',
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('visits', [
+        'id' => $visit->id,
+        'date' => now()->toDateString(),
+        'notes' => 'Updated today notes',
+    ]);
+});
+
+test('doctor can update visit dated yesterday - 1-day lock boundary', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+    $yesterday = now()->subDay()->toDateString();
+    $visit = Visit::factory()->create([
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'date' => $yesterday,
+        'notes' => 'Original notes',
+    ]);
+
+    $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
+        'date' => $yesterday,
+        'notes' => 'Updated yesterday notes',
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('visits', [
+        'id' => $visit->id,
+        'date' => $yesterday,
+        'notes' => 'Updated yesterday notes',
+    ]);
+});
+
+test('doctor cannot update visit dated 2 days ago - locked', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+    $twoDaysAgo = now()->subDays(2)->toDateString();
+    $visit = Visit::factory()->create([
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'date' => $twoDaysAgo,
+        'notes' => 'Original notes',
+    ]);
+
+    $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
+        'date' => $twoDaysAgo,
+        'notes' => 'Trying to update locked visit',
+    ]);
+
+    $response->assertForbidden();
+});
+
+test('wrong doctor cannot update visit - authorization check', function () {
+    $doctor1 = User::factory()->create(['role' => 'doktor']);
+    $doctor2 = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+    $visit = Visit::factory()->create([
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor1->id,
+        'date' => now()->toDateString(),
+    ]);
+
+    $response = $this->actingAs($doctor2)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
+        'date' => now()->toDateString(),
+        'notes' => 'Trying to update another doctor\'s visit',
+    ]);
+
+    $response->assertForbidden();
+});
