@@ -9,6 +9,7 @@ test('guest cannot create visit', function () {
 
     $response = $this->postJson('/api/patients/'.$patient->id.'/visits', [
         'date' => '2024-01-15',
+        'time' => '10:00',
         'notes' => 'Test notes',
     ]);
 
@@ -21,6 +22,7 @@ test('admin can create visit', function () {
 
     $response = $this->actingAs($admin)->postJson('/api/patients/'.$patient->id.'/visits', [
         'date' => '2024-01-15',
+        'time' => '10:00',
         'notes' => 'Test notes from admin',
     ]);
 
@@ -34,6 +36,7 @@ test('admin can create visit', function () {
                     'id',
                     'attributes' => [
                         'date',
+                        'time',
                         'notes',
                         'doctorName',
                         'createdAt',
@@ -54,6 +57,7 @@ test('doctor can create visit', function () {
 
     $response = $this->actingAs($doctor)->postJson('/api/patients/'.$patient->id.'/visits', [
         'date' => '2024-01-15',
+        'time' => '10:00',
         'notes' => 'Test notes from doctor',
     ]);
 
@@ -67,6 +71,7 @@ test('doctor can create visit', function () {
                     'id',
                     'attributes' => [
                         'date',
+                        'time',
                         'notes',
                         'doctorName',
                         'createdAt',
@@ -84,6 +89,7 @@ test('doctor can create visit', function () {
         'patient_id' => $patient->id,
         'doctor_id' => $doctor->id,
         'date' => '2024-01-15',
+        'time' => '10:00',
         'notes' => 'Test notes from doctor',
     ]);
 });
@@ -95,6 +101,7 @@ test('patient cannot create visit', function () {
 
     $response = $this->actingAs($user)->postJson('/api/patients/'.$targetPatient->id.'/visits', [
         'date' => '2024-01-15',
+        'time' => '10:00',
         'notes' => 'Test notes',
     ]);
 
@@ -119,23 +126,23 @@ test('notes can be null', function () {
 
     $response = $this->actingAs($doctor)->postJson('/api/patients/'.$patient->id.'/visits', [
         'date' => '2024-01-15',
+        'time' => '10:00',
     ]);
 
     $response->assertCreated();
 });
 
-test('date must be before or equal today', function () {
+test('time field is required', function () {
     $doctor = User::factory()->create(['role' => 'doktor']);
     $patient = Patient::factory()->create();
-    $futureDate = now()->addDays(5)->toDateString();
 
     $response = $this->actingAs($doctor)->postJson('/api/patients/'.$patient->id.'/visits', [
-        'date' => $futureDate,
+        'date' => '2024-01-15',
         'notes' => 'Test notes',
     ]);
 
     $response->assertUnprocessable()
-        ->assertJsonValidationErrors(['date']);
+        ->assertJsonValidationErrors(['time']);
 });
 
 test('notes must not exceed 10000 characters', function () {
@@ -145,6 +152,7 @@ test('notes must not exceed 10000 characters', function () {
 
     $response = $this->actingAs($doctor)->postJson('/api/patients/'.$patient->id.'/visits', [
         'date' => '2024-01-15',
+        'time' => '10:00',
         'notes' => $longNotes,
     ]);
 
@@ -158,6 +166,7 @@ test('created visit belongs to correct patient and doctor', function () {
 
     $response = $this->actingAs($doctor)->postJson('/api/patients/'.$patient->id.'/visits', [
         'date' => '2024-01-15',
+        'time' => '10:00',
         'notes' => 'Correct patient and doctor test',
     ]);
 
@@ -168,5 +177,6 @@ test('created visit belongs to correct patient and doctor', function () {
     expect($visit->patient_id)->toBe($patient->id);
     expect($visit->doctor_id)->toBe($doctor->id);
     expect($visit->date->toDateString())->toBe('2024-01-15');
+    expect($visit->time)->toBe('10:00');
     expect($visit->notes)->toBe('Correct patient and doctor test');
 });
