@@ -54,3 +54,24 @@ test('patient cannot access global visits endpoint', function () {
 
     $response->assertForbidden();
 });
+
+test('admin sees all visits from all doctors', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $doctor1 = User::factory()->create(['role' => 'doktor']);
+    $doctor2 = User::factory()->create(['role' => 'doktor']);
+
+    // Create visits for doctor1 and doctor2
+    $visit1 = Visit::factory()->create(['doctor_id' => $doctor1->id]);
+    $visit2 = Visit::factory()->create(['doctor_id' => $doctor2->id]);
+
+    // Admin should see all visits
+    $response = $this->actingAs($admin)->getJson('/api/visits');
+
+    $response->assertOk()
+        ->assertJsonCount(2, 'data');
+
+    // Verify both visits are included
+    $visitIds = collect($response->json('data'))->pluck('id')->all();
+    $this->assertContains((string) $visit1->id, $visitIds);
+    $this->assertContains((string) $visit2->id, $visitIds);
+});
