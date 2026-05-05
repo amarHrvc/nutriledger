@@ -35,14 +35,8 @@ class UpdateVisitRequest extends FormRequest
     {
         return [
             'date' => ['sometimes', 'date', 'before_or_equal:today'],
+            'time' => ['sometimes', 'date_format:H:i'],
             'notes' => ['nullable', 'string', 'max:10000'],
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'date.before_or_equal' => 'The visit date cannot be in the future.',
         ];
     }
 }
