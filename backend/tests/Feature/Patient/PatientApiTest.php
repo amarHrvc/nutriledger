@@ -14,7 +14,8 @@ it('allows doctor to create patient without socioeconomic data', function () {
     $response = $this->actingAs($doctor)
         ->postJson('/api/patients', [
             'user_id' => $patientUser->id,
-            'first_name' => 'Jane',
+            'fir
+            st_name' => 'Jane',
             'last_name' => 'Smith',
             'date_of_birth' => '1985-05-20',
             'gender' => 'F',

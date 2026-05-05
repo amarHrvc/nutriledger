@@ -47,4 +47,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->where('visit', '[0-9]+')
         ->name('patients.visits.show');
 
+    // Global visits list for doctors and admins
+    Route::get('/visits', [VisitController::class, 'globalIndex'])
+        ->name('visits.globalIndex');
+
 });

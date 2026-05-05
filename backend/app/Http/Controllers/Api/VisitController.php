@@ -11,6 +11,27 @@ use Illuminate\Http\JsonResponse;
 
 class VisitController extends ApiController
 {
+    public function globalIndex(): JsonResponse
+    {
+        $this->authorize('globalIndex', Visit::class);
+
+        $today = now()->toDateString();
+
+        $visits = Visit::with(['doctor', 'patient.user'])
+            ->when(auth()->user()->isDoctor(), function ($query) {
+                $query->where('doctor_id', auth()->id());
+            })
+            ->orderByRaw("CASE WHEN date >= '{$today}' THEN 0 ELSE 1 END")
+            ->orderBy('date')
+            ->orderBy('time')
+            ->paginate();
+
+        return $this->paginated(
+            'Visits retrieved successfully.',
+            VisitResource::collection($visits)
+        );
+    }
+
     public function index(Patient $patient): JsonResponse
     {
         $this->authorize('viewAny', [Visit::class, $patient]);
@@ -36,7 +57,7 @@ class VisitController extends ApiController
 
         $this->authorize('view', $visit);
 
-        $visit->load('doctor');
+        $visit->load(['doctor', 'patient.user']);
 
         return $this->ok('Visit retrieved successfully.', [
             'visit' => new VisitResource($visit),
@@ -69,7 +90,7 @@ class VisitController extends ApiController
         $visit->update($request->validated());
 
         return $this->ok('Visit updated successfully.', [
-            'visit' => new VisitResource($visit->load(['patient', 'doctor'])),
+            'visit' => new VisitResource($visit->load(['doctor', 'patient.user'])),
         ]);
     }
 
