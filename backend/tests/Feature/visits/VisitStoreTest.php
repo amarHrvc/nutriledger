@@ -98,3 +98,63 @@ test('visit with future date is allowed', function () {
         'time' => '10:00',
     ]);
 });
+
+test('admin creates visit with valid doctor_id', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+
+    $response = $this->actingAs($admin)->postJson('/api/patients/'.$patient->id.'/visits', [
+        'date' => '2024-01-15',
+        'time' => '14:30',
+        'notes' => 'Admin-created visit with specific doctor',
+        'doctor_id' => $doctor->id,
+    ]);
+
+    $response->assertCreated()
+        ->assertJsonPath('data.visit.attributes.doctorName', $doctor->name);
+
+    $this->assertDatabaseHas('visits', [
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'date' => '2024-01-15',
+        'time' => '14:30',
+    ]);
+});
+
+test('admin without doctor_id defaults to self', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $patient = Patient::factory()->create();
+
+    $response = $this->actingAs($admin)->postJson('/api/patients/'.$patient->id.'/visits', [
+        'date' => '2024-01-15',
+        'time' => '14:30',
+        'notes' => 'Admin-created visit without doctor_id',
+    ]);
+
+    $response->assertCreated()
+        ->assertJsonPath('data.visit.attributes.doctorName', $admin->name);
+
+    $this->assertDatabaseHas('visits', [
+        'patient_id' => $patient->id,
+        'doctor_id' => $admin->id,
+        'date' => '2024-01-15',
+        'time' => '14:30',
+    ]);
+});
+
+test('admin with non-doctor doctor_id returns 422', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $patient = User::factory()->create(['role' => 'pacijent']); // Non-doctor user
+    $targetPatient = Patient::factory()->create();
+
+    $response = $this->actingAs($admin)->postJson('/api/patients/'.$targetPatient->id.'/visits', [
+        'date' => '2024-01-15',
+        'time' => '14:30',
+        'notes' => 'Visit with non-doctor doctor_id',
+        'doctor_id' => $patient->id,
+    ]);
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['doctor_id']);
+});
