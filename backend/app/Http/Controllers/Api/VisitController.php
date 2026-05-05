@@ -68,11 +68,15 @@ class VisitController extends ApiController
     {
         $this->authorize('create', Visit::class);
 
+        $doctorId = (auth()->user()->isAdmin() && $request->filled('doctor_id'))
+            ? (int) $request->doctor_id
+            : auth()->id();
+
         $visit = $patient->visits()->create([
             'date' => $request->date,
             'time' => $request->time,
             'notes' => $request->notes,
-            'doctor_id' => $request->doctor_id ?? auth()->id(),
+            'doctor_id' => $doctorId,
         ]);
 
         return $this->created('Visit created successfully.', [
