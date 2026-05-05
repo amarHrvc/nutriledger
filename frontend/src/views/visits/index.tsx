@@ -132,9 +132,9 @@ export default function VisitsView() {
 					{visits.length > 0 ? (
 						visits.map(v => (
 							<TableRow key={v.id}>
-								<TableCell>{new Date(v.attributes.date).toLocaleDateString()}</TableCell>
+								<TableCell>{new Date(v.attributes.date + 'T00:00:00').toLocaleDateString()}</TableCell>
 								<TableCell>{v.attributes.time}</TableCell>
-								<TableCell>{v.attributes.patientId}</TableCell>
+								<TableCell>{v.attributes.patientName}</TableCell>
 								<TableCell>{v.attributes.doctorName}</TableCell>
 								<TableCell>{v.attributes.notes || '—'}</TableCell>
 								<TableCell align='center'>

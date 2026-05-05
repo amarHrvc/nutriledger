@@ -59,7 +59,7 @@ export default function VisitForm({ patientId, onSuccess, onCancel }: Props) {
 			try {
 				const res = await fetch('/api/patients')
 				const json = await res.json()
-				setPatients(json.data || [])
+				setPatients(json.data.patients || [])
 			} catch (error) {
 				setFormError('Failed to load patients.')
 			} finally {
