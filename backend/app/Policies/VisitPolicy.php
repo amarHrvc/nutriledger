@@ -52,17 +52,25 @@ class VisitPolicy
         return $this->adminOrDoctor($user);
     }
 
+    public function globalIndex(User $user): bool
+    {
+        return $this->adminOrDoctor($user);
+    }
+
     /**
      * Determine whether the user can update the model.
      */
     public function update(User $user, Visit $visit): bool
     {
+        if ($visit->date->toDateString() < now()->subDay()->toDateString()) {
+            return false;
+        }
+
         if ($user->isAdmin()) {
             return true;
         }
 
         return $user->isDoctor() && $user->id === $visit->doctor_id;
-
     }
 
     /**

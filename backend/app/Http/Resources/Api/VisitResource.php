@@ -31,8 +31,12 @@ class VisitResource extends JsonResource
             'id' => (string) $this->id,
             'attributes' => [
                 'date' => $this->date->toDateString(),
+                'time' => $this->time,
                 'notes' => $this->notes,
                 'doctorName' => $this->whenLoaded('doctor', fn () => $this->doctor->name),
+                'patientName' => $this->whenLoaded('patient', fn () => $this->patient->user?->name),
+                'patientId' => $this->whenLoaded('patient', fn () => (string) $this->patient->id),
+                'isEditable' => $this->date->toDateString() >= now()->subDay()->toDateString(),
                 'createdAt' => $this->created_at?->toIso8601String(),
                 'updatedAt' => $this->updated_at?->toIso8601String(),
             ],

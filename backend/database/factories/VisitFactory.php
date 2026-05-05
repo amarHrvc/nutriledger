@@ -22,7 +22,7 @@ class VisitFactory extends Factory
         return [
             'patient_id' => Patient::factory(),
             'doctor_id' => User::factory()->state(['role' => 'doktor']),
-            'date' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'date' => now()->toDateString(),
             'notes' => $this->faker->paragraph(),
         ];
     }

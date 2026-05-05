@@ -572,44 +572,43 @@ export interface UserResource {
   links: UserResourceLinks;
 }
 
-export type VisitResourceAttributes = {
+export interface VisitResourceAttributes {
   date: string;
-  /** @nullable */
+  time: string | null;
   notes: string | null;
-  doctorName?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type VisitResourceRelationshipsPatientData = {
-  type: 'patient';
-  id: string;
-};
-
-export type VisitResourceRelationshipsPatient = {
-  data?: VisitResourceRelationshipsPatientData;
-};
-
-export type VisitResourceRelationshipsDoctorData = {
-  type: 'user';
-  id: string;
-};
-
-export type VisitResourceRelationshipsDoctor = {
-  data?: VisitResourceRelationshipsDoctorData;
-};
-
-export type VisitResourceRelationships = {
-  patient: VisitResourceRelationshipsPatient;
-  doctor: VisitResourceRelationshipsDoctor;
-};
+  doctorName: string | null;
+  patientName: string | null;
+  patientId: string | null;
+  isEditable: boolean;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
 
 export interface VisitResource {
   type: 'visit';
   id: string;
   attributes: VisitResourceAttributes;
-  relationships: VisitResourceRelationships;
+  relationships: {
+    patient: { data?: { type: 'patient'; id: string } };
+    doctor:  { data?: { type: 'user';    id: string } };
+  };
 }
+
+export type VisitsGlobalIndex200 = {
+  message: string;
+  status: 200;
+  data: VisitResource[];
+  meta: PatientsIndex200Meta;
+  links: PatientsIndex200Links;
+};
+
+export type PatientVisitsIndex200 = {
+  message: string;
+  status: 200;
+  data: VisitResource[];
+  meta: PatientsIndex200Meta;
+  links: PatientsIndex200Links;
+};
 
 /**
  * A detailed description of each field that failed validation.
