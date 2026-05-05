@@ -11,6 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property-read int $patient_id
  * @property-read int $doctor_id
  * @property-read Carbon $date
+ * @property-read string|null $time
  * @property-read string|null $notes
  * @property-read ?Carbon $created_at
  * @property-read ?Carbon $updated_at
