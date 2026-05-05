@@ -49,6 +49,7 @@ class VisitController extends ApiController
 
         $visit = $patient->visits()->create([
             'date' => $request->date,
+            'time' => $request->time,
             'notes' => $request->notes,
             'doctor_id' => auth()->id(),
         ]);
