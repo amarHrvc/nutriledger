@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('patients.visits', VisitController::class)
             ->only(['store', 'update']);
         Route::get('/test/admin-doktor-only', fn () => response()->json(['message' => 'ok', 'status' => 200, 'data' => null]));
+        Route::get('/visits', [VisitController::class, 'globalIndex'])->name('visits.index');
     });
 
     Route::middleware('role:admin')->group(function () {
@@ -46,9 +47,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->middleware('auth:sanctum')
         ->where('visit', '[0-9]+')
         ->name('patients.visits.show');
-
-    // Global visits list for doctors and admins
-    Route::get('/visits', [VisitController::class, 'globalIndex'])
-        ->name('visits.globalIndex');
 
 });
