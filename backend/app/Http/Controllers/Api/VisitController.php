@@ -72,7 +72,7 @@ class VisitController extends ApiController
             'date' => $request->date,
             'time' => $request->time,
             'notes' => $request->notes,
-            'doctor_id' => auth()->id(),
+            'doctor_id' => $request->doctor_id ?? auth()->id(),
         ]);
 
         return $this->created('Visit created successfully.', [

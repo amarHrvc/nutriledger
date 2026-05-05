@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Visit;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreVisitRequest extends FormRequest
 {
@@ -27,6 +28,7 @@ class StoreVisitRequest extends FormRequest
             'date' => ['required', 'date'],
             'time' => ['required', 'date_format:H:i'],
             'notes' => ['nullable', 'string', 'max:10000'],
+            'doctor_id' => ['nullable', 'integer', Rule::exists('users', 'id')->where('role', 'doktor')],
         ];
     }
 }
