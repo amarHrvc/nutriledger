@@ -22,6 +22,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class VitalSign extends Model
 {
+    /** Set by VitalSignController::show() to attach previous visit deltas. */
+    public ?VitalSign $previousVitals = null;
+
     protected $fillable = [
         'visit_id',
         'systolic_bp',
