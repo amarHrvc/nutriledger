@@ -106,6 +106,103 @@ ONE COMMIT PER TDD PHASE — RED, GREEN, REFACTOR must be separate atomic commit
 - **REFACTOR**: routes, formatting, docs — `VS-7.3 Register delete route (REFACTOR phase)`
 - Always end commit with: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
 
+### API Response Format (ApiResponses Trait)
+- **ALL** API controllers must use the `ApiResponses` trait for consistent response wrapping
+- Never use raw `response()->json()` — use trait methods instead:
+  - `$this->created(resource, message)` — returns 201 with data wrapper
+  - `$this->ok(resource, message)` — returns 200 with data wrapper
+  - `$this->noContent()` — returns 204
+  - `$this->error(message, code)` — returns error response
+  - `$this->paginated(collection, message)` — returns paginated data
+- Response structure: `{ "message": "...", "status": <code>, "data": {...} }`
+- See `app/Http/Controllers/Api/ApiController.php` and existing controllers for examples
+
+### Authorization & Admin Privileges
+- Three roles: `admin`, `doktor` (doctor), `pacijent` (patient)
+- **Critical Rule: Admins have full system access** unless explicitly documented otherwise
+  - Do NOT restrict admin to only "admin-like" actions
+  - If a doctor can do action X, admin can do action X
+  - If a patient can view Y, admin can view Y
+  - Admins should only be denied access where business logic explicitly requires it (e.g., patient's private data)
+- Example: If `VisitPolicy::create()` allows doctors to create visits, it must also allow admins
+- Use `$user->adminOrDoctor()` or similar helpers to group doctor+admin authorization
+- Apply policies consistently across all endpoints (HTTP controllers, Livewire components, service layer)
+
+### Task Tracking (BD/Beads Requirement)
+- **CRITICAL: ALL task/issue tracking MUST go through `bd` (beads) — NEVER use markdown files, internal plans, or external tracking**
+- Workflow for agents:
+  1. Check `bd ready` to find available work
+  2. Claim task: `bd update <task-id> --claim --json`
+  3. Implement work with atomic commits referencing the bd issue ID
+  4. Close task: `bd close <task-id> --reason "Completed" --json`
+- Every commit message must reference the bd issue (e.g., "feat(visits): VS-3.4 Implement store()")
+- Do NOT create `.copilot/plan.md` or other internal tracking files — use bd exclusively
+- Before pushing changes, verify all work is signed off in bd
+
+### TDD Commit Discipline (CRITICAL)
+- **ONE COMMIT PER TDD PHASE** — RED, GREEN, REFACTOR must be separate atomic commits
+- **RED Phase Commit**: Test file creation
+  - Message: `[TASKID] [TITLE] (RED phase)` — e.g., `VS-7.1 Write failing VisitDeleteTest (7 tests)`
+  - Include: Test file only, all tests failing
+- **GREEN Phase Commit**: Implementation
+  - Message: `[TASKID] [TITLE] (GREEN phase)` — e.g., `VS-7.2 Implement destroy() in VisitController`
+  - Include: Implementation code, all tests passing
+- **REFACTOR Phase Commit**: Route/config cleanup
+  - Message: `[TASKID] [TITLE] (REFACTOR phase)` — e.g., `VS-7.3 Register delete route and verify response format`
+  - Include: Routes, response formatting, documentation updates
+- **Always end with**: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
+- **Why**: Preserves clear history of what was tested (RED) vs implemented (GREEN) vs refactored (REFACTOR)
+- **Lesson**: Commit `7a74c0b` (VS-7.1) mistakenly mixed all 3 phases — future tasks must separate these strictly
+
+### API Endpoint Patterns (Visits Feature — VS-4 through VS-6)
+
+#### List Endpoint (VS-4: GET /api/patients/{patient}/visits)
+- **Route**: Registered outside role middleware to allow patient access (checked via policy)
+- **Authorization**: `$this->authorize('viewAny', [Visit::class, $patient])` 
+  - Doctor/admin can list any patient's visits
+  - Patient restricted to own visits (403 Forbidden if accessing other patient)
+- **Response**: Use `$this->paginated()` trait method with `VisitResource::collection()`
+  - Includes `data`, `meta` (pagination), `links` (navigation)
+- **Eager Loading**: Load `->with('doctor')` to avoid N+1
+- **Ordering**: `orderByDesc('date')->orderByDesc('created_at')` for chronological history
+- **Example**: See `VisitController::index()` (VS-4.2)
+
+#### Show Endpoint (VS-5: GET /api/patients/{patient}/visits/{visit})
+- **Route**: Registered outside role middleware with `where('visit', '[0-9]+')` constraint
+- **Route Scoping**: Manually check `if ($visit->patient_id !== $patient->id) abort(404);` in controller
+  - Ensures visit belongs to patient before authorization check
+  - Returns 404 (not 403) if visit doesn't belong to patient
+- **Authorization**: `$this->authorize('view', $visit)`
+  - Doctor/admin can view any visit
+  - Patient restricted to own visits
+- **Response**: Use `$this->ok()` with wrapped `new VisitResource($visit)`
+- **Eager Loading**: Load `->load('doctor')` before response
+- **Example**: See `VisitController::show()` (VS-5.2)
+
+#### Update Endpoint (VS-6: PATCH /api/patients/{patient}/visits/{visit})
+- **Route**: Registered via `Route::apiResource()` with only `['store', 'update']`
+- **Request Validation**: Use `StoreVisitRequest` for shared validation rules
+  - Validates `date` (required, before_or_equal:today)
+  - Validates `notes` (nullable, max:10000)
+  - Supports partial updates (not all fields required)
+- **Route Scoping**: Manually check `if ($visit->patient_id !== $patient->id) abort(404);`
+- **Authorization**: `$this->authorize('update', $visit)`
+  - Doctor can update own visits only
+  - Admin can update any visit
+  - Patient gets 403
+- **Response**: Use `$this->ok()` with wrapped `new VisitResource($visit->load(['patient', 'doctor']))`
+- **Example**: See `VisitController::update()` (VS-6.3)
+
+#### Testing Pattern (Pest Functional API)
+- **Test File Structure**: Use Pest's `test()` function syntax (not class-based)
+- **Authorization Tests**: Guest (401), wrong role (403), cross-user access (403)
+- **Response Structure**: Verify JSON structure with `->assertJsonStructure()`
+  - List responses include `data` (array of visits) + `meta` + `links`
+  - Single responses include `data` (wrapped visit object)
+- **Route Scoping Tests**: Verify 404 when visit doesn't belong to patient
+- **Empty Data Tests**: Handle empty lists, null notes gracefully
+- **Example**: See `tests/Feature/visits/VisitListTest.php` (VS-4.1) and `VisitShowTest.php` (VS-5.1)
+
 ===
 
 <laravel-boost-guidelines>

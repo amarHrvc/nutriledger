@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "NutriBase API",
-    "description": "## NutriBase API — Guided Demo Journey\n\nThis collection walks through all major features of the NutriBase REST API in a logical sequence. Follow the numbered chapters from top to bottom for a complete demonstration.\n\n---\n\n## Quick Start\n1. Run **1.1 Login as Admin** — token auto-saved to `admin_token`\n2. Run **1.2 Login as Doctor** — token auto-saved to `doctor_token`\n3. Run **1.3 Login as Patient (Marko)** — token auto-saved to `patient_token`\n4. All subsequent requests use saved tokens automatically\n\n---\n\n## Seeded Demo Accounts\n| Role | Email | Password |\n|---|---|---|\n| Admin | hajrovica@gmail.com | Test12345 |\n| Doctor | doctor@nutribase.test | password |\n| Patient — Marko Petrović (patient 15) | marko.petrovic@nutribase.test | password |\n| Patient — Fatima Hadžić (patient 16) | fatima.hadzic@nutribase.test | password |\n| Patient — Stefan Jovanović (patient 17) | stefan.jovanovic@nutribase.test | password |\n| Patient — Lejla Kovačev (patient 18) | lejla.kovacev@nutribase.test | password |\n| Patient — Nermin Bašić (patient 19) | nermin.basic@nutribase.test | password |\n\n---\n\n## Journey Overview\n- **Chapter 1** — Authentication (login, identity, logout)\n- **Chapter 2** — Auto-generated API Documentation (Scramble)\n- **Chapter 3** — User Management (admin CRUD + soft-delete lifecycle)\n- **Chapter 4** — Patient Registry (multi-role access, clinical profiles)\n- **Chapter 5** — Visit Workflow (full CRUD + pagination + scoping)\n- **Chapter 6** — Authorization & Validation (error cases)",
+    "description": "Complete NutriBase REST API collection covering Auth, Users, Patients, and Visits.\n\n## Setup\n1. Import this collection\n2. Run **Login as Admin** first — the test script auto-sets `admin_token`\n3. Run **Login as Doctor** — auto-sets `doctor_token`\n4. Run **Login as Patient (Marko)** — auto-sets `patient_token`\n\n## Seeded demo accounts\n| Role | Email | Password |\n|---|---|---|\n| Admin | hajrovica@gmail.com | Test12345 |\n| Doctor | doctor@nutribase.test | password |\n| Patient — Marko Petrović | marko.petrovic@nutribase.test | password |\n| Patient — Fatima Hadžić | fatima.hadzic@nutribase.test | password |\n| Patient — Stefan Jovanović | stefan.jovanovic@nutribase.test | password |\n| Patient — Lejla Kovačev | lejla.kovacev@nutribase.test | password |\n| Patient — Nermin Bašić | nermin.basic@nutribase.test | password |",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -12,11 +12,10 @@
   ],
   "item": [
     {
-      "name": "Chapter 1 — Authentication",
-      "description": "Establish authenticated sessions for all three roles. Run 1.1–1.3 first — test scripts auto-save tokens to collection variables used by every subsequent request.",
+      "name": "🔐 Auth",
       "item": [
         {
-          "name": "1.1 Login as Admin",
+          "name": "Login as Admin",
           "event": [
             {
               "listen": "test",
@@ -44,7 +43,7 @@
           }
         },
         {
-          "name": "1.2 Login as Doctor",
+          "name": "Login as Doctor",
           "event": [
             {
               "listen": "test",
@@ -72,7 +71,7 @@
           }
         },
         {
-          "name": "1.3 Login as Patient — Marko Petrović",
+          "name": "Login as Patient — Marko",
           "event": [
             {
               "listen": "test",
@@ -100,34 +99,7 @@
           }
         },
         {
-          "name": "1.4 Get Current Identity — Admin",
-          "request": {
-            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{base_url}}/api/user", "host": ["{{base_url}}"], "path": ["api", "user"] }
-          }
-        },
-        {
-          "name": "1.5 Get Current Identity — Doctor",
-          "request": {
-            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{base_url}}/api/user", "host": ["{{base_url}}"], "path": ["api", "user"] }
-          }
-        },
-        {
-          "name": "1.6 Get Current Identity — Patient",
-          "request": {
-            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{base_url}}/api/user", "host": ["{{base_url}}"], "path": ["api", "user"] }
-          }
-        },
-        {
-          "name": "1.7 Login — Invalid Credentials (→ 401)",
+          "name": "Login — Invalid credentials (401)",
           "request": {
             "method": "POST",
             "header": [{ "key": "Accept", "value": "application/json" }],
@@ -140,7 +112,34 @@
           }
         },
         {
-          "name": "1.8 Logout",
+          "name": "GET /api/user — Current user (Admin)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/user", "host": ["{{base_url}}"], "path": ["api", "user"] }
+          }
+        },
+        {
+          "name": "GET /api/user — Current user (Doctor)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/user", "host": ["{{base_url}}"], "path": ["api", "user"] }
+          }
+        },
+        {
+          "name": "GET /api/user — Current user (Patient)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/user", "host": ["{{base_url}}"], "path": ["api", "user"] }
+          }
+        },
+        {
+          "name": "POST /api/logout",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "POST",
@@ -151,35 +150,10 @@
       ]
     },
     {
-      "name": "Chapter 2 — API Documentation (Scramble)",
-      "description": "Auto-generated API documentation powered by Scramble (dedoc/scramble). The UI provides an interactive explorer; the JSON endpoint exposes the full OpenAPI 3.1 spec consumable by any compatible tool (Swagger UI, Redoc, Stoplight, etc.).\n\nOpen 2.1 in a browser to explore the full schema interactively.",
+      "name": "👥 Users (Admin)",
       "item": [
         {
-          "name": "2.1 Interactive API Docs UI (Scramble)",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "text/html" }],
-            "url": { "raw": "{{base_url}}/docs/api", "host": ["{{base_url}}"], "path": ["docs", "api"] },
-            "description": "Opens the Scramble interactive documentation UI. All endpoints, request/response schemas, and authentication requirements are documented automatically from the codebase — no manual spec maintenance required.\n\nOpen this URL in a browser for the full interactive experience."
-          }
-        },
-        {
-          "name": "2.2 OpenAPI Spec (JSON) — Machine-readable",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{base_url}}/docs/api.json", "host": ["{{base_url}}"], "path": ["docs", "api.json"] },
-            "description": "Returns the full OpenAPI 3.1 specification as JSON. Can be imported into Postman, Swagger UI, Redoc, Stoplight, or any OpenAPI-compatible tooling."
-          }
-        }
-      ]
-    },
-    {
-      "name": "Chapter 3 — User Management (Admin)",
-      "description": "Admin-only user CRUD. Demonstrates role-based access, soft-delete lifecycle (delete → restore → force-delete), and role enforcement (patient blocked from listing users).",
-      "item": [
-        {
-          "name": "3.1 List All Users — Admin (includes soft-deleted)",
+          "name": "GET /api/users — List all (Admin sees trashed too)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
             "method": "GET",
@@ -188,7 +162,7 @@
           }
         },
         {
-          "name": "3.2 List All Users — Doctor (active only)",
+          "name": "GET /api/users — List all (Doctor — active only)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "GET",
@@ -197,7 +171,16 @@
           }
         },
         {
-          "name": "3.3 Get Single User — Admin",
+          "name": "GET /api/users/37 — Get Doctor user",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/users/37", "host": ["{{base_url}}"], "path": ["api", "users", "37"] }
+          }
+        },
+        {
+          "name": "GET /api/users/1 — Get Admin user",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
             "method": "GET",
@@ -206,7 +189,7 @@
           }
         },
         {
-          "name": "3.4 Create New Doctor User",
+          "name": "POST /api/users — Create new doctor user",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
             "method": "POST",
@@ -220,7 +203,7 @@
           }
         },
         {
-          "name": "3.5 Update User Name — Admin",
+          "name": "PATCH /api/users/37 — Update Doctor name",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
             "method": "PATCH",
@@ -234,27 +217,25 @@
           }
         },
         {
-          "name": "3.6 Soft-Delete User — Admin",
+          "name": "DELETE /api/users/43 — Soft-delete demo user",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
             "method": "DELETE",
             "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{base_url}}/api/users/43", "host": ["{{base_url}}"], "path": ["api", "users", "43"] },
-            "description": "Soft-deletes the user. Their patient record and socioeconomic data are cascade soft-deleted. Run 3.1 after this to confirm the user still appears for admin (trashed) but not in 3.2 (doctor sees active only)."
+            "url": { "raw": "{{base_url}}/api/users/43", "host": ["{{base_url}}"], "path": ["api", "users", "43"] }
           }
         },
         {
-          "name": "3.7 Restore Soft-Deleted User — Admin",
+          "name": "POST /api/users/43/restore — Restore soft-deleted user",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
             "method": "POST",
             "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{base_url}}/api/users/43/restore", "host": ["{{base_url}}"], "path": ["api", "users", "43", "restore"] },
-            "description": "Restores the user and cascade-restores their patient + socioeconomic records."
+            "url": { "raw": "{{base_url}}/api/users/43/restore", "host": ["{{base_url}}"], "path": ["api", "users", "43", "restore"] }
           }
         },
         {
-          "name": "3.8 Force-Delete User Permanently — Admin",
+          "name": "DELETE /api/users/43/force — Permanently delete user",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
             "method": "DELETE",
@@ -263,7 +244,7 @@
           }
         },
         {
-          "name": "3.9 Patient Tries to List Users (→ 403)",
+          "name": "GET /api/users — Patient tries to list users (403)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
             "method": "GET",
@@ -274,11 +255,10 @@
       ]
     },
     {
-      "name": "Chapter 4 — Patient Registry",
-      "description": "Patient management with multi-role access control. Each of the 5 demo patients has a distinct clinical scenario. Demonstrates policy-scoped list (patient sees only self), cross-patient access blocking, create with socioeconomic data, and soft-delete cascade.",
+      "name": "🏥 Patients",
       "item": [
         {
-          "name": "4.1 List All Patients — Admin",
+          "name": "GET /api/patients — List all (Admin)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
             "method": "GET",
@@ -287,7 +267,7 @@
           }
         },
         {
-          "name": "4.2 List All Patients — Doctor",
+          "name": "GET /api/patients — List (Doctor)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "GET",
@@ -296,17 +276,16 @@
           }
         },
         {
-          "name": "4.3 List Patients — Patient Sees Only Self",
+          "name": "GET /api/patients — Patient sees only self",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
             "method": "GET",
             "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] },
-            "description": "Same endpoint as 4.1 and 4.2. Policy filters the query to return only Marko's own record — 1 result instead of 5."
+            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] }
           }
         },
         {
-          "name": "4.4 View Patient 15 — Marko Petrović (Obesity + Hypertension, 11 Visits)",
+          "name": "GET /api/patients/15 — Marko Petrović (obesity + hypertension)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "GET",
@@ -315,7 +294,7 @@
           }
         },
         {
-          "name": "4.5 View Patient 16 — Fatima Hadžić (Type 2 Diabetes, 10 Visits)",
+          "name": "GET /api/patients/16 — Fatima Hadžić (type 2 diabetes)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "GET",
@@ -324,7 +303,7 @@
           }
         },
         {
-          "name": "4.6 View Patient 17 — Stefan Jovanović (Anorexia Recovery, 9 Visits)",
+          "name": "GET /api/patients/17 — Stefan Jovanović (anorexia recovery)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "GET",
@@ -333,7 +312,7 @@
           }
         },
         {
-          "name": "4.7 View Patient 18 — Lejla Kovačev (Post-Bariatric, 2 Visits)",
+          "name": "GET /api/patients/18 — Lejla Kovačev (post-bariatric)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "GET",
@@ -342,7 +321,7 @@
           }
         },
         {
-          "name": "4.8 View Patient 19 — Nermin Bašić (CKD Stage 3, No Visits)",
+          "name": "GET /api/patients/19 — Nermin Bašić (CKD, no visits)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "GET",
@@ -351,7 +330,7 @@
           }
         },
         {
-          "name": "4.9 Create New Patient with Socioeconomic Data",
+          "name": "POST /api/patients — Create new patient (links to user 43)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "POST",
@@ -361,12 +340,11 @@
               "raw": "{\n  \"user_id\": 43,\n  \"first_name\": \"Demo\",\n  \"last_name\": \"NewPatient\",\n  \"date_of_birth\": \"1990-05-15\",\n  \"gender\": \"F\",\n  \"phone\": \"+387 61 000 001\",\n  \"address\": \"Titova 1\",\n  \"city\": \"Sarajevo\",\n  \"postal_code\": \"71000\",\n  \"emergency_contact_name\": \"Emergency Contact\",\n  \"emergency_contact_phone\": \"+387 61 000 002\",\n  \"blood_type\": \"O+\",\n  \"allergies\": \"None known\",\n  \"medical_notes\": \"New intake. Initial assessment pending.\",\n  \"socioeconomic\": {\n    \"marital_status\": \"single\",\n    \"employment_status\": \"employed_full_time\",\n    \"income_level\": \"middle\",\n    \"has_health_insurance\": true,\n    \"smoking_status\": \"never\",\n    \"alcohol_consumption\": \"occasional\",\n    \"physical_activity_level\": \"moderately_active\",\n    \"food_security_status\": \"food_secure\"\n  }\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] },
-            "description": "Creates patient profile and socioeconomic record atomically in a single DB transaction."
+            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] }
           }
         },
         {
-          "name": "4.10 Update Patient Medical Notes + Socioeconomic — Doctor",
+          "name": "PATCH /api/patients/19 — Update Nermin's medical notes",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "PATCH",
@@ -380,7 +358,16 @@
           }
         },
         {
-          "name": "4.11 Patient Views Own Profile (→ 200)",
+          "name": "DELETE /api/patients/19 — Soft-delete Nermin (no visits, safe to delete)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/19", "host": ["{{base_url}}"], "path": ["api", "patients", "19"] }
+          }
+        },
+        {
+          "name": "GET /api/patients/15 — Patient views own profile (allowed)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
             "method": "GET",
@@ -389,42 +376,30 @@
           }
         },
         {
-          "name": "4.12 Patient Accesses Another Patient's Profile (→ 403)",
+          "name": "GET /api/patients/16 — Patient accesses another patient (403)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
             "method": "GET",
             "header": [{ "key": "Accept", "value": "application/json" }],
             "url": { "raw": "{{base_url}}/api/patients/16", "host": ["{{base_url}}"], "path": ["api", "patients", "16"] }
           }
-        },
-        {
-          "name": "4.13 Soft-Delete Patient — Admin (cascades to socioeconomic)",
-          "request": {
-            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
-            "method": "DELETE",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{base_url}}/api/patients/19", "host": ["{{base_url}}"], "path": ["api", "patients", "19"] },
-            "description": "Nermin has no visits, making him safe to delete for demo purposes. Soft-delete cascades to his patient_socioeconomic record."
-          }
         }
       ]
     },
     {
-      "name": "Chapter 5 — Visit Workflow",
-      "description": "Full visit lifecycle across multiple patients. Demonstrates: paginated visit history, single visit retrieval, create, update, delete, patient self-access, cross-patient scoping (404), and cross-patient access blocking (403).",
+      "name": "📋 Visits — Marko Petrović (patient 15, 11 visits)",
       "item": [
         {
-          "name": "5.1 List Marko's Visit History — Doctor (Paginated, 11 Visits)",
+          "name": "GET /api/patients/15/visits — Full visit history (paginated)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "GET",
             "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{base_url}}/api/patients/15/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "15", "visits"] },
-            "description": "Returns paginated visit history ordered newest-first. Response includes data[], meta (pagination), and links (navigation)."
+            "url": { "raw": "{{base_url}}/api/patients/15/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "15", "visits"] }
           }
         },
         {
-          "name": "5.2 List Marko's Visits — Patient Views Own History",
+          "name": "GET /api/patients/15/visits — Patient views own visits",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
             "method": "GET",
@@ -433,7 +408,7 @@
           }
         },
         {
-          "name": "5.3 Show Single Visit — Marko Visit 11",
+          "name": "GET /api/patients/15/visits/11 — Show specific visit",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "GET",
@@ -442,7 +417,7 @@
           }
         },
         {
-          "name": "5.4 Create New Visit for Marko — Doctor",
+          "name": "POST /api/patients/15/visits — Create new visit",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "POST",
@@ -456,7 +431,7 @@
           }
         },
         {
-          "name": "5.5 Update Visit Notes — Doctor Amends Visit 11",
+          "name": "PATCH /api/patients/15/visits/11 — Update visit notes",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "PATCH",
@@ -470,7 +445,7 @@
           }
         },
         {
-          "name": "5.6 Delete Visit — Doctor Removes Visit 10",
+          "name": "DELETE /api/patients/15/visits/10 — Delete visit",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "DELETE",
@@ -479,7 +454,21 @@
           }
         },
         {
-          "name": "5.7 List Fatima's Visits — Admin (10 Visits, Diabetes Tracking)",
+          "name": "GET /api/patients/16/visits/11 — Wrong patient scoping (404)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/16/visits/11", "host": ["{{base_url}}"], "path": ["api", "patients", "16", "visits", "11"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Visits — Fatima Hadžić (patient 16, 10 visits)",
+      "item": [
+        {
+          "name": "GET /api/patients/16/visits — Full history (Admin)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
             "method": "GET",
@@ -488,7 +477,16 @@
           }
         },
         {
-          "name": "5.8 Create Diabetes Follow-up Visit for Fatima — Doctor",
+          "name": "GET /api/patients/16/visits/21 — Show visit",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/16/visits/21", "host": ["{{base_url}}"], "path": ["api", "patients", "16", "visits", "21"] }
+          }
+        },
+        {
+          "name": "POST /api/patients/16/visits — New diabetes follow-up",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "POST",
@@ -502,7 +500,21 @@
           }
         },
         {
-          "name": "5.9 List Stefan's Visits — Anorexia Recovery Tracking (9 Visits)",
+          "name": "GET /api/patients/16/visits — Marko (patient) tries to access Fatima's visits (403)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/16/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "16", "visits"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Visits — Stefan Jovanović (patient 17, 9 visits)",
+      "item": [
+        {
+          "name": "GET /api/patients/17/visits — Anorexia recovery tracking history",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "GET",
@@ -511,7 +523,21 @@
           }
         },
         {
-          "name": "5.10 List Lejla's Visits — Post-Bariatric Follow-up (2 Visits)",
+          "name": "GET /api/patients/17/visits/30 — Show most recent visit",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/patients/17/visits/30", "host": ["{{base_url}}"], "path": ["api", "patients", "17", "visits", "30"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Visits — Lejla Kovačev (patient 18, 2 visits)",
+      "item": [
+        {
+          "name": "GET /api/patients/18/visits — Post-bariatric follow-up history",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "GET",
@@ -520,33 +546,21 @@
           }
         },
         {
-          "name": "5.11 Wrong Patient Scoping — Visit 11 Requested Under Patient 16 (→ 404)",
+          "name": "GET /api/patients/18/visits/32 — Show visit",
           "request": {
-            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
             "method": "GET",
             "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{base_url}}/api/patients/16/visits/11", "host": ["{{base_url}}"], "path": ["api", "patients", "16", "visits", "11"] },
-            "description": "Visit 11 belongs to patient 15 (Marko). Requesting it under patient 16 (Fatima) returns 404 — not 403. The visit exists but the URL scope is wrong."
-          }
-        },
-        {
-          "name": "5.12 Patient Tries to Access Another Patient's Visits (→ 403)",
-          "request": {
-            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
-            "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{base_url}}/api/patients/16/visits", "host": ["{{base_url}}"], "path": ["api", "patients", "16", "visits"] },
-            "description": "Marko (patient_token) tries to list Fatima's visits. Policy returns 403 — authenticated but not authorised."
+            "url": { "raw": "{{base_url}}/api/patients/18/visits/32", "host": ["{{base_url}}"], "path": ["api", "patients", "18", "visits", "32"] }
           }
         }
       ]
     },
     {
-      "name": "Chapter 6 — Authorization & Validation",
-      "description": "Negative path coverage. Demonstrates consistent error responses: 401 (unauthenticated), 403 (forbidden by role/policy), 404 (not found), 422 (validation failure). All error shapes follow the same ApiResponses envelope.",
+      "name": "🚦 Authorization & Error Cases",
       "item": [
         {
-          "name": "6.1 No Token — GET /api/patients (→ 401)",
+          "name": "No token — GET /api/patients (401)",
           "request": {
             "method": "GET",
             "header": [{ "key": "Accept", "value": "application/json" }],
@@ -554,7 +568,7 @@
           }
         },
         {
-          "name": "6.2 No Token — GET /api/users (→ 401)",
+          "name": "No token — GET /api/users (401)",
           "request": {
             "method": "GET",
             "header": [{ "key": "Accept", "value": "application/json" }],
@@ -562,7 +576,7 @@
           }
         },
         {
-          "name": "6.3 Patient Creates a Visit — Role Forbidden (→ 403)",
+          "name": "Patient creates a visit (403 — only doctors/admins allowed)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{patient_token}}" }] },
             "method": "POST",
@@ -576,7 +590,7 @@
           }
         },
         {
-          "name": "6.4 Create Visit with Future Date — Business Rule Violation (→ 422)",
+          "name": "Create visit with future date (422 validation error)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "POST",
@@ -590,7 +604,7 @@
           }
         },
         {
-          "name": "6.5 Create Patient — Missing Required Fields (→ 422)",
+          "name": "Create patient — missing required fields (422 validation)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "POST",
@@ -604,12 +618,43 @@
           }
         },
         {
-          "name": "6.6 Non-Existent Patient (→ 404)",
+          "name": "GET /api/patients/99999 — Non-existent patient (404)",
           "request": {
             "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
             "method": "GET",
             "header": [{ "key": "Accept", "value": "application/json" }],
             "url": { "raw": "{{base_url}}/api/patients/99999", "host": ["{{base_url}}"], "path": ["api", "patients", "99999"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛠 Utilities",
+      "item": [
+        {
+          "name": "GET /api/ping",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/ping", "host": ["{{base_url}}"], "path": ["api", "ping"] }
+          }
+        },
+        {
+          "name": "GET /api/test/admin-only (admin role gate)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/test/admin-only", "host": ["{{base_url}}"], "path": ["api", "test", "admin-only"] }
+          }
+        },
+        {
+          "name": "GET /api/test/admin-doktor-only (admin+doctor gate)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{doctor_token}}" }] },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/test/admin-doktor-only", "host": ["{{base_url}}"], "path": ["api", "test", "admin-doktor-only"] }
           }
         }
       ]

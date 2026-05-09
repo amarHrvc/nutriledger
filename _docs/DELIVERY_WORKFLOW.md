@@ -13,7 +13,7 @@ development happens. Work done here is never submitted anywhere directly. Instea
 
 | Track | Destination repo | Paths included | Push style |
 |---|---|---|---|
-| SE | `se-origin` (`nutribase-se`) | `backend/` only | `be-delivery` branch → PR → `main` |
+| SE | `se-origin` (`nutribase-se`) | `backend/` + `frontend/` | `be-delivery` branch → PR → `main` |
 | SD | `sd-origin` (`nutri-ledger` public) | `backend/` + `frontend/` + `_sd/README.md` as root `README.md` | Direct push → `sd-origin/main` |
 
 ```
@@ -279,6 +279,11 @@ sd-origin root
 │   ├── composer.json
 │   └── ...
 ├── frontend/         ← React SPA
+│   ├── src/
+│   ├── package.json
+│   └── ...
+└── README.md         ← SD only: sourced from _sd/README.md in NL
+                        SE: backend/README.md serves as the BE README
 └── README.md         ← sourced from _sd/README.md in NL
 ```
 

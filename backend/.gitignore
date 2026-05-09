@@ -189,3 +189,4 @@ storage/phpstan/
 
 .idea
 .idea/**
+database.sqlite
