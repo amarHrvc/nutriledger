@@ -1,0 +1,5 @@
+     - Create middleware for role checking
+     - Add Authenticated event listener in FortifyServiceProvider for role-based redirects
+     - Enable and modify registration to set default role as 'pacijent'
+     - Create admin interface for user management (doctors/admins creation)
+     - Define route groups with role middleware protection

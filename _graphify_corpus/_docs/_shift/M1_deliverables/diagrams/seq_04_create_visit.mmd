@@ -1,0 +1,29 @@
+---
+title: Sequence 4 - POST /api/patients/{patient}/visits (Create Visit)
+---
+sequenceDiagram
+    actor Client as Doctor Client
+    participant API as Laravel API
+    participant MW as Auth + Role Middleware
+    participant Policy as VisitPolicy
+    participant Service as VisitService
+    participant DB as Database
+
+    Client->>API: POST /api/patients/{patient}/visits {date, notes}
+    API->>MW: Verify Sanctum token
+    MW-->>API: Authenticated
+    API->>API: Resolve Patient via route model binding
+    API->>Policy: authorize('create', [Visit, patient])
+    alt pacijent attempts to create visit
+        Policy-->>API: Denied
+        API-->>Client: 403 Forbidden
+    else doktor or admin
+        Policy-->>API: Allowed
+        API->>Service: createVisit(patient, authenticatedDoctor, validatedData)
+        Service->>DB: INSERT INTO visits {patient_id, doctor_id, date, notes}
+        DB-->>Service: Visit record
+        Service->>DB: SELECT user where id = doctor_id
+        DB-->>Service: Doctor user
+        Service-->>API: Visit with doctor
+        API-->>Client: 201 VisitResource JSON
+    end

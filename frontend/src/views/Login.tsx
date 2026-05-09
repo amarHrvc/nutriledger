@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 // MUI Imports
+import Alert from '@mui/material/Alert'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { styled, useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
@@ -15,7 +16,6 @@ import InputAdornment from '@mui/material/InputAdornment'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import Divider from '@mui/material/Divider'
 
 // Third-party Imports
 import classnames from 'classnames'
@@ -59,9 +59,20 @@ const MaskImg = styled('img')({
   zIndex: -1
 })
 
-const LoginV2 = ({ mode }: { mode: SystemMode }) => {
+type Props = {
+  mode: SystemMode
+  callbackUrl?: string
+}
+
+const LoginV2 = ({ mode, callbackUrl }: Props) => {
   // States
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [serverError, setServerError] = useState('')
   const [isPasswordShown, setIsPasswordShown] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Vars
   const darkImg = '/images/pages/auth-mask-dark.png'
@@ -87,6 +98,64 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
   )
 
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
+
+  const validate = (): boolean => {
+    setEmailError('')
+    setPasswordError('')
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (email.trim() === '' || !emailRegex.test(email.trim())) {
+      setEmailError('Please enter a valid email address.')
+
+      return false
+    }
+
+    if (password === '') {
+      setPasswordError('Password is required.')
+
+      return false
+    }
+
+    return true
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault()
+    setServerError('')
+
+    if (!validate()) {
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: email.trim(), password })
+      })
+
+      if (!response.ok) {
+        const json = await response.json()
+
+        setServerError(json.message)
+
+        return
+      }
+
+      const destination = callbackUrl?.startsWith('/dashboard') ? callbackUrl : '/dashboard/home'
+
+      router.push(destination)
+    } catch {
+      setServerError('Unable to reach the server. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <div className='flex bs-full justify-center'>
@@ -116,22 +185,32 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
             <Typography variant='h4'>{`Welcome to ${themeConfig.templateName}! 👋🏻`}</Typography>
             <Typography>Please sign-in to your account and start the adventure</Typography>
           </div>
-          <form
-            noValidate
-            autoComplete='off'
-            onSubmit={e => {
-              e.preventDefault()
-              router.push('/')
-            }}
-            className='flex flex-col gap-5'
-          >
-            <CustomTextField autoFocus fullWidth label='Email or Username' placeholder='Enter your email or username' />
+          {serverError && (
+            <Alert severity='error' onClose={() => setServerError('')}>
+              {serverError}
+            </Alert>
+          )}
+          <form noValidate autoComplete='off' onSubmit={handleSubmit} className='flex flex-col gap-5'>
+            <CustomTextField
+              autoFocus
+              fullWidth
+              label='Email'
+              placeholder='Enter your email'
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              error={Boolean(emailError)}
+              helperText={emailError}
+            />
             <CustomTextField
               fullWidth
               label='Password'
               placeholder='············'
               id='outlined-adornment-password'
+              value={password}
+              onChange={e => setPassword(e.target.value)}
               type={isPasswordShown ? 'text' : 'password'}
+              error={Boolean(passwordError)}
+              helperText={passwordError}
               slotProps={{
                 input: {
                   endAdornment: (
@@ -150,30 +229,9 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
                 Forgot password?
               </Typography>
             </div>
-            <Button fullWidth variant='contained' type='submit'>
+            <Button fullWidth variant='contained' type='submit' disabled={isSubmitting}>
               Login
             </Button>
-            <div className='flex justify-center items-center flex-wrap gap-2'>
-              <Typography>New on our platform?</Typography>
-              <Typography component={Link} color='primary.main'>
-                Create an account
-              </Typography>
-            </div>
-            <Divider className='gap-2 text-textPrimary'>or</Divider>
-            <div className='flex justify-center items-center gap-1.5'>
-              <IconButton className='text-facebook' size='small'>
-                <i className='tabler-brand-facebook-filled' />
-              </IconButton>
-              <IconButton className='text-twitter' size='small'>
-                <i className='tabler-brand-twitter-filled' />
-              </IconButton>
-              <IconButton className='text-textPrimary' size='small'>
-                <i className='tabler-brand-github-filled' />
-              </IconButton>
-              <IconButton className='text-error' size='small'>
-                <i className='tabler-brand-google-filled' />
-              </IconButton>
-            </div>
           </form>
         </div>
       </div>
