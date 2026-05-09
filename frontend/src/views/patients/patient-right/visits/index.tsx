@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
@@ -145,14 +146,24 @@ export default function VisitsTab({ patient }: { patient: PatientResource }) {
 										<TableCell>{visit.attributes.doctorName || '—'}</TableCell>
 										<TableCell>{visit.attributes.notes || '—'}</TableCell>
 										<TableCell align='right'>
-											<Button
-												size='small'
-												variant='outlined'
-												onClick={() => handleEditClick(visit)}
-												disabled={!visit.attributes.isEditable}
-											>
-												Edit
-											</Button>
+											<Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+												<Button
+													size='small'
+													variant='outlined'
+													component={Link}
+													href={`/dashboard/visits/${visit.id}?patient=${patient.id}`}
+												>
+													View
+												</Button>
+												<Button
+													size='small'
+													variant='outlined'
+													onClick={() => handleEditClick(visit)}
+													disabled={!visit.attributes.isEditable}
+												>
+													Edit
+												</Button>
+											</Box>
 										</TableCell>
 									</TableRow>
 								))}

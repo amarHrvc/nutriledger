@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 import {
 	Box,
 	Button,
@@ -138,14 +139,24 @@ export default function VisitsView() {
 								<TableCell>{v.attributes.doctorName}</TableCell>
 								<TableCell>{v.attributes.notes || '—'}</TableCell>
 								<TableCell align='center'>
-									<Button
-										size='small'
-										variant='outlined'
-										onClick={() => handleEditVisit(v)}
-										disabled={!v.attributes.isEditable}
-									>
-										Edit
-									</Button>
+									<Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+										<Button
+											size='small'
+											variant='outlined'
+											component={Link}
+											href={`/dashboard/visits/${v.id}?patient=${v.attributes.patientId}`}
+										>
+											View
+										</Button>
+										<Button
+											size='small'
+											variant='outlined'
+											onClick={() => handleEditVisit(v)}
+											disabled={!v.attributes.isEditable}
+										>
+											Edit
+										</Button>
+									</Box>
 								</TableCell>
 							</TableRow>
 						))
