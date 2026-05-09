@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
  * @property int $patient_id
  * @property int $doctor_id
  * @property Carbon $date
+ * @property string|null $time
  * @property string|null $notes
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -28,6 +29,7 @@ class Visit extends Model
         'patient_id',
         'doctor_id',
         'date',
+        'time',
         'notes',
     ];
 
@@ -35,6 +37,7 @@ class Visit extends Model
     {
         return [
             'date' => 'date:Y-m-d',
+            'time' => 'string',
         ];
     }
 

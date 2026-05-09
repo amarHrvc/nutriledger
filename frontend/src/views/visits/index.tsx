@@ -1,64 +1,237 @@
-"use client";
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Typography, List, ListItem, ListItemText, CircularProgress, Alert } from '@mui/material';
+'use client'
+
+import React, { useEffect, useState } from 'react'
+import {
+	Box,
+	Button,
+	Chip,
+	CircularProgress,
+	Alert,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Paper,
+	Toolbar,
+	Typography,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+} from '@mui/material'
+
+import VisitForm from './VisitForm'
+import VisitEditForm from './VisitEditForm'
+import type { VisitResource } from '@/api/generated/nutriBaseAPI.schemas'
+
+interface ApiResponse {
+	data: VisitResource[]
+	meta?: {
+		current_page: number
+		total: number
+	}
+}
 
 export default function VisitsView() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [visits, setVisits] = useState<any[] | null>(null);
+	const [loading, setLoading] = useState(true)
+	const [error, setError] = useState<string | null>(null)
+	const [visits, setVisits] = useState<VisitResource[]>([])
+	const [formOpen, setFormOpen] = useState(false)
+	const [editOpen, setEditOpen] = useState(false)
+	const [selectedVisit, setSelectedVisit] = useState<VisitResource | null>(null)
 
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const res = await fetch('http://localhost:8000/api/visits', { method: 'GET' });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json = await res.json();
-        if (mounted) setVisits(Array.isArray(json) ? json : json?.data ?? json ?? []);
-      } catch (e) {
-        if (mounted) setError(String(e));
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+	const fetchVisits = async () => {
+		try {
+			setLoading(true)
+			setError(null)
+			const res = await fetch('/api/visits')
+			if (!res.ok) {
+				throw new Error(`HTTP ${res.status}`)
+			}
+			const json: ApiResponse = await res.json()
+			setVisits(json.data || [])
+		} catch (e) {
+			setError(String(e))
+		} finally {
+			setLoading(false)
+		}
+	}
 
-  return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Visits
-        </Typography>
-        {loading && <CircularProgress />}
-        {error && <Alert severity="error">{error}</Alert>}
-        {!loading && !error && (
-          <List>
-            {visits && visits.length > 0 ? (
-              visits.map((v: any, i: number) => (
-                <ListItem key={v.id ?? i} divider>
-                  <ListItemText
-                    primary={v?.title ?? (v?.type ?? 'Visit') + (v?.date ? ` — ${new Date(v.date).toLocaleString()}` : '')}
-                    secondary={
-                      <>
-                        {v?.patient?.name ? <span>Patient: {v.patient.name}</span> : null}
-                        {v?.doctor?.name ? <span> — Doctor: {v.doctor.name}</span> : null}
-                        {v?.notes ? <div>{v.notes}</div> : null}
-                      </>
-                    }
-                  />
-                </ListItem>
-              ))
-            ) : (
-              <ListItem>
-                <ListItemText primary="No visits found or the backend endpoint is unavailable." />
-              </ListItem>
-            )}
-          </List>
-        )}
-      </CardContent>
-    </Card>
-  );
+	useEffect(() => {
+		fetchVisits()
+
+		const handleRefresh = () => {
+			fetchVisits()
+		}
+
+		window.addEventListener('visits:changed', handleRefresh)
+		return () => {
+			window.removeEventListener('visits:changed', handleRefresh)
+		}
+	}, [])
+
+	const today = new Date().toISOString().split('T')[0]
+	const upcoming = visits
+		.filter(v => v.attributes.date >= today)
+		.sort((a, b) => {
+			const dateCompare = a.attributes.date.localeCompare(b.attributes.date)
+			if (dateCompare !== 0) return dateCompare
+			const aTime = a.attributes.time || '00:00'
+			const bTime = b.attributes.time || '00:00'
+			return aTime.localeCompare(bTime)
+		})
+
+	const past = visits
+		.filter(v => v.attributes.date < today)
+		.sort((a, b) => b.attributes.date.localeCompare(a.attributes.date))
+
+	const handleAddVisit = () => {
+		setFormOpen(true)
+	}
+
+	const handleEditVisit = (visit: VisitResource) => {
+		setSelectedVisit(visit)
+		setEditOpen(true)
+	}
+
+	const handleFormClose = () => {
+		setFormOpen(false)
+	}
+
+	const handleEditClose = () => {
+		setEditOpen(false)
+		setSelectedVisit(null)
+	}
+
+	const handleFormSuccess = () => {
+		setFormOpen(false)
+		fetchVisits()
+	}
+
+	const handleEditSuccess = () => {
+		setEditOpen(false)
+		setSelectedVisit(null)
+		fetchVisits()
+	}
+
+	const VisitsTable = ({ visits }: { visits: VisitResource[] }) => (
+		<TableContainer component={Paper}>
+			<Table>
+				<TableHead>
+					<TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+						<TableCell>Date</TableCell>
+						<TableCell>Time</TableCell>
+						<TableCell>Patient</TableCell>
+						<TableCell>Doctor</TableCell>
+						<TableCell>Notes</TableCell>
+						<TableCell align='center'>Action</TableCell>
+					</TableRow>
+				</TableHead>
+				<TableBody>
+					{visits.length > 0 ? (
+						visits.map(v => (
+							<TableRow key={v.id}>
+								<TableCell>{new Date(v.attributes.date + 'T00:00:00').toLocaleDateString()}</TableCell>
+								<TableCell>{v.attributes.time}</TableCell>
+								<TableCell>{v.attributes.patientName}</TableCell>
+								<TableCell>{v.attributes.doctorName}</TableCell>
+								<TableCell>{v.attributes.notes || '—'}</TableCell>
+								<TableCell align='center'>
+									<Button
+										size='small'
+										variant='outlined'
+										onClick={() => handleEditVisit(v)}
+										disabled={!v.attributes.isEditable}
+									>
+										Edit
+									</Button>
+								</TableCell>
+							</TableRow>
+						))
+					) : (
+						<TableRow>
+							<TableCell colSpan={6} align='center'>
+								No visits
+							</TableCell>
+						</TableRow>
+					)}
+				</TableBody>
+			</Table>
+		</TableContainer>
+	)
+
+	return (
+		<Box sx={{ p: 3 }}>
+			{/* Toolbar */}
+			<Toolbar disableGutters sx={{ mb: 3 }}>
+				<Typography variant='h5' sx={{ flexGrow: 1 }}>
+					Visits
+				</Typography>
+				<Button variant='contained' onClick={handleAddVisit} disabled={loading}>
+					Add Visit
+				</Button>
+			</Toolbar>
+
+			{/* Error state */}
+			{error && <Alert severity='error' sx={{ mb: 3 }}>{error}</Alert>}
+
+			{/* Loading state */}
+			{loading && <CircularProgress />}
+
+			{/* Visits content */}
+			{!loading && !error && (
+				<Box>
+					{/* Upcoming visits section */}
+					{upcoming.length > 0 && (
+						<Box sx={{ mb: 4 }}>
+							<Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+								<Chip label='Upcoming' color='primary' variant='filled' />
+							</Box>
+							<VisitsTable visits={upcoming} />
+						</Box>
+					)}
+
+					{/* Past visits section */}
+					{past.length > 0 && (
+						<Box>
+							<Typography variant='h6' sx={{ mb: 2 }}>
+								Past Visits
+							</Typography>
+							<VisitsTable visits={past} />
+						</Box>
+					)}
+
+					{/* No visits state */}
+					{upcoming.length === 0 && past.length === 0 && (
+						<Alert severity='info'>No visits found.</Alert>
+					)}
+				</Box>
+			)}
+
+			{/* Add Visit Dialog */}
+			<Dialog open={formOpen} onClose={handleFormClose} maxWidth='sm' fullWidth>
+				<DialogTitle>Create New Visit</DialogTitle>
+				<DialogContent sx={{ pt: 2 }}>
+					<VisitForm onSuccess={handleFormSuccess} onCancel={handleFormClose} />
+				</DialogContent>
+			</Dialog>
+
+			{/* Edit Visit Dialog */}
+			{selectedVisit && (
+				<Dialog open={editOpen} onClose={handleEditClose} maxWidth='sm' fullWidth>
+					<DialogTitle>Edit Visit</DialogTitle>
+					<DialogContent sx={{ pt: 2 }}>
+						<VisitEditForm
+							visit={selectedVisit}
+							patientId={selectedVisit.attributes.patientId || ''}
+							onSuccess={handleEditSuccess}
+							onCancel={handleEditClose}
+						/>
+					</DialogContent>
+				</Dialog>
+			)}
+		</Box>
+	)
 }
+

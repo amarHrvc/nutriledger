@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Visit;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreVisitRequest extends FormRequest
 {
@@ -24,15 +25,10 @@ class StoreVisitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'date' => ['required', 'date', 'before_or_equal:today'],
+            'date' => ['required', 'date'],
+            'time' => ['required', 'date_format:H:i'],
             'notes' => ['nullable', 'string', 'max:10000'],
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'date.before_or_equal' => 'The visit date cannot be in the future.',
+            'doctor_id' => ['nullable', 'integer', Rule::exists('users', 'id')->where('role', 'doktor')],
         ];
     }
 }

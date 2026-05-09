@@ -11,6 +11,27 @@ use Illuminate\Http\JsonResponse;
 
 class VisitController extends ApiController
 {
+    public function globalIndex(): JsonResponse
+    {
+        $this->authorize('globalIndex', Visit::class);
+
+        $today = now()->toDateString();
+
+        $visits = Visit::with(['doctor', 'patient.user'])
+            ->when(auth()->user()->isDoctor(), function ($query) {
+                $query->where('doctor_id', auth()->id());
+            })
+            ->orderByRaw("CASE WHEN date >= '{$today}' THEN 0 ELSE 1 END")
+            ->orderBy('date')
+            ->orderBy('time')
+            ->paginate();
+
+        return $this->paginated(
+            'Visits retrieved successfully.',
+            VisitResource::collection($visits)
+        );
+    }
+
     public function index(Patient $patient): JsonResponse
     {
         $this->authorize('viewAny', [Visit::class, $patient]);
@@ -36,7 +57,7 @@ class VisitController extends ApiController
 
         $this->authorize('view', $visit);
 
-        $visit->load('doctor');
+        $visit->load(['doctor', 'patient.user']);
 
         return $this->ok('Visit retrieved successfully.', [
             'visit' => new VisitResource($visit),
@@ -47,10 +68,15 @@ class VisitController extends ApiController
     {
         $this->authorize('create', Visit::class);
 
+        $doctorId = (auth()->user()->isAdmin() && $request->filled('doctor_id'))
+            ? (int) $request->doctor_id
+            : auth()->id();
+
         $visit = $patient->visits()->create([
             'date' => $request->date,
+            'time' => $request->time,
             'notes' => $request->notes,
-            'doctor_id' => auth()->id(),
+            'doctor_id' => $doctorId,
         ]);
 
         return $this->created('Visit created successfully.', [
@@ -68,7 +94,7 @@ class VisitController extends ApiController
         $visit->update($request->validated());
 
         return $this->ok('Visit updated successfully.', [
-            'visit' => new VisitResource($visit->load(['patient', 'doctor'])),
+            'visit' => new VisitResource($visit->load(['doctor', 'patient.user'])),
         ]);
     }
 

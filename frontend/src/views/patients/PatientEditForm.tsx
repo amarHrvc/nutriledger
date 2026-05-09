@@ -13,6 +13,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 
 import type { PatientResource } from '@/api/generated/nutriBaseAPI.schemas'
@@ -95,164 +96,179 @@ export default function PatientEditForm({ patient, onSuccess, onCancel }: Props)
 	}
 
 	return (
-		<Box component='form' onSubmit={submit} noValidate>
-			<Stack spacing={3} sx={{ pt: 1 }}>
-				{formError && <Alert severity='error'>{formError}</Alert>}
+    <Box component='form' onSubmit={submit} noValidate>
+      <Stack spacing={3} sx={{ pt: 1 }}>
+        {formError && <Alert severity='error'>{formError}</Alert>}
 
-				{/* Patient Information Section */}
-				<Box>
-					<Divider sx={{ mb: 3 }} />
-					<Stack spacing={2}>
-						<TextField
-							label='First Name'
-							value={firstName}
-							onChange={e => setFirstName(e.target.value)}
-							error={!!fieldError('first_name')}
-							helperText={fieldError('first_name')}
-							fullWidth
-							required
-							inputProps={{ maxLength: 50 }}
-						/>
+        {/* Patient Information Section */}
+        <Box>
+          <Typography variant='h6' sx={{ mb: 3 }}>
+            Patient Information
+          </Typography>
+          <Divider sx={{ mb: 7 }} />
+          <Stack spacing={2}>
+            <TextField
+              label='First Name'
+              value={firstName}
+              onChange={e => setFirstName(e.target.value)}
+              error={!!fieldError('first_name')}
+              helperText={fieldError('first_name')}
+              fullWidth
+              required
+              inputProps={{ maxLength: 50 }}
+            />
 
-						<TextField
-							label='Last Name'
-							value={lastName}
-							onChange={e => setLastName(e.target.value)}
-							error={!!fieldError('last_name')}
-							helperText={fieldError('last_name')}
-							fullWidth
-							required
-							inputProps={{ maxLength: 50 }}
-						/>
+            <TextField
+              label='Last Name'
+              value={lastName}
+              onChange={e => setLastName(e.target.value)}
+              error={!!fieldError('last_name')}
+              helperText={fieldError('last_name')}
+              fullWidth
+              required
+              inputProps={{ maxLength: 50 }}
+            />
 
-						<TextField
-							label='Date of Birth'
-							type='date'
-							value={dateOfBirth}
-							onChange={e => setDateOfBirth(e.target.value)}
-							error={!!fieldError('date_of_birth')}
-							helperText={fieldError('date_of_birth')}
-							fullWidth
-							required
-							InputLabelProps={{ shrink: true }}
-						/>
+            <TextField
+              label='Date of Birth'
+              type='date'
+              value={dateOfBirth}
+              onChange={e => setDateOfBirth(e.target.value)}
+              error={!!fieldError('date_of_birth')}
+              helperText={fieldError('date_of_birth')}
+              fullWidth
+              required
+              InputLabelProps={{ shrink: true }}
+            />
 
-						<FormControl fullWidth required error={!!fieldError('gender')}>
-							<InputLabel>Gender</InputLabel>
-							<Select value={gender} label='Gender' onChange={e => setGender(e.target.value)}>
-								<MenuItem value='M'>Male</MenuItem>
-								<MenuItem value='F'>Female</MenuItem>
-							</Select>
-						</FormControl>
+            <FormControl fullWidth required error={!!fieldError('gender')}>
+              <InputLabel>Gender</InputLabel>
+              <Select value={gender} label='Gender' onChange={e => setGender(e.target.value)}>
+                <MenuItem value='M'>Male</MenuItem>
+                <MenuItem value='F'>Female</MenuItem>
+              </Select>
+            </FormControl>
 
-						<TextField
-							label='Phone'
-							value={phone}
-							onChange={e => setPhone(e.target.value)}
-							error={!!fieldError('phone')}
-							helperText={fieldError('phone')}
-							fullWidth
-							required
-						/>
+            <TextField
+              label='Phone'
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+              error={!!fieldError('phone')}
+              helperText={fieldError('phone')}
+              fullWidth
+              required
+            />
 
-						<TextField
-							label='Emergency Contact Name'
-							value={emergencyContactName}
-							onChange={e => setEmergencyContactName(e.target.value)}
-							error={!!fieldError('emergency_contact_name')}
-							helperText={fieldError('emergency_contact_name')}
-							fullWidth
-							required
-						/>
+            <TextField
+              label='Address'
+              value={address}
+              onChange={e => setAddress(e.target.value)}
+              error={!!fieldError('address')}
+              helperText={fieldError('address')}
+              fullWidth
+            />
 
-						<TextField
-							label='Emergency Contact Phone'
-							value={emergencyContactPhone}
-							onChange={e => setEmergencyContactPhone(e.target.value)}
-							error={!!fieldError('emergency_contact_phone')}
-							helperText={fieldError('emergency_contact_phone')}
-							fullWidth
-							required
-						/>
+            <TextField
+              label='City'
+              value={city}
+              onChange={e => setCity(e.target.value)}
+              error={!!fieldError('city')}
+              helperText={fieldError('city')}
+              fullWidth
+            />
 
-						<TextField
-							label='Address'
-							value={address}
-							onChange={e => setAddress(e.target.value)}
-							error={!!fieldError('address')}
-							helperText={fieldError('address')}
-							fullWidth
-						/>
+            <TextField
+              label='Postal Code'
+              value={postalCode}
+              onChange={e => setPostalCode(e.target.value)}
+              error={!!fieldError('postal_code')}
+              helperText={fieldError('postal_code')}
+              fullWidth
+            />
 
-						<TextField
-							label='City'
-							value={city}
-							onChange={e => setCity(e.target.value)}
-							error={!!fieldError('city')}
-							helperText={fieldError('city')}
-							fullWidth
-						/>
+            <FormControl fullWidth>
+              <InputLabel>Blood Type</InputLabel>
+              <Select value={bloodType} label='Blood Type' onChange={e => setBloodType(e.target.value)}>
+                <MenuItem value=''>None</MenuItem>
+                <MenuItem value='A+'>A+</MenuItem>
+                <MenuItem value='A-'>A-</MenuItem>
+                <MenuItem value='B+'>B+</MenuItem>
+                <MenuItem value='B-'>B-</MenuItem>
+                <MenuItem value='AB+'>AB+</MenuItem>
+                <MenuItem value='AB-'>AB-</MenuItem>
+                <MenuItem value='O+'>O+</MenuItem>
+                <MenuItem value='O-'>O-</MenuItem>
+              </Select>
+            </FormControl>
 
-						<TextField
-							label='Postal Code'
-							value={postalCode}
-							onChange={e => setPostalCode(e.target.value)}
-							error={!!fieldError('postal_code')}
-							helperText={fieldError('postal_code')}
-							fullWidth
-						/>
+            <TextField
+              label='Allergies'
+              value={allergies}
+              onChange={e => setAllergies(e.target.value)}
+              error={!!fieldError('allergies')}
+              helperText={fieldError('allergies')}
+              fullWidth
+              multiline
+              rows={3}
+            />
 
-						<FormControl fullWidth>
-							<InputLabel>Blood Type</InputLabel>
-							<Select value={bloodType} label='Blood Type' onChange={e => setBloodType(e.target.value)}>
-								<MenuItem value=''>None</MenuItem>
-								<MenuItem value='A+'>A+</MenuItem>
-								<MenuItem value='A-'>A-</MenuItem>
-								<MenuItem value='B+'>B+</MenuItem>
-								<MenuItem value='B-'>B-</MenuItem>
-								<MenuItem value='AB+'>AB+</MenuItem>
-								<MenuItem value='AB-'>AB-</MenuItem>
-								<MenuItem value='O+'>O+</MenuItem>
-								<MenuItem value='O-'>O-</MenuItem>
-							</Select>
-						</FormControl>
+            <TextField
+              label='Medical Notes'
+              value={medicalNotes}
+              onChange={e => setMedicalNotes(e.target.value)}
+              error={!!fieldError('medical_notes')}
+              helperText={fieldError('medical_notes')}
+              fullWidth
+              multiline
+              rows={3}
+              inputProps={{ maxLength: 10000 }}
+            />
+          </Stack>
+        </Box>
+        <Box>
+          <Stack spacing={3}>
+            <Typography variant='h6' sx={{ mb: 1, mt: 1 }}>
+              Emergency Information
+            </Typography>
+            <Divider sx={{ mb: 6, mt: 6 }} />
+            <TextField
+              label='Emergency Contact Name'
+              value={emergencyContactName}
+              onChange={e => setEmergencyContactName(e.target.value)}
+              error={!!fieldError('emergency_contact_name')}
+              helperText={fieldError('emergency_contact_name')}
+              fullWidth
+              required
+            />
 
-						<TextField
-							label='Allergies'
-							value={allergies}
-							onChange={e => setAllergies(e.target.value)}
-							error={!!fieldError('allergies')}
-							helperText={fieldError('allergies')}
-							fullWidth
-							multiline
-							rows={3}
-						/>
+            <TextField
+              label='Emergency Contact Phone'
+              value={emergencyContactPhone}
+              onChange={e => setEmergencyContactPhone(e.target.value)}
+              error={!!fieldError('emergency_contact_phone')}
+              helperText={fieldError('emergency_contact_phone')}
+              fullWidth
+              required
+            />
+          </Stack>
+        </Box>
 
-						<TextField
-							label='Medical Notes'
-							value={medicalNotes}
-							onChange={e => setMedicalNotes(e.target.value)}
-							error={!!fieldError('medical_notes')}
-							helperText={fieldError('medical_notes')}
-							fullWidth
-							multiline
-							rows={3}
-							inputProps={{ maxLength: 10000 }}
-						/>
-					</Stack>
-				</Box>
-
-				<Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-					{onCancel && (
-						<Button variant='outlined' onClick={onCancel} disabled={loading}>
-							Cancel
-						</Button>
-					)}
-					<Button type='submit' variant='contained' disabled={loading} startIcon={loading ? <CircularProgress size={16} /> : null}>
-						Save Changes
-					</Button>
-				</Box>
-			</Stack>
-		</Box>
-	)
+        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+          {onCancel && (
+            <Button variant='outlined' onClick={onCancel} disabled={loading}>
+              Cancel
+            </Button>
+          )}
+          <Button
+            type='submit'
+            variant='contained'
+            disabled={loading}
+            startIcon={loading ? <CircularProgress size={16} /> : null}
+          >
+            Save Changes
+          </Button>
+        </Box>
+      </Stack>
+    </Box>
+  )
 }

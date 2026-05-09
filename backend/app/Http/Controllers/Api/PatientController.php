@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Api\PatientIndexRequest;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
 use App\Http\Resources\Api\PatientResource;
@@ -9,7 +10,6 @@ use App\Http\Resources\Api\PatientSummaryResource;
 use App\Models\Patient;
 use App\Services\PatientService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class PatientController extends ApiController
 {
@@ -20,7 +20,7 @@ class PatientController extends ApiController
         $this->patientService = $patientService;
     }
 
-    public function index(Request $request): JsonResponse
+    public function index(PatientIndexRequest $request): JsonResponse
     {
         $this->authorize('viewAny', Patient::class);
 
@@ -32,9 +32,17 @@ class PatientController extends ApiController
             $query->where('user_id', $request->user()->id);
         }
 
+        if ($request->has('paginate') && $request->paginate === 'false') {
+            $collection = $isSummary
+                ? PatientSummaryResource::collection($query->get())
+                : PatientResource::collection($query->get());
+
+            return $this->ok('Patients retrieved successfully.', ['patients' => $collection]);
+        }
+
         $collection = $isSummary
-            ? PatientSummaryResource::collection($query->paginate())
-            : PatientResource::collection($query->paginate());
+            ? PatientSummaryResource::collection($query->paginate($request->per_page ?? 15))
+            : PatientResource::collection($query->paginate($request->per_page ?? 15));
 
         return $this->paginated('Patients retrieved successfully.', $collection);
     }

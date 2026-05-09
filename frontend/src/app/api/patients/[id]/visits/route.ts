@@ -1,21 +1,27 @@
 import type { NextRequest } from 'next/server'
+import { customFetchMutator } from '@/api/auth.mutator'
+import type { PatientVisitsIndex200 } from '@/api/generated/nutriBaseAPI.schemas'
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+	_req: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
 	const { id } = await params
+	const res = await customFetchMutator<{ data: PatientVisitsIndex200; status: number }>(
+		`http://localhost:8000/api/patients/${id}/visits`, { method: 'GET' }
+	)
+	return new Response(JSON.stringify(res.data), { status: res.status })
+}
 
-	try {
-		const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/patients/${id}/visits`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				Cookie: request.headers.get('cookie') || '',
-			},
-		})
-
-		const data = await res.json()
-
-		return new Response(JSON.stringify(data), { status: res.status ?? 200 })
-	} catch (error) {
-		return new Response(JSON.stringify({ message: 'Failed to fetch visits' }), { status: 500 })
-	}
+export async function POST(
+	req: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const { id } = await params
+	const body = await req.json()
+	const res = await customFetchMutator<{ data: unknown; status: number }>(
+		`http://localhost:8000/api/patients/${id}/visits`,
+		{ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+	)
+	return new Response(JSON.stringify(res.data), { status: res.status })
 }

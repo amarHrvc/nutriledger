@@ -1,9 +1,12 @@
-import { NextRequest } from 'next/server'
+import type { NextRequest } from 'next/server'
+
 import { patientsIndex, patientsStore } from '@/api/generated/patient/patient'
 import { usersStore } from '@/api/generated/user/user'
 
-export async function GET(request: NextRequest) {
-  const res = await patientsIndex()
+export async function GET() {
+  const res = await patientsIndex({paginate: 'false'})
+
+  console.log('[patientsINdex] ::: ', res)
 
   return new Response(JSON.stringify(res.data), { status: res.status })
 }

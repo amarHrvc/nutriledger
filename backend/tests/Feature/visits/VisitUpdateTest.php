@@ -13,7 +13,7 @@ test('guest cannot update visit', function () {
     ]);
 
     $response = $this->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
-        'date' => '2024-01-20',
+        'date' => now()->toDateString(),
         'notes' => 'Updated notes',
     ]);
 
@@ -30,7 +30,7 @@ test('admin can update any visit', function () {
     ]);
 
     $response = $this->actingAs($admin)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
-        'date' => '2024-01-20',
+        'date' => now()->toDateString(),
         'notes' => 'Updated by admin',
     ]);
 
@@ -43,12 +43,12 @@ test('doctor can update own visit', function () {
     $visit = Visit::factory()->create([
         'patient_id' => $patient->id,
         'doctor_id' => $doctor->id,
-        'date' => '2024-01-15',
+        'date' => now()->toDateString(),
         'notes' => 'Original notes',
     ]);
 
     $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
-        'date' => '2024-01-20',
+        'date' => now()->toDateString(),
         'notes' => 'Updated notes',
     ]);
 
@@ -79,7 +79,7 @@ test('doctor can update own visit', function () {
         'id' => $visit->id,
         'patient_id' => $patient->id,
         'doctor_id' => $doctor->id,
-        'date' => '2024-01-20',
+        'date' => now()->toDateString(),
         'notes' => 'Updated notes',
     ]);
 });
@@ -94,7 +94,7 @@ test('doctor cannot update another doctor\'s visit', function () {
     ]);
 
     $response = $this->actingAs($doctor2)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
-        'date' => '2024-01-20',
+        'date' => now()->toDateString(),
         'notes' => 'Updated by another doctor',
     ]);
 
@@ -111,7 +111,7 @@ test('patient cannot update visit', function () {
     ]);
 
     $response = $this->actingAs($user)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
-        'date' => '2024-01-20',
+        'date' => now()->toDateString(),
         'notes' => 'Updated by patient',
     ]);
 
@@ -124,7 +124,7 @@ test('doctor can update only notes when updating', function () {
     $visit = Visit::factory()->create([
         'patient_id' => $patient->id,
         'doctor_id' => $doctor->id,
-        'date' => '2024-01-15',
+        'date' => now()->toDateString(),
         'notes' => 'Original notes',
     ]);
 
@@ -138,7 +138,7 @@ test('doctor can update only notes when updating', function () {
         'id' => $visit->id,
         'patient_id' => $patient->id,
         'doctor_id' => $doctor->id,
-        'date' => '2024-01-15',
+        'date' => now()->toDateString(),
         'notes' => 'Updated notes only',
     ]);
 });
@@ -167,12 +167,13 @@ test('doctor can update only date when updating', function () {
     $visit = Visit::factory()->create([
         'patient_id' => $patient->id,
         'doctor_id' => $doctor->id,
-        'date' => '2024-01-15',
+        'date' => now()->toDateString(),
         'notes' => 'Original notes',
     ]);
+    $yesterday = now()->subDay()->toDateString();
 
     $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
-        'date' => '2024-01-25',
+        'date' => $yesterday,
     ]);
 
     $response->assertOk();
@@ -181,7 +182,7 @@ test('doctor can update only date when updating', function () {
         'id' => $visit->id,
         'patient_id' => $patient->id,
         'doctor_id' => $doctor->id,
-        'date' => '2024-01-25',
+        'date' => $yesterday,
         'notes' => 'Original notes',
     ]);
 });
@@ -210,19 +211,20 @@ test('updated visit has correct values in response', function () {
     $visit = Visit::factory()->create([
         'patient_id' => $patient->id,
         'doctor_id' => $doctor->id,
-        'date' => '2024-01-15',
+        'date' => now()->toDateString(),
         'notes' => 'Original notes',
     ]);
+    $yesterday = now()->subDay()->toDateString();
 
     $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
-        'date' => '2024-01-25',
+        'date' => $yesterday,
         'notes' => 'New updated notes',
     ]);
 
     $response->assertOk();
 
     $updatedVisit = Visit::find($visit->id);
-    expect($updatedVisit->date->toDateString())->toBe('2024-01-25');
+    expect($updatedVisit->date->toDateString())->toBe($yesterday);
     expect($updatedVisit->notes)->toBe('New updated notes');
     expect($updatedVisit->doctor_id)->toBe($doctor->id);
 });
@@ -238,9 +240,93 @@ test('visit from different patient returns 404', function () {
 
     // Try to update the visit through a different patient's endpoint
     $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient2->id.'/visits/'.$visit->id, [
-        'date' => '2024-01-20',
+        'date' => now()->toDateString(),
         'notes' => 'Updated notes',
     ]);
 
     $response->assertNotFound();
+});
+
+test('doctor can update visit dated today - boundary editable', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+    $visit = Visit::factory()->create([
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'date' => now()->toDateString(),
+        'notes' => 'Original notes',
+    ]);
+
+    $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
+        'date' => now()->toDateString(),
+        'notes' => 'Updated today notes',
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('visits', [
+        'id' => $visit->id,
+        'date' => now()->toDateString(),
+        'notes' => 'Updated today notes',
+    ]);
+});
+
+test('doctor can update visit dated yesterday - 1-day lock boundary', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+    $yesterday = now()->subDay()->toDateString();
+    $visit = Visit::factory()->create([
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'date' => $yesterday,
+        'notes' => 'Original notes',
+    ]);
+
+    $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
+        'date' => $yesterday,
+        'notes' => 'Updated yesterday notes',
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('visits', [
+        'id' => $visit->id,
+        'date' => $yesterday,
+        'notes' => 'Updated yesterday notes',
+    ]);
+});
+
+test('doctor cannot update visit dated 2 days ago - locked', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+    $twoDaysAgo = now()->subDays(2)->toDateString();
+    $visit = Visit::factory()->create([
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'date' => $twoDaysAgo,
+        'notes' => 'Original notes',
+    ]);
+
+    $response = $this->actingAs($doctor)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
+        'date' => $twoDaysAgo,
+        'notes' => 'Trying to update locked visit',
+    ]);
+
+    $response->assertForbidden();
+});
+
+test('wrong doctor cannot update visit - authorization check', function () {
+    $doctor1 = User::factory()->create(['role' => 'doktor']);
+    $doctor2 = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+    $visit = Visit::factory()->create([
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor1->id,
+        'date' => now()->toDateString(),
+    ]);
+
+    $response = $this->actingAs($doctor2)->putJson('/api/patients/'.$patient->id.'/visits/'.$visit->id, [
+        'date' => now()->toDateString(),
+        'notes' => 'Trying to update another doctor\'s visit',
+    ]);
+
+    $response->assertForbidden();
 });

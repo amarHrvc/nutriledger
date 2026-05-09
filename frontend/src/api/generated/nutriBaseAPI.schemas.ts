@@ -100,6 +100,15 @@ export interface PatientResource {
   relationships: PatientResourceRelationships;
 }
 
+export interface PatientSummaryResource {
+  id: string;
+  fullName: string;
+  dateOfBirth: string;
+  gender: string;
+  city: string;
+  phone: string;
+}
+
 export type StorePatientRequestGender = typeof StorePatientRequestGender[keyof typeof StorePatientRequestGender];
 
 
@@ -563,44 +572,43 @@ export interface UserResource {
   links: UserResourceLinks;
 }
 
-export type VisitResourceAttributes = {
+export interface VisitResourceAttributes {
   date: string;
-  /** @nullable */
+  time: string | null;
   notes: string | null;
-  doctorName?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type VisitResourceRelationshipsPatientData = {
-  type: 'patient';
-  id: string;
-};
-
-export type VisitResourceRelationshipsPatient = {
-  data?: VisitResourceRelationshipsPatientData;
-};
-
-export type VisitResourceRelationshipsDoctorData = {
-  type: 'user';
-  id: string;
-};
-
-export type VisitResourceRelationshipsDoctor = {
-  data?: VisitResourceRelationshipsDoctorData;
-};
-
-export type VisitResourceRelationships = {
-  patient: VisitResourceRelationshipsPatient;
-  doctor: VisitResourceRelationshipsDoctor;
-};
+  doctorName: string | null;
+  patientName: string | null;
+  patientId: string | null;
+  isEditable: boolean;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
 
 export interface VisitResource {
   type: 'visit';
   id: string;
   attributes: VisitResourceAttributes;
-  relationships: VisitResourceRelationships;
+  relationships: {
+    patient: { data?: { type: 'patient'; id: string } };
+    doctor:  { data?: { type: 'user';    id: string } };
+  };
 }
+
+export type VisitsGlobalIndex200 = {
+  message: string;
+  status: 200;
+  data: VisitResource[];
+  meta: PatientsIndex200Meta;
+  links: PatientsIndex200Links;
+};
+
+export type PatientVisitsIndex200 = {
+  message: string;
+  status: 200;
+  data: VisitResource[];
+  meta: PatientsIndex200Meta;
+  links: PatientsIndex200Links;
+};
 
 /**
  * A detailed description of each field that failed validation.
@@ -675,12 +683,62 @@ export type UserMe200 = {
   data: UserMe200Data;
 };
 
+export type PatientsIndexParams = {
+/**
+ * @nullable
+ */
+paginate?: PatientsIndexPaginate;
+/**
+ * @nullable
+ */
+format?: PatientsIndexFormat;
+/**
+ * @minimum 1
+ * @nullable
+ */
+page?: number | null;
+/**
+ * @minimum 1
+ * @maximum 100
+ * @nullable
+ */
+per_page?: number | null;
+};
+
+export type PatientsIndexPaginate = typeof PatientsIndexPaginate[keyof typeof PatientsIndexPaginate] | null;
+
+
+export const PatientsIndexPaginate = {
+  false: 'false',
+} as const;
+
+export type PatientsIndexFormat = typeof PatientsIndexFormat[keyof typeof PatientsIndexFormat] | null;
+
+
+export const PatientsIndexFormat = {
+  summary: 'summary',
+} as const;
+
+export type PatientsIndex200Meta = {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+};
+
+export type PatientsIndex200Links = {
+  first: string | null;
+  last: string | null;
+  prev: string | null;
+  next: string | null;
+};
+
 export type PatientsIndex200 = {
   message: 'Patients retrieved successfully.';
   status: 200;
-  data: string;
-  meta: string;
-  links: string;
+  data: PatientResource[];
+  meta: PatientsIndex200Meta;
+  links: PatientsIndex200Links;
 };
 
 export type PatientsStore201Data = {

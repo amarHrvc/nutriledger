@@ -12,10 +12,9 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends ApiController
 {
-
-//    #[QueryParameter('paginate', description: 'Pass false to return all users unpaginated', type: 'string', example: ['false', 'true'])]
-//    #[QueryParameter('page', description: 'Page number', type: 'integer', example: 1)]
-//    #[QueryParameter('per_page', description: 'Items per page (1–100)', type: 'integer', example: 15)]
+    //    #[QueryParameter('paginate', description: 'Pass false to return all users unpaginated', type: 'string', example: ['false', 'true'])]
+    //    #[QueryParameter('page', description: 'Page number', type: 'integer', example: 1)]
+    //    #[QueryParameter('per_page', description: 'Items per page (1–100)', type: 'integer', example: 15)]
     /**
      * Display a listing of the resource.
      */
@@ -25,24 +24,18 @@ class UserController extends ApiController
 
         $users = null;
 
-
-        if (auth()->user()->isAdmin()) {
-            $users = User::withTrashed()->paginate();
-        }
-
-        if (auth()->user()->isDoctor()) {
-            $users = User::query()->paginate();
-        }
-
+        $user = auth()->user();
+        $allRecords = $user->isAdmin() ? User::withTrashed() : User::query();
 
         if ($request->has('paginate') && $request->paginate === 'false') {
-            $users = User::withTrashed()->get();
-            return $this->ok('Users retrieved successfully (No pagination).',  ['users' => UserResource::collection($users)]);
-        }else{
+            $users = $allRecords->get();
+
+            return $this->ok('Users retrieved successfully (No pagination).', ['users' => UserResource::collection($users)]);
+        } else {
+            $users = $allRecords->paginate();
+
             return $this->paginated('Users retrieved successfully.', UserResource::collection($users));
         }
-
-
 
     }
 

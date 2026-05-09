@@ -41,7 +41,6 @@ export default function PatientDetailsCard({ patient }: Props) {
 	const router = useRouter()
 
 	const { fullName = '', dateOfBirth = '', gender = '', phone = '', createdAt = '' } = patient.attributes
-	const linkedUserEmail = '—' // TODO: get email from linked user via relationships
 
 	const openConfirm = () => {
 		setConfirmOpen(true)
@@ -103,14 +102,6 @@ export default function PatientDetailsCard({ patient }: Props) {
 						</Typography>
 						<Divider sx={{ mb: 2 }} />
 						<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-							{linkedUserEmail && (
-								<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-									<Typography fontWeight={500} color='text.primary'>
-										Email:
-									</Typography>
-									<Typography>{linkedUserEmail}</Typography>
-								</Box>
-							)}
 							{dateOfBirth && (
 								<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
 									<Typography fontWeight={500} color='text.primary'>

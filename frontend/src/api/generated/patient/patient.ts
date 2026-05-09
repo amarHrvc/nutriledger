@@ -9,6 +9,7 @@ import type {
   AuthorizationExceptionResponse,
   ModelNotFoundExceptionResponse,
   PatientsIndex200,
+  PatientsIndexParams,
   PatientsShow200,
   PatientsStore201,
   PatientsUpdate200,
@@ -34,26 +35,38 @@ export type patientsIndexResponse403 = {
   status: 403
 }
 
+export type patientsIndexResponse422 = {
+  data: ValidationExceptionResponse
+  status: 422
+}
+
 export type patientsIndexResponseSuccess = (patientsIndexResponse200) & {
   headers: Headers;
 };
-export type patientsIndexResponseError = (patientsIndexResponse401 | patientsIndexResponse403) & {
+export type patientsIndexResponseError = (patientsIndexResponse401 | patientsIndexResponse403 | patientsIndexResponse422) & {
   headers: Headers;
 };
 
 export type patientsIndexResponse = (patientsIndexResponseSuccess | patientsIndexResponseError)
 
-export const getPatientsIndexUrl = () => {
+export const getPatientsIndexUrl = (params?: PatientsIndexParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `http://localhost:8000/api/patients`
+  return stringifiedParams.length > 0 ? `http://localhost:8000/api/patients?${stringifiedParams}` : `http://localhost:8000/api/patients`
 }
 
-export const patientsIndex = async ( options?: RequestInit): Promise<patientsIndexResponse> => {
+export const patientsIndex = async (params?: PatientsIndexParams, options?: RequestInit): Promise<patientsIndexResponse> => {
 
-  return customFetchMutator<patientsIndexResponse>(getPatientsIndexUrl(),
+  return customFetchMutator<patientsIndexResponse>(getPatientsIndexUrl(params),
   {
     ...options,
     method: 'GET'
