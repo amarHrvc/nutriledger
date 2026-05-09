@@ -40,6 +40,260 @@ export interface Patient {
   updated_at: string | null;
 }
 
+export type PatientResourceAttributes = {
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  dateOfBirth: string;
+  gender: string;
+  /** @nullable */
+  phone: string | null;
+  /** @nullable */
+  address: string | null;
+  /** @nullable */
+  city: string | null;
+  /** @nullable */
+  postalCode: string | null;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
+  /** @nullable */
+  bloodType: string | null;
+  /** @nullable */
+  allergies: string | null;
+  /** @nullable */
+  medicalNotes: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PatientResourceRelationshipsUserData = {
+  type: 'user';
+  id: string;
+};
+
+export type PatientResourceRelationshipsUser = {
+  data?: PatientResourceRelationshipsUserData;
+};
+
+/**
+ * @nullable
+ */
+export type PatientResourceRelationshipsSocioeconomicData = {
+  type: 'patient_socioeconomic';
+  id: string;
+} | null;
+
+export type PatientResourceRelationshipsSocioeconomic = {
+  /** @nullable */
+  data?: PatientResourceRelationshipsSocioeconomicData;
+};
+
+export type PatientResourceRelationships = {
+  user: PatientResourceRelationshipsUser;
+  socioeconomic: PatientResourceRelationshipsSocioeconomic;
+};
+
+export interface PatientResource {
+  type: 'patient';
+  id: string;
+  attributes: PatientResourceAttributes;
+  relationships: PatientResourceRelationships;
+}
+
+export type StorePatientRequestGender = typeof StorePatientRequestGender[keyof typeof StorePatientRequestGender];
+
+
+export const StorePatientRequestGender = {
+  M: 'M',
+  F: 'F',
+} as const;
+
+/**
+ * @nullable
+ */
+export type StorePatientRequestBloodType = typeof StorePatientRequestBloodType[keyof typeof StorePatientRequestBloodType] | null;
+
+
+export const StorePatientRequestBloodType = {
+  'A+': 'A+',
+  'A-': 'A-',
+  'B+': 'B+',
+  'B-': 'B-',
+  'AB+': 'AB+',
+  'AB-': 'AB-',
+  'O+': 'O+',
+  'O-': 'O-',
+} as const;
+
+/**
+ * @nullable
+ */
+export type StorePatientRequestSocioeconomicMaritalStatus = typeof StorePatientRequestSocioeconomicMaritalStatus[keyof typeof StorePatientRequestSocioeconomicMaritalStatus] | null;
+
+
+export const StorePatientRequestSocioeconomicMaritalStatus = {
+  single: 'single',
+  married: 'married',
+  divorced: 'divorced',
+  widowed: 'widowed',
+  separated: 'separated',
+  other: 'other',
+} as const;
+
+/**
+ * @nullable
+ */
+export type StorePatientRequestSocioeconomicEmploymentStatus = typeof StorePatientRequestSocioeconomicEmploymentStatus[keyof typeof StorePatientRequestSocioeconomicEmploymentStatus] | null;
+
+
+export const StorePatientRequestSocioeconomicEmploymentStatus = {
+  employed_full_time: 'employed_full_time',
+  employed_part_time: 'employed_part_time',
+  self_employed: 'self_employed',
+  unemployed: 'unemployed',
+  retired: 'retired',
+  student: 'student',
+  unable_to_work: 'unable_to_work',
+  other: 'other',
+} as const;
+
+/**
+ * @nullable
+ */
+export type StorePatientRequestSocioeconomicIncomeLevel = typeof StorePatientRequestSocioeconomicIncomeLevel[keyof typeof StorePatientRequestSocioeconomicIncomeLevel] | null;
+
+
+export const StorePatientRequestSocioeconomicIncomeLevel = {
+  low: 'low',
+  lower_middle: 'lower_middle',
+  middle: 'middle',
+  upper_middle: 'upper_middle',
+  high: 'high',
+} as const;
+
+/**
+ * @nullable
+ */
+export type StorePatientRequestSocioeconomicSmokingStatus = typeof StorePatientRequestSocioeconomicSmokingStatus[keyof typeof StorePatientRequestSocioeconomicSmokingStatus] | null;
+
+
+export const StorePatientRequestSocioeconomicSmokingStatus = {
+  never: 'never',
+  former: 'former',
+  current_light: 'current_light',
+  current_heavy: 'current_heavy',
+} as const;
+
+/**
+ * @nullable
+ */
+export type StorePatientRequestSocioeconomicAlcoholConsumption = typeof StorePatientRequestSocioeconomicAlcoholConsumption[keyof typeof StorePatientRequestSocioeconomicAlcoholConsumption] | null;
+
+
+export const StorePatientRequestSocioeconomicAlcoholConsumption = {
+  none: 'none',
+  occasional: 'occasional',
+  moderate: 'moderate',
+  heavy: 'heavy',
+} as const;
+
+/**
+ * @nullable
+ */
+export type StorePatientRequestSocioeconomicPhysicalActivityLevel = typeof StorePatientRequestSocioeconomicPhysicalActivityLevel[keyof typeof StorePatientRequestSocioeconomicPhysicalActivityLevel] | null;
+
+
+export const StorePatientRequestSocioeconomicPhysicalActivityLevel = {
+  sedentary: 'sedentary',
+  lightly_active: 'lightly_active',
+  moderately_active: 'moderately_active',
+  very_active: 'very_active',
+} as const;
+
+/**
+ * @nullable
+ */
+export type StorePatientRequestSocioeconomicFoodSecurityStatus = typeof StorePatientRequestSocioeconomicFoodSecurityStatus[keyof typeof StorePatientRequestSocioeconomicFoodSecurityStatus] | null;
+
+
+export const StorePatientRequestSocioeconomicFoodSecurityStatus = {
+  food_secure: 'food_secure',
+  food_insecure: 'food_insecure',
+  unsure: 'unsure',
+} as const;
+
+/**
+ * Socioeconomic fields (all optional on create)
+ */
+export type StorePatientRequestSocioeconomic = {
+  /** @nullable */
+  marital_status?: StorePatientRequestSocioeconomicMaritalStatus;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  number_of_dependents?: number | null;
+  /** @nullable */
+  employment_status?: StorePatientRequestSocioeconomicEmploymentStatus;
+  /** @nullable */
+  income_level?: StorePatientRequestSocioeconomicIncomeLevel;
+  /** @nullable */
+  has_health_insurance?: boolean | null;
+  /** @nullable */
+  smoking_status?: StorePatientRequestSocioeconomicSmokingStatus;
+  /** @nullable */
+  alcohol_consumption?: StorePatientRequestSocioeconomicAlcoholConsumption;
+  /** @nullable */
+  physical_activity_level?: StorePatientRequestSocioeconomicPhysicalActivityLevel;
+  /** @nullable */
+  food_security_status?: StorePatientRequestSocioeconomicFoodSecurityStatus;
+  /** @nullable */
+  additional_notes?: string | null;
+};
+
+export interface StorePatientRequest {
+  /** Link to existing patient-role user (required) */
+  user_id: number;
+  /**
+     * Patient core fields
+     * @maxLength 50
+     */
+  first_name: string;
+  /** @maxLength 50 */
+  last_name: string;
+  date_of_birth: string;
+  gender: StorePatientRequestGender;
+  /** @maxLength 33 */
+  phone: string;
+  /**
+     * @maxLength 100
+     * @nullable
+     */
+  address?: string | null;
+  /**
+     * @maxLength 33
+     * @nullable
+     */
+  city?: string | null;
+  /**
+     * @maxLength 20
+     * @nullable
+     */
+  postal_code?: string | null;
+  /** @maxLength 100 */
+  emergency_contact_name: string;
+  /** @maxLength 50 */
+  emergency_contact_phone: string;
+  /** @nullable */
+  blood_type?: StorePatientRequestBloodType;
+  /** @nullable */
+  allergies?: string | null;
+  /** @nullable */
+  medical_notes?: string | null;
+  /** Socioeconomic fields (all optional on create) */
+  socioeconomic?: StorePatientRequestSocioeconomic;
+}
+
 export type StoreUserRequestRole = typeof StoreUserRequestRole[keyof typeof StoreUserRequestRole];
 
 
@@ -60,6 +314,201 @@ export interface StoreUserRequest {
   password_confirmation: string;
 }
 
+export interface StoreVisitRequest {
+  date: string;
+  /**
+     * @maxLength 10000
+     * @nullable
+     */
+  notes?: string | null;
+}
+
+export type UpdatePatientRequestGender = typeof UpdatePatientRequestGender[keyof typeof UpdatePatientRequestGender];
+
+
+export const UpdatePatientRequestGender = {
+  M: 'M',
+  F: 'F',
+} as const;
+
+/**
+ * @nullable
+ */
+export type UpdatePatientRequestBloodType = typeof UpdatePatientRequestBloodType[keyof typeof UpdatePatientRequestBloodType] | null;
+
+
+export const UpdatePatientRequestBloodType = {
+  'A+': 'A+',
+  'A-': 'A-',
+  'B+': 'B+',
+  'B-': 'B-',
+  'AB+': 'AB+',
+  'AB-': 'AB-',
+  'O+': 'O+',
+  'O-': 'O-',
+} as const;
+
+/**
+ * @nullable
+ */
+export type UpdatePatientRequestSocioeconomicMaritalStatus = typeof UpdatePatientRequestSocioeconomicMaritalStatus[keyof typeof UpdatePatientRequestSocioeconomicMaritalStatus] | null;
+
+
+export const UpdatePatientRequestSocioeconomicMaritalStatus = {
+  single: 'single',
+  married: 'married',
+  divorced: 'divorced',
+  widowed: 'widowed',
+  separated: 'separated',
+  other: 'other',
+} as const;
+
+/**
+ * @nullable
+ */
+export type UpdatePatientRequestSocioeconomicEmploymentStatus = typeof UpdatePatientRequestSocioeconomicEmploymentStatus[keyof typeof UpdatePatientRequestSocioeconomicEmploymentStatus] | null;
+
+
+export const UpdatePatientRequestSocioeconomicEmploymentStatus = {
+  employed_full_time: 'employed_full_time',
+  employed_part_time: 'employed_part_time',
+  self_employed: 'self_employed',
+  unemployed: 'unemployed',
+  retired: 'retired',
+  student: 'student',
+  unable_to_work: 'unable_to_work',
+  other: 'other',
+} as const;
+
+/**
+ * @nullable
+ */
+export type UpdatePatientRequestSocioeconomicIncomeLevel = typeof UpdatePatientRequestSocioeconomicIncomeLevel[keyof typeof UpdatePatientRequestSocioeconomicIncomeLevel] | null;
+
+
+export const UpdatePatientRequestSocioeconomicIncomeLevel = {
+  low: 'low',
+  lower_middle: 'lower_middle',
+  middle: 'middle',
+  upper_middle: 'upper_middle',
+  high: 'high',
+} as const;
+
+/**
+ * @nullable
+ */
+export type UpdatePatientRequestSocioeconomicSmokingStatus = typeof UpdatePatientRequestSocioeconomicSmokingStatus[keyof typeof UpdatePatientRequestSocioeconomicSmokingStatus] | null;
+
+
+export const UpdatePatientRequestSocioeconomicSmokingStatus = {
+  never: 'never',
+  former: 'former',
+  current_light: 'current_light',
+  current_heavy: 'current_heavy',
+} as const;
+
+/**
+ * @nullable
+ */
+export type UpdatePatientRequestSocioeconomicAlcoholConsumption = typeof UpdatePatientRequestSocioeconomicAlcoholConsumption[keyof typeof UpdatePatientRequestSocioeconomicAlcoholConsumption] | null;
+
+
+export const UpdatePatientRequestSocioeconomicAlcoholConsumption = {
+  none: 'none',
+  occasional: 'occasional',
+  moderate: 'moderate',
+  heavy: 'heavy',
+} as const;
+
+/**
+ * @nullable
+ */
+export type UpdatePatientRequestSocioeconomicPhysicalActivityLevel = typeof UpdatePatientRequestSocioeconomicPhysicalActivityLevel[keyof typeof UpdatePatientRequestSocioeconomicPhysicalActivityLevel] | null;
+
+
+export const UpdatePatientRequestSocioeconomicPhysicalActivityLevel = {
+  sedentary: 'sedentary',
+  lightly_active: 'lightly_active',
+  moderately_active: 'moderately_active',
+  very_active: 'very_active',
+} as const;
+
+/**
+ * @nullable
+ */
+export type UpdatePatientRequestSocioeconomicFoodSecurityStatus = typeof UpdatePatientRequestSocioeconomicFoodSecurityStatus[keyof typeof UpdatePatientRequestSocioeconomicFoodSecurityStatus] | null;
+
+
+export const UpdatePatientRequestSocioeconomicFoodSecurityStatus = {
+  food_secure: 'food_secure',
+  food_insecure: 'food_insecure',
+  unsure: 'unsure',
+} as const;
+
+export type UpdatePatientRequestSocioeconomic = {
+  /** @nullable */
+  marital_status?: UpdatePatientRequestSocioeconomicMaritalStatus;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  number_of_dependents?: number | null;
+  /** @nullable */
+  employment_status?: UpdatePatientRequestSocioeconomicEmploymentStatus;
+  /** @nullable */
+  income_level?: UpdatePatientRequestSocioeconomicIncomeLevel;
+  /** @nullable */
+  has_health_insurance?: boolean | null;
+  /** @nullable */
+  smoking_status?: UpdatePatientRequestSocioeconomicSmokingStatus;
+  /** @nullable */
+  alcohol_consumption?: UpdatePatientRequestSocioeconomicAlcoholConsumption;
+  /** @nullable */
+  physical_activity_level?: UpdatePatientRequestSocioeconomicPhysicalActivityLevel;
+  /** @nullable */
+  food_security_status?: UpdatePatientRequestSocioeconomicFoodSecurityStatus;
+  /** @nullable */
+  additional_notes?: string | null;
+};
+
+export interface UpdatePatientRequest {
+  /** @maxLength 50 */
+  first_name?: string;
+  /** @maxLength 50 */
+  last_name?: string;
+  date_of_birth?: string;
+  gender?: UpdatePatientRequestGender;
+  /** @maxLength 33 */
+  phone?: string;
+  /**
+     * @maxLength 100
+     * @nullable
+     */
+  address?: string | null;
+  /**
+     * @maxLength 33
+     * @nullable
+     */
+  city?: string | null;
+  /**
+     * @maxLength 20
+     * @nullable
+     */
+  postal_code?: string | null;
+  /** @maxLength 100 */
+  emergency_contact_name?: string;
+  /** @maxLength 50 */
+  emergency_contact_phone?: string;
+  /** @nullable */
+  blood_type?: UpdatePatientRequestBloodType;
+  /** @nullable */
+  allergies?: string | null;
+  /** @nullable */
+  medical_notes?: string | null;
+  user_id?: string;
+  socioeconomic?: UpdatePatientRequestSocioeconomic;
+}
+
 export type UpdateUserRequestRole = typeof UpdateUserRequestRole[keyof typeof UpdateUserRequestRole];
 
 
@@ -78,6 +527,15 @@ export interface UpdateUserRequest {
   role?: UpdateUserRequestRole;
 }
 
+export interface UpdateVisitRequest {
+  date?: string;
+  /**
+     * @maxLength 10000
+     * @nullable
+     */
+  notes?: string | null;
+}
+
 export type UserResourceAttributes = {
   name: string;
   email: string;
@@ -86,6 +544,7 @@ export type UserResourceAttributes = {
   updatedAt: string;
   /** @nullable */
   deletedAt: string | null;
+  isDeleted: boolean;
 };
 
 export type UserResourceRelationships = {
@@ -102,6 +561,45 @@ export interface UserResource {
   attributes: UserResourceAttributes;
   relationships: UserResourceRelationships;
   links: UserResourceLinks;
+}
+
+export type VisitResourceAttributes = {
+  date: string;
+  /** @nullable */
+  notes: string | null;
+  doctorName?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type VisitResourceRelationshipsPatientData = {
+  type: 'patient';
+  id: string;
+};
+
+export type VisitResourceRelationshipsPatient = {
+  data?: VisitResourceRelationshipsPatientData;
+};
+
+export type VisitResourceRelationshipsDoctorData = {
+  type: 'user';
+  id: string;
+};
+
+export type VisitResourceRelationshipsDoctor = {
+  data?: VisitResourceRelationshipsDoctorData;
+};
+
+export type VisitResourceRelationships = {
+  patient: VisitResourceRelationshipsPatient;
+  doctor: VisitResourceRelationshipsDoctor;
+};
+
+export interface VisitResource {
+  type: 'visit';
+  id: string;
+  attributes: VisitResourceAttributes;
+  relationships: VisitResourceRelationships;
 }
 
 /**
@@ -122,6 +620,11 @@ export type AuthenticationExceptionResponse = {
 };
 
 export type AuthorizationExceptionResponse = {
+  /** Error overview. */
+  message: string;
+};
+
+export type ModelNotFoundExceptionResponse = {
   /** Error overview. */
   message: string;
 };
@@ -172,12 +675,81 @@ export type UserMe200 = {
   data: UserMe200Data;
 };
 
+export type PatientsIndex200 = {
+  message: 'Patients retrieved successfully.';
+  status: 200;
+  data: string;
+  meta: string;
+  links: string;
+};
+
+export type PatientsStore201Data = {
+  patient: PatientResource;
+};
+
+export type PatientsStore201 = {
+  message: 'Patient created successfully.';
+  status: 201;
+  data: PatientsStore201Data;
+};
+
+export type PatientsShow200Data = {
+  patient: PatientResource;
+};
+
+export type PatientsShow200 = {
+  message: 'Patient retrieved successfully.';
+  status: 200;
+  data: PatientsShow200Data;
+};
+
+export type PatientsUpdate200Data = {
+  patient: PatientResource;
+};
+
+export type PatientsUpdate200 = {
+  message: 'Patient updated successfully.';
+  status: 200;
+  data: PatientsUpdate200Data;
+};
+
+export type UsersIndexParams = {
+/**
+ * @nullable
+ */
+paginate?: UsersIndexPaginate;
+/**
+ * @minimum 1
+ * @nullable
+ */
+page?: number | null;
+/**
+ * @minimum 1
+ * @maximum 100
+ * @nullable
+ */
+per_page?: number | null;
+};
+
+export type UsersIndexPaginate = typeof UsersIndexPaginate[keyof typeof UsersIndexPaginate] | null;
+
+
+export const UsersIndexPaginate = {
+  false: 'false',
+} as const;
+
 export type UsersIndex200 = {
   message: 'Users retrieved successfully.';
   status: 200;
   data: string;
   meta: string;
   links: string;
+} | {
+  message: 'Users retrieved successfully (No pagination).';
+  status: 200;
+  data: {
+  users: UserResource[];
+};
 };
 
 export type UsersStore201Data = {
@@ -218,5 +790,43 @@ export type UsersRestore200 = {
   message: 'User restored successfully.';
   status: 200;
   data: UsersRestore200Data;
+};
+
+export type PatientsVisitsStore201Data = {
+  visit: VisitResource;
+};
+
+export type PatientsVisitsStore201 = {
+  message: 'Visit created successfully.';
+  status: 201;
+  data: PatientsVisitsStore201Data;
+};
+
+export type PatientsVisitsIndex200 = {
+  message: 'Visit history retrieved successfully.';
+  status: 200;
+  data: string;
+  meta: string;
+  links: string;
+};
+
+export type PatientsVisitsUpdate200Data = {
+  visit: VisitResource;
+};
+
+export type PatientsVisitsUpdate200 = {
+  message: 'Visit updated successfully.';
+  status: 200;
+  data: PatientsVisitsUpdate200Data;
+};
+
+export type PatientsVisitsShow200Data = {
+  visit: VisitResource;
+};
+
+export type PatientsVisitsShow200 = {
+  message: 'Visit retrieved successfully.';
+  status: 200;
+  data: PatientsVisitsShow200Data;
 };
 

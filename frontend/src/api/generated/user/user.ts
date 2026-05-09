@@ -10,6 +10,7 @@ import type {
   StoreUserRequest,
   UpdateUserRequest,
   UsersIndex200,
+  UsersIndexParams,
   UsersRestore200,
   UsersShow200,
   UsersStore201,
@@ -17,6 +18,7 @@ import type {
   ValidationExceptionResponse
 } from '../nutriBaseAPI.schemas';
 
+import { customFetchMutator } from '../../auth.mutator';
 
 /**
  * @summary Display a listing of the resource
@@ -36,39 +38,45 @@ export type usersIndexResponse403 = {
   status: 403
 }
 
+export type usersIndexResponse422 = {
+  data: ValidationExceptionResponse
+  status: 422
+}
+
 export type usersIndexResponseSuccess = (usersIndexResponse200) & {
   headers: Headers;
 };
-export type usersIndexResponseError = (usersIndexResponse401 | usersIndexResponse403) & {
+export type usersIndexResponseError = (usersIndexResponse401 | usersIndexResponse403 | usersIndexResponse422) & {
   headers: Headers;
 };
 
 export type usersIndexResponse = (usersIndexResponseSuccess | usersIndexResponseError)
 
-export const getUsersIndexUrl = () => {
+export const getUsersIndexUrl = (params?: UsersIndexParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/users`
+  return stringifiedParams.length > 0 ? `http://localhost:8000/api/users?${stringifiedParams}` : `http://localhost:8000/api/users`
 }
 
-export const usersIndex = async ( options?: RequestInit): Promise<usersIndexResponse> => {
+export const usersIndex = async (params?: UsersIndexParams, options?: RequestInit): Promise<usersIndexResponse> => {
 
-  const res = await fetch(getUsersIndexUrl(),
+  return customFetchMutator<usersIndexResponse>(getUsersIndexUrl(params),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersIndexResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersIndexResponse
-}
+);}
 
 
 /**
@@ -108,12 +116,12 @@ export const getUsersStoreUrl = () => {
 
 
 
-  return `/users`
+  return `http://localhost:8000/api/users`
 }
 
 export const usersStore = async (storeUserRequest: StoreUserRequest, options?: RequestInit): Promise<usersStoreResponse> => {
 
-  const res = await fetch(getUsersStoreUrl(),
+  return customFetchMutator<usersStoreResponse>(getUsersStoreUrl(),
   {
     ...options,
     method: 'POST',
@@ -121,13 +129,7 @@ export const usersStore = async (storeUserRequest: StoreUserRequest, options?: R
     body: JSON.stringify(
       storeUserRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersStoreResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersStoreResponse
-}
+);}
 
 
 /**
@@ -162,25 +164,19 @@ export const getUsersShowUrl = (id: string,) => {
 
 
 
-  return `/users/${id}`
+  return `http://localhost:8000/api/users/${id}`
 }
 
 export const usersShow = async (id: string, options?: RequestInit): Promise<usersShowResponse> => {
 
-  const res = await fetch(getUsersShowUrl(id),
+  return customFetchMutator<usersShowResponse>(getUsersShowUrl(id),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersShowResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersShowResponse
-}
+);}
 
 
 /**
@@ -220,13 +216,13 @@ export const getUsersUpdateUrl = (id: string,) => {
 
 
 
-  return `/users/${id}`
+  return `http://localhost:8000/api/users/${id}`
 }
 
 export const usersUpdate = async (id: string,
     updateUserRequest: UpdateUserRequest, options?: RequestInit): Promise<usersUpdateResponse> => {
 
-  const res = await fetch(getUsersUpdateUrl(id),
+  return customFetchMutator<usersUpdateResponse>(getUsersUpdateUrl(id),
   {
     ...options,
     method: 'PUT',
@@ -234,13 +230,7 @@ export const usersUpdate = async (id: string,
     body: JSON.stringify(
       updateUserRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersUpdateResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersUpdateResponse
-}
+);}
 
 
 /**
@@ -275,25 +265,19 @@ export const getUsersDestroyUrl = (id: string,) => {
 
 
 
-  return `/users/${id}`
+  return `http://localhost:8000/api/users/${id}`
 }
 
 export const usersDestroy = async (id: string, options?: RequestInit): Promise<usersDestroyResponse> => {
 
-  const res = await fetch(getUsersDestroyUrl(id),
+  return customFetchMutator<usersDestroyResponse>(getUsersDestroyUrl(id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersDestroyResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersDestroyResponse
-}
+);}
 
 
 /**
@@ -328,25 +312,19 @@ export const getUsersRestoreUrl = (id: string,) => {
 
 
 
-  return `/users/${id}/restore`
+  return `http://localhost:8000/api/users/${id}/restore`
 }
 
 export const usersRestore = async (id: string, options?: RequestInit): Promise<usersRestoreResponse> => {
 
-  const res = await fetch(getUsersRestoreUrl(id),
+  return customFetchMutator<usersRestoreResponse>(getUsersRestoreUrl(id),
   {
     ...options,
     method: 'POST'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersRestoreResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersRestoreResponse
-}
+);}
 
 
 /**
@@ -381,24 +359,18 @@ export const getUsersForceDeleteUrl = (id: string,) => {
 
 
 
-  return `/users/${id}/force`
+  return `http://localhost:8000/api/users/${id}/force`
 }
 
 export const usersForceDelete = async (id: string, options?: RequestInit): Promise<usersForceDeleteResponse> => {
 
-  const res = await fetch(getUsersForceDeleteUrl(id),
+  return customFetchMutator<usersForceDeleteResponse>(getUsersForceDeleteUrl(id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: usersForceDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as usersForceDeleteResponse
-}
+);}
 
 

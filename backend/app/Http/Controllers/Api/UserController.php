@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\StoreUserRequest;
 use App\Http\Requests\Api\UpdateUserRequest;
+use App\Http\Requests\Api\UserIndexRequest;
 use App\Http\Resources\Api\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -11,14 +12,19 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends ApiController
 {
+
+//    #[QueryParameter('paginate', description: 'Pass false to return all users unpaginated', type: 'string', example: ['false', 'true'])]
+//    #[QueryParameter('page', description: 'Page number', type: 'integer', example: 1)]
+//    #[QueryParameter('per_page', description: 'Items per page (1–100)', type: 'integer', example: 15)]
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(UserIndexRequest $request): JsonResponse
     {
         $this->authorize('viewAny', User::class);
 
         $users = null;
+
 
         if (auth()->user()->isAdmin()) {
             $users = User::withTrashed()->paginate();
@@ -28,7 +34,16 @@ class UserController extends ApiController
             $users = User::query()->paginate();
         }
 
-        return $this->paginated('Users retrieved successfully.', UserResource::collection($users));
+
+        if ($request->has('paginate') && $request->paginate === 'false') {
+            $users = User::withTrashed()->get();
+            return $this->ok('Users retrieved successfully (No pagination).',  ['users' => UserResource::collection($users)]);
+        }else{
+            return $this->paginated('Users retrieved successfully.', UserResource::collection($users));
+        }
+
+
+
     }
 
     /**

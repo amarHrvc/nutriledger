@@ -45,6 +45,7 @@ const VerticalMenu = ({ scrollMenu }: Props) => {
   const { user } = useAuth()
   const role = user?.role
 
+
   // Vars
   const { isBreakpointReached, transitionDuration } = verticalNavOptions
 
