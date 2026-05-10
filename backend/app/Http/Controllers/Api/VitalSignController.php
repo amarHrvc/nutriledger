@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\StoreVitalSignRequest;
+use App\Http\Resources\Api\VitalSignResource;
 use App\Models\Patient;
 use App\Models\VitalSign;
 use App\Models\Visit;
@@ -20,7 +21,20 @@ class VitalSignController extends ApiController
 
     public function store(StoreVitalSignRequest $request, Patient $patient, Visit $visit): JsonResponse
     {
-        abort(501);
+        $this->scopeVisitToPatient($visit, $patient);
+
+        if ($visit->vitalSign()->exists()) {
+            return $this->error('Vital signs already recorded for this visit.', 409);
+        }
+
+        $vitalSign = $this->vitalSignService->record($visit, $request->validated());
+
+        $vitalSign->load(['visit.patient.user', 'visit.doctor']);
+
+        return $this->created(
+            'Vital signs recorded.',
+            (new VitalSignResource($vitalSign))->toArray(request())
+        );
     }
 
     public function update(StoreVitalSignRequest $request, Patient $patient, Visit $visit): JsonResponse
