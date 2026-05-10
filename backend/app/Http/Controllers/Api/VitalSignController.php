@@ -16,7 +16,23 @@ class VitalSignController extends ApiController
 
     public function show(Patient $patient, Visit $visit): JsonResponse
     {
-        abort(501);
+        $this->scopeVisitToPatient($visit, $patient);
+
+        $vitalSign = $visit->vitalSign;
+
+        if ($vitalSign === null) {
+            abort(404);
+        }
+
+        $this->authorize('view', $vitalSign);
+
+        $vitalSign->load(['visit.patient.user', 'visit.doctor']);
+        $vitalSign->previousVitals = $this->loadPreviousVitals($visit);
+
+        return $this->ok(
+            'Vital signs retrieved.',
+            (new VitalSignResource($vitalSign))->toArray(request())
+        );
     }
 
     public function store(StoreVitalSignRequest $request, Patient $patient, Visit $visit): JsonResponse
