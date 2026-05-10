@@ -13,7 +13,9 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
@@ -40,6 +42,8 @@ export default function VisitDetail({ visit, onUpdated }: Props) {
 	const [vitals, setVitals] = useState<VitalSignResource | null>(null)
 	const [vitalsLoading, setVitalsLoading] = useState(true)
 	const [vitalsFormOpen, setVitalsFormOpen] = useState(false)
+	const [deleteVitalsOpen, setDeleteVitalsOpen] = useState(false)
+	const [deleteVitalsLoading, setDeleteVitalsLoading] = useState(false)
 
 	const patientId = visit.attributes.patientId ?? ''
 	const doctorId = visit.relationships.doctor.data?.id ?? ''
@@ -90,21 +94,24 @@ export default function VisitDetail({ visit, onUpdated }: Props) {
 		}
 	}
 
-	const handleDeleteVitals = async () => {
-		if (!confirm('Delete vital signs? This action cannot be undone.')) return
+	const confirmDeleteVitals = async () => {
+		setDeleteVitalsLoading(true)
 		try {
 			const res = await fetch(`/api/patients/${patientId}/visits/${visit.id}/vitals`, {
 				method: 'DELETE',
 			})
-			if (res.ok || res.status === 204) {
+			if (res.status === 204 || res.ok) {
 				toast.success('Vital signs deleted.')
 				setVitals(null)
+				setDeleteVitalsOpen(false)
 			} else {
 				const json = await res.json().catch(() => ({}))
 				toast.error(json.message ?? `Error ${res.status}`)
 			}
 		} catch {
 			toast.error('Failed to delete vital signs.')
+		} finally {
+			setDeleteVitalsLoading(false)
 		}
 	}
 
@@ -191,7 +198,7 @@ export default function VisitDetail({ visit, onUpdated }: Props) {
 					canEdit={canEdit}
 					canDelete={canDelete}
 					onEdit={() => setVitalsFormOpen(true)}
-					onDelete={handleDeleteVitals}
+					onDelete={() => setDeleteVitalsOpen(true)}
 				/>
 			) : canEdit ? (
 				<Box sx={{ textAlign: 'center', py: 3 }}>
@@ -213,6 +220,28 @@ export default function VisitDetail({ visit, onUpdated }: Props) {
 					onClose={() => setVitalsFormOpen(false)}
 				/>
 			)}
+
+			{/* Delete vitals confirmation */}
+			<Dialog open={deleteVitalsOpen} onClose={() => setDeleteVitalsOpen(false)} maxWidth='xs' fullWidth>
+				<DialogTitle>Delete vital signs?</DialogTitle>
+				<DialogContent>
+					<DialogContentText>This action cannot be undone.</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setDeleteVitalsOpen(false)} disabled={deleteVitalsLoading}>
+						Cancel
+					</Button>
+					<Button
+						variant='contained'
+						color='error'
+						onClick={confirmDeleteVitals}
+						disabled={deleteVitalsLoading}
+						startIcon={deleteVitalsLoading ? <CircularProgress size={16} /> : null}
+					>
+						Delete
+					</Button>
+				</DialogActions>
+			</Dialog>
 
 			<Dialog open={editOpen} onClose={() => setEditOpen(false)} maxWidth='sm' fullWidth>
 				<DialogTitle>Edit Visit</DialogTitle>
