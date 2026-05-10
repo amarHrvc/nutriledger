@@ -22,6 +22,14 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 
 import type { PatientResource, VisitResource } from '@/api/generated/nutriBaseAPI.schemas'
+
+function formatDate(dateStr: string | null | undefined): string {
+  if (!dateStr) return '—'
+  const [year, month, day] = dateStr.split('-').map(Number)
+  const d = new Date(year, month - 1, day)
+
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+}
 import VisitForm from '@/views/visits/VisitForm'
 import VisitEditForm from '@/views/visits/VisitEditForm'
 
@@ -132,7 +140,6 @@ export default function VisitsTab({ patient }: { patient: PatientResource }) {
 							<TableHead>
 								<TableRow sx={{ backgroundColor: '#f5f5f5' }}>
 									<TableCell>Date</TableCell>
-									<TableCell>Time</TableCell>
 									<TableCell>Doctor</TableCell>
 									<TableCell>Notes</TableCell>
 									<TableCell align='right'>Actions</TableCell>
@@ -141,8 +148,7 @@ export default function VisitsTab({ patient }: { patient: PatientResource }) {
 							<TableBody>
 								{visits.map(visit => (
 									<TableRow key={visit.id}>
-										<TableCell>{visit.attributes.date}</TableCell>
-										<TableCell>{visit.attributes.time || '—'}</TableCell>
+										<TableCell>{formatDate(visit.attributes.date)}</TableCell>
 										<TableCell>{visit.attributes.doctorName || '—'}</TableCell>
 										<TableCell>{visit.attributes.notes || '—'}</TableCell>
 										<TableCell align='right'>

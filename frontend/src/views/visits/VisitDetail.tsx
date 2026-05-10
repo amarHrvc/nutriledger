@@ -18,6 +18,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import Divider from '@mui/material/Divider'
+import MuiLink from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
@@ -125,7 +126,7 @@ export default function VisitDetail({ visit, onUpdated }: Props) {
 	)
 
 	return (
-		<Box sx={{ maxWidth: 720, mx: 'auto' }}>
+		<Box>
 			<Box sx={{ mb: 3 }}>
 				<Button component={Link} href='/dashboard/visits' variant='text' size='small'>
 					← Back to Visits
@@ -164,7 +165,14 @@ export default function VisitDetail({ visit, onUpdated }: Props) {
 							{field('Time', visit.attributes.time?.slice(0, 5) ?? null)}
 						</Stack>
 						<Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
-							{field('Patient', visit.attributes.patientName)}
+							<Box>
+								<Typography variant='caption' color='text.secondary' display='block'>
+									Patient
+								</Typography>
+								<MuiLink component={Link} href={`/dashboard/patients/${patientId}`} variant='body1' underline='hover'>
+									{visit.attributes.patientName || '—'}
+								</MuiLink>
+							</Box>
 							{field('Doctor', visit.attributes.doctorName)}
 						</Stack>
 						<Box>

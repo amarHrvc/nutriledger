@@ -18,42 +18,70 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 
 import type { PatientResource } from '@/api/generated/nutriBaseAPI.schemas'
-import type { VitalSignResource } from '@/views/visits/vitals.types'
+import type { VitalSignFlag, VitalSignResource } from '@/views/visits/vitals.types'
+
+const FLAG_LABELS: Record<string, string> = {
+	systolicBp: 'Systolic BP',
+	diastolicBp: 'Diastolic BP',
+	heartRate: 'Heart Rate',
+	temperature: 'Temperature',
+	bmi: 'BMI',
+	weight: 'Weight',
+	height: 'Height',
+}
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
+function formatDate(dateStr: string | null): string {
+	if (!dateStr) return '—'
+	const [year, month, day] = dateStr.split('-').map(Number)
+
+	return `${String(day).padStart(2, '0')} ${MONTHS[month - 1]} ${year}`
+}
 
 function BmiDeltaChip({ current, previous }: { current: string | null; previous: string | null }) {
 	if (!current || !previous) return null
-
 	const delta = parseFloat(current) - parseFloat(previous)
 
-	if (Math.abs(delta) < 0.1) {
-		return <Chip label='→' size='small' sx={{ ml: 0.5 }} />
-	}
+	if (Math.abs(delta) < 0.1) return <Chip label='→' size='small' sx={{ ml: 0.5 }} />
+	if (delta < 0) return <Chip label={`↓ ${delta.toFixed(1)}`} size='small' color='success' variant='tonal' sx={{ ml: 0.5 }} />
 
-	if (delta < 0) {
-		return (
-			<Chip
-				label={`↓ ${delta.toFixed(1)}`}
-				size='small'
-				color='success'
-				sx={{ ml: 0.5 }}
-			/>
-		)
-	}
-
-	return (
-		<Chip
-			label={`↑ +${delta.toFixed(1)}`}
-			size='small'
-			color='warning'
-			sx={{ ml: 0.5 }}
-		/>
-	)
+	return <Chip label={`↑ +${delta.toFixed(1)}`} size='small' color='warning' variant='tonal' sx={{ ml: 0.5 }} />
 }
 
 function bmiCategoryColor(category: string | null): 'default' | 'warning' | 'error' {
 	if (category === 'overweight' || category === 'underweight') return 'warning'
 	if (category === 'obese') return 'error'
+
 	return 'default'
+}
+
+function FlagsCell({ flags }: { flags: VitalSignFlag[] }) {
+	if (flags.length === 0) {
+		return <Typography variant='body2' color='text.disabled'>—</Typography>
+	}
+
+	return (
+		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
+			{flags.map((flag, i) => {
+				const label = FLAG_LABELS[flag.field] ?? flag.field
+				const detail = flag.threshold
+					? `${flag.value} (ok: ${flag.threshold})`
+					: String(flag.value)
+
+				return (
+					<Chip
+						key={i}
+						label={`${label}: ${detail}`}
+						size='small'
+						color='warning'
+						variant='tonal'
+						sx={{ fontWeight: 500, justifyContent: 'flex-start', maxWidth: 240 }}
+					/>
+				)
+			})}
+		</Box>
+	)
 }
 
 export default function VitalsHistoryTab({ patient }: { patient: PatientResource }) {
@@ -71,6 +99,7 @@ export default function VitalsHistoryTab({ patient }: { patient: PatientResource
 
 				if (!res.ok) {
 					setError(json?.message ?? 'Failed to load vitals history.')
+
 					return
 				}
 
@@ -121,71 +150,62 @@ export default function VitalsHistoryTab({ patient }: { patient: PatientResource
 	return (
 		<Card>
 			<CardContent sx={{ p: 0 }}>
-				<TableContainer>
-					<Table size='small'>
+				<TableContainer sx={{ overflowX: 'auto' }}>
+					<Table sx={{ minWidth: 820 }} size='small'>
 						<TableHead>
 							<TableRow sx={{ backgroundColor: 'action.hover' }}>
-								<TableCell>Visit Date</TableCell>
-								<TableCell>BP (mmHg)</TableCell>
-								<TableCell>HR (bpm)</TableCell>
-								<TableCell>Temp (°C)</TableCell>
-								<TableCell>Weight (kg)</TableCell>
-								<TableCell>Height (cm)</TableCell>
-								<TableCell>BMI</TableCell>
-								<TableCell>Category</TableCell>
-								<TableCell>Flags</TableCell>
+								<TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 600 }}>Visit Date</TableCell>
+								<TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 600 }}>BP (mmHg)</TableCell>
+								<TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 600 }}>HR (bpm)</TableCell>
+								<TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 600 }}>Temp (°C)</TableCell>
+								<TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 600 }}>Weight (kg)</TableCell>
+								<TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 600 }}>Height (cm)</TableCell>
+								<TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 600 }}>BMI</TableCell>
+								<TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 600 }}>Category</TableCell>
+								<TableCell sx={{ fontWeight: 600 }}>Flags</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							{paginated.map((record, idx) => {
 								const globalIdx = page * rowsPerPage + idx
 								const nextRecord = records[globalIdx + 1] ?? null
-								const attrs = record.attributes
+								const a = record.attributes
+								const hasFlags = a.flags.length > 0
 
 								return (
-									<TableRow key={record.id} hover>
-										<TableCell>{attrs.visitDate ?? '—'}</TableCell>
-										<TableCell>
-											{attrs.systolicBp && attrs.diastolicBp
-												? `${attrs.systolicBp}/${attrs.diastolicBp}`
-												: '—'}
+									<TableRow
+										key={record.id}
+										hover
+										sx={{ verticalAlign: hasFlags ? 'top' : 'middle' }}
+									>
+										<TableCell sx={{ whiteSpace: 'nowrap' }}>{formatDate(a.visitDate)}</TableCell>
+										<TableCell sx={{ whiteSpace: 'nowrap' }}>
+											{a.systolicBp && a.diastolicBp ? `${a.systolicBp}/${a.diastolicBp}` : '—'}
 										</TableCell>
-										<TableCell>{attrs.heartRate ?? '—'}</TableCell>
-										<TableCell>{attrs.temperature ?? '—'}</TableCell>
-										<TableCell>{attrs.weight ?? '—'}</TableCell>
-										<TableCell>{attrs.height ?? '—'}</TableCell>
-										<TableCell>
+										<TableCell sx={{ whiteSpace: 'nowrap' }}>{a.heartRate ?? '—'}</TableCell>
+										<TableCell sx={{ whiteSpace: 'nowrap' }}>{a.temperature ?? '—'}</TableCell>
+										<TableCell sx={{ whiteSpace: 'nowrap' }}>{a.weight ?? '—'}</TableCell>
+										<TableCell sx={{ whiteSpace: 'nowrap' }}>{a.height ?? '—'}</TableCell>
+										<TableCell sx={{ whiteSpace: 'nowrap' }}>
 											<Box sx={{ display: 'flex', alignItems: 'center' }}>
-												{attrs.bmi ?? '—'}
+												{a.bmi ?? '—'}
 												{nextRecord && (
-													<BmiDeltaChip
-														current={attrs.bmi}
-														previous={nextRecord.attributes.bmi}
-													/>
+													<BmiDeltaChip current={a.bmi} previous={nextRecord.attributes.bmi} />
 												)}
 											</Box>
 										</TableCell>
-										<TableCell>
-											{attrs.bmiCategory ? (
+										<TableCell sx={{ whiteSpace: 'nowrap' }}>
+											{a.bmiCategory ? (
 												<Chip
-													label={attrs.bmiCategory}
+													label={a.bmiCategory}
 													size='small'
-													color={bmiCategoryColor(attrs.bmiCategory)}
+													color={bmiCategoryColor(a.bmiCategory)}
+													variant='tonal'
 												/>
-											) : (
-												'—'
-											)}
+											) : '—'}
 										</TableCell>
 										<TableCell>
-											{attrs.flags.length > 0 ? (
-												<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-													{attrs.flags.map((flag, i) => (
-														<Chip key={i} label={flag.field} size='small' color='warning' variant='outlined' />
-													))}
-												</Box>
-											) : (
-												'—'
-											)}
+											<FlagsCell flags={a.flags} />
 										</TableCell>
 									</TableRow>
 								)

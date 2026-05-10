@@ -1,9 +1,9 @@
 'use client'
 
-import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
 
 import type { PatientResource } from '@/api/generated/nutriBaseAPI.schemas'
-import PatientLeftOverview from './patient-left'
+import PatientDetailsCard from './patient-left/PatientDetailsCard'
 import PatientRightTabs from './patient-right'
 
 interface Props {
@@ -12,13 +12,9 @@ interface Props {
 
 export default function PatientDetail({ patient }: Props) {
 	return (
-		<Grid container spacing={6}>
-			<Grid size={{ xs: 12, md: 5, lg: 4 }}>
-				<PatientLeftOverview patient={patient} />
-			</Grid>
-			<Grid size={{ xs: 12, md: 7, lg: 8 }}>
-				<PatientRightTabs patient={patient} />
-			</Grid>
-		</Grid>
+		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+			<PatientDetailsCard patient={patient} />
+			<PatientRightTabs patient={patient} />
+		</Box>
 	)
 }
