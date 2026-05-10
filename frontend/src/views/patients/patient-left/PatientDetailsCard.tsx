@@ -1,5 +1,6 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
@@ -16,12 +17,16 @@ import DialogTitle from '@mui/material/DialogTitle'
 import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
+import { useTheme } from '@mui/material/styles'
 import { IconUserCancel } from '@tabler/icons-react'
+import type { ApexOptions } from 'apexcharts'
 
 import type { PatientResource } from '@/api/generated/nutriBaseAPI.schemas'
 import type { VitalSignResource } from '@/views/visits/vitals.types'
 import ConfirmDialog from '@views/users/shared/ConfirmDialog'
 import PatientEditForm from '../PatientEditForm'
+
+const AppReactApexCharts = dynamic(() => import('@/libs/styles/AppReactApexCharts'))
 
 function initials(name: string): string {
 	return name
@@ -55,6 +60,12 @@ function formatDate(dateStr: string | null | undefined): string {
 	return `${String(day).padStart(2, '0')} ${MONTHS[month - 1]} ${year}`
 }
 
+function formatChartDate(dateStr: string): string {
+	const [, month, day] = dateStr.split('-').map(Number)
+
+	return `${String(day).padStart(2, '0')} ${MONTHS[month - 1]}`
+}
+
 function bmiCategoryColor(category: string): 'default' | 'warning' | 'error' {
 	if (category === 'overweight' || category === 'underweight') return 'warning'
 	if (category === 'obese') return 'error'
@@ -86,15 +97,18 @@ export default function PatientDetailsCard({ patient }: Props) {
 	const [editOpen, setEditOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const [latestBmiCategory, setLatestBmiCategory] = useState<string | null>(null)
+	const [vitalsHistory, setVitalsHistory] = useState<VitalSignResource[]>([])
 	const router = useRouter()
+	const theme = useTheme()
 
 	useEffect(() => {
 		fetch(`/api/patients/${patient.id}/vitals`)
 			.then(r => r.json())
 			.then((json: { data?: VitalSignResource[] }) => {
-				const category = json.data?.[0]?.attributes?.bmiCategory ?? null
+				const records = json.data ?? []
 
-				setLatestBmiCategory(category)
+				setLatestBmiCategory(records[0]?.attributes?.bmiCategory ?? null)
+				setVitalsHistory(records)
 			})
 			.catch(() => null)
 	}, [patient.id])
@@ -113,6 +127,83 @@ export default function PatientDetailsCard({ patient }: Props) {
 	} = patient.attributes
 
 	const age = computeAge(dateOfBirth)
+
+	// Build chart data — records come newest-first, reverse for chronological display
+	const chartPoints = [...vitalsHistory]
+		.reverse()
+		.filter(r => r.attributes.visitDate && (r.attributes.weight !== null || r.attributes.bmi !== null))
+
+	const hasChartData = chartPoints.length >= 2
+
+	const divider = 'var(--mui-palette-divider)'
+	const textDisabled = 'var(--mui-palette-text-disabled)'
+	const textSecondary = 'var(--mui-palette-text-secondary)'
+
+	const chartSeries = [
+		{ name: 'Weight (kg)', type: 'area', data: chartPoints.map(r => parseFloat(r.attributes.weight ?? '0') || null) },
+		{ name: 'BMI', type: 'line', data: chartPoints.map(r => parseFloat(r.attributes.bmi ?? '0') || null) },
+	]
+
+	const chartOptions: ApexOptions = {
+		chart: { toolbar: { show: false }, parentHeightOffset: 0, zoom: { enabled: false }, animations: { enabled: false } },
+		stroke: { curve: 'smooth', width: [2, 2] },
+		fill: { type: ['gradient', 'solid'], gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05, stops: [0, 100] } },
+		colors: [theme.palette.primary.main, '#FF9F43'],
+		dataLabels: { enabled: false },
+		legend: {
+			position: 'top',
+			horizontalAlign: 'left',
+			labels: { colors: textSecondary },
+			fontSize: '12px',
+			markers: { offsetY: 1, offsetX: theme.direction === 'rtl' ? 7 : -4 },
+			itemMargin: { horizontal: 8 },
+		},
+		grid: { borderColor: divider, strokeDashArray: 4, padding: { top: -10, right: 8 } },
+		xaxis: {
+			categories: chartPoints.map(r => formatChartDate(r.attributes.visitDate!)),
+			axisBorder: { show: false },
+			axisTicks: { color: divider },
+			labels: { style: { colors: textDisabled, fontSize: '11px' } },
+		},
+		yaxis: [
+			{
+				labels: {
+					formatter: (v: number) => `${v}`,
+					style: { colors: textDisabled, fontSize: '11px' },
+				},
+				title: { text: 'kg', style: { color: textDisabled, fontSize: '11px', fontWeight: 400 } },
+			},
+			{
+				opposite: true,
+				min: 15,
+				max: 45,
+				tickAmount: 6,
+				labels: {
+					formatter: (v: number) => v.toFixed(1),
+					style: { colors: textDisabled, fontSize: '11px' },
+				},
+				title: { text: 'BMI', style: { color: textDisabled, fontSize: '11px', fontWeight: 400 } },
+			},
+		],
+		annotations: {
+			yaxis: [
+				{
+					y: 18.5,
+					y2: 24.9,
+					yAxisIndex: 1,
+					fillColor: '#28C76F',
+					opacity: 0.08,
+					label: {
+						text: 'Normal BMI',
+						position: 'right',
+						offsetX: -8,
+						style: { color: '#28C76F', fontSize: '10px', background: 'transparent', cssClass: '' },
+					},
+				},
+			],
+		},
+		tooltip: { shared: true, intersect: false },
+	}
 
 	const onConfirm = async () => {
 		setLoading(true)
@@ -217,6 +308,23 @@ export default function PatientDetailsCard({ patient }: Props) {
 							</Grid>
 						</Box>
 					</Box>
+
+					{/* Weight & BMI trend chart */}
+					{hasChartData && (
+						<>
+							<Divider sx={{ my: 3 }} />
+							<Typography variant='subtitle2' color='text.secondary' sx={{ mb: 0.5 }}>
+								Weight & BMI Trend
+							</Typography>
+							<AppReactApexCharts
+								type='line'
+								width='100%'
+								height={220}
+								options={chartOptions}
+								series={chartSeries}
+							/>
+						</>
+					)}
 				</CardContent>
 			</Card>
 
