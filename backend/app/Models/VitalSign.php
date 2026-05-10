@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Database\Factories\VitalSignFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -22,6 +24,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class VitalSign extends Model
 {
+    /** @use HasFactory<VitalSignFactory> */
+    use HasFactory;
+
     /** Set by VitalSignController::show() to attach previous visit deltas. */
     public ?VitalSign $previousVitals = null;
 
