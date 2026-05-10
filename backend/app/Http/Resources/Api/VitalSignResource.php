@@ -30,15 +30,15 @@ class VitalSignResource extends JsonResource
                 'bmiCategory' => $this->bmiCategory(),
                 'flags' => $this->computed_flags,
                 'visitId' => (string) $this->visit_id,
-                'visitDate' => $this->whenLoaded('visit', fn () => $this->visit->date?->toDateString()),
+                'visitDate' => $this->whenLoaded('visit', fn () => $this->visit->date->toDateString()),
                 'patientId' => $this->whenLoaded('visit', fn () => $this->visit->relationLoaded('patient')
                     ? (string) $this->visit->patient->id
                     : null),
                 'patientName' => $this->whenLoaded('visit', fn () => $this->visit->relationLoaded('patient')
-                    ? $this->visit->patient->user?->name
+                    ? $this->visit->patient->user->name
                     : null),
                 'doctorName' => $this->whenLoaded('visit', fn () => $this->visit->relationLoaded('doctor')
-                    ? $this->visit->doctor?->name
+                    ? $this->visit->doctor->name
                     : null),
                 ...($this->resource->previousVitals !== null ? ['previousVisit' => $this->buildPreviousVisit()] : []),
                 'createdAt' => $this->created_at?->toIso8601String(),
@@ -89,7 +89,7 @@ class VitalSignResource extends JsonResource
             : null;
 
         return [
-            'visitDate' => $prev->visit?->date?->toDateString(),
+            'visitDate' => $prev->visit->date->toDateString(),
             'weight' => $prev->weight,
             'bmi' => $prev->bmi,
             'systolicBp' => $prev->systolic_bp,

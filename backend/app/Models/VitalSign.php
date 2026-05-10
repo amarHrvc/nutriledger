@@ -6,6 +6,7 @@ use Database\Factories\VitalSignFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -17,8 +18,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $weight
  * @property string|null $height
  * @property string|null $bmi
- * @property ?string $created_at
- * @property ?string $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  * @property-read Visit $visit
  * @property-read array $computed_flags
  */
