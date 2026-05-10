@@ -12,9 +12,12 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField'
 
+import type { VitalSignResource } from './vitals.types'
+
 interface Props {
   patientId: string
   visitId: string
+  existing?: VitalSignResource
   onSuccess: () => void
   onClose: () => void
 }
@@ -29,13 +32,20 @@ interface FieldErrors {
   vitals?: string[]
 }
 
-export default function VitalsForm({ patientId, visitId, onSuccess, onClose }: Props) {
-  const [systolicBp, setSystolicBp] = useState('')
-  const [diastolicBp, setDiastolicBp] = useState('')
-  const [heartRate, setHeartRate] = useState('')
-  const [temperature, setTemperature] = useState('')
-  const [weight, setWeight] = useState('')
-  const [height, setHeight] = useState('')
+function toField(value: number | string | null | undefined): string {
+  if (value === null || value === undefined) return ''
+  return String(value)
+}
+
+export default function VitalsForm({ patientId, visitId, existing, onSuccess, onClose }: Props) {
+  const isEdit = existing !== undefined
+
+  const [systolicBp, setSystolicBp] = useState(() => toField(existing?.attributes.systolicBp))
+  const [diastolicBp, setDiastolicBp] = useState(() => toField(existing?.attributes.diastolicBp))
+  const [heartRate, setHeartRate] = useState(() => toField(existing?.attributes.heartRate))
+  const [temperature, setTemperature] = useState(() => toField(existing?.attributes.temperature))
+  const [weight, setWeight] = useState(() => toField(existing?.attributes.weight))
+  const [height, setHeight] = useState(() => toField(existing?.attributes.height))
 
   const [errors, setErrors] = useState<FieldErrors>({})
   const [conflict, setConflict] = useState(false)
@@ -47,8 +57,7 @@ export default function VitalsForm({ patientId, visitId, onSuccess, onClose }: P
       ? (parseFloat(weight) / Math.pow(parseFloat(height) / 100, 2)).toFixed(1)
       : null
 
-  const fieldErr = (key: keyof FieldErrors): string | undefined =>
-    errors[key]?.[0]
+  const fieldErr = (key: keyof FieldErrors): string | undefined => errors[key]?.[0]
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -68,7 +77,7 @@ export default function VitalsForm({ patientId, visitId, onSuccess, onClose }: P
 
     try {
       const res = await fetch(`/api/patients/${patientId}/visits/${visitId}/vitals`, {
-        method: 'POST',
+        method: isEdit ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
@@ -92,7 +101,7 @@ export default function VitalsForm({ patientId, visitId, onSuccess, onClose }: P
 
       onSuccess()
     } catch {
-      setFormError('Failed to record vital signs.')
+      setFormError(isEdit ? 'Failed to update vital signs.' : 'Failed to record vital signs.')
     } finally {
       setLoading(false)
     }
@@ -100,7 +109,7 @@ export default function VitalsForm({ patientId, visitId, onSuccess, onClose }: P
 
   return (
     <Dialog open onClose={onClose} maxWidth='sm' fullWidth>
-      <DialogTitle>Record vital signs</DialogTitle>
+      <DialogTitle>{isEdit ? 'Edit vital signs' : 'Record vital signs'}</DialogTitle>
       <Box component='form' onSubmit={submit} noValidate>
         <DialogContent>
           {formError && <Alert severity='error' sx={{ mb: 2 }}>{formError}</Alert>}
@@ -181,7 +190,7 @@ export default function VitalsForm({ patientId, visitId, onSuccess, onClose }: P
             disabled={loading}
             startIcon={loading ? <CircularProgress size={16} /> : null}
           >
-            Record
+            {isEdit ? 'Save changes' : 'Record'}
           </Button>
         </DialogActions>
       </Box>

@@ -205,6 +205,7 @@ export default function VisitDetail({ visit, onUpdated }: Props) {
 				<VitalsForm
 					patientId={patientId}
 					visitId={visit.id}
+					existing={vitals ?? undefined}
 					onSuccess={() => {
 						setVitalsFormOpen(false)
 						fetchVitals()
