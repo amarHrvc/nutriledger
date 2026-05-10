@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\StoreVitalSignRequest;
 use App\Models\Patient;
 use App\Models\VitalSign;
 use App\Models\Visit;
 use App\Services\VitalSignService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class VitalSignController extends ApiController
 {
@@ -18,12 +18,12 @@ class VitalSignController extends ApiController
         abort(501);
     }
 
-    public function store(Request $request, Patient $patient, Visit $visit): JsonResponse
+    public function store(StoreVitalSignRequest $request, Patient $patient, Visit $visit): JsonResponse
     {
         abort(501);
     }
 
-    public function update(Request $request, Patient $patient, Visit $visit): JsonResponse
+    public function update(StoreVitalSignRequest $request, Patient $patient, Visit $visit): JsonResponse
     {
         abort(501);
     }
