@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 
@@ -18,6 +18,7 @@ import Typography from '@mui/material/Typography'
 import { IconUserCancel } from '@tabler/icons-react'
 
 import type { PatientResource } from '@/api/generated/nutriBaseAPI.schemas'
+import type { VitalSignResource } from '@/views/visits/vitals.types'
 import ConfirmDialog from '@views/users/shared/ConfirmDialog'
 import PatientEditForm from '../PatientEditForm'
 
@@ -34,11 +35,29 @@ interface Props {
 	patient: PatientResource
 }
 
+function bmiCategoryColor(category: string): 'default' | 'warning' | 'error' {
+	if (category === 'overweight' || category === 'underweight') return 'warning'
+	if (category === 'obese') return 'error'
+	return 'default'
+}
+
 export default function PatientDetailsCard({ patient }: Props) {
 	const [confirmOpen, setConfirmOpen] = useState(false)
 	const [editOpen, setEditOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
+	const [latestBmiCategory, setLatestBmiCategory] = useState<string | null>(null)
 	const router = useRouter()
+
+	useEffect(() => {
+		fetch(`/api/patients/${patient.id}/vitals`)
+			.then(r => r.json())
+			.then((json: { data?: VitalSignResource[] }) => {
+				const first = json.data?.[0]
+				const category = first?.attributes?.bmiCategory ?? null
+				setLatestBmiCategory(category)
+			})
+			.catch(() => null)
+	}, [patient.id])
 
 	const { fullName = '', dateOfBirth = '', gender = '', phone = '', createdAt = '' } = patient.attributes
 
@@ -81,6 +100,13 @@ export default function PatientDetailsCard({ patient }: Props) {
 							<Typography variant='h5'>{fullName}</Typography>
 						</Box>
 						{gender && <Chip label={gender} size='small' variant='outlined' />}
+						{latestBmiCategory && latestBmiCategory !== 'normal' && (
+							<Chip
+								label={latestBmiCategory.charAt(0).toUpperCase() + latestBmiCategory.slice(1)}
+								size='small'
+								color={bmiCategoryColor(latestBmiCategory)}
+							/>
+						)}
 					</Box>
 
 					{/* Stats row */}
