@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\StoreVitalSignRequest;
+use App\Http\Requests\UpdateVitalSignRequest;
 use App\Http\Resources\Api\VitalSignResource;
 use App\Models\Patient;
-use App\Models\VitalSign;
 use App\Models\Visit;
+use App\Models\VitalSign;
 use App\Services\VitalSignService;
 use Illuminate\Http\JsonResponse;
 
@@ -53,14 +54,40 @@ class VitalSignController extends ApiController
         );
     }
 
-    public function update(StoreVitalSignRequest $request, Patient $patient, Visit $visit): JsonResponse
+    public function update(UpdateVitalSignRequest $request, Patient $patient, Visit $visit): JsonResponse
     {
-        abort(501);
+        $this->scopeVisitToPatient($visit, $patient);
+
+        $vitalSign = $visit->vitalSign;
+
+        if ($vitalSign === null) {
+            abort(404);
+        }
+
+        $vitalSign = $this->vitalSignService->update($vitalSign, $request->validated());
+
+        $vitalSign->load(['visit.patient.user', 'visit.doctor']);
+
+        return $this->ok(
+            'Vital signs updated.',
+            (new VitalSignResource($vitalSign))->toArray(request())
+        );
     }
 
     public function destroy(Patient $patient, Visit $visit): JsonResponse
     {
-        abort(501);
+        $this->scopeVisitToPatient($visit, $patient);
+
+        $vitalSign = $visit->vitalSign;
+
+        if ($vitalSign === null) {
+            abort(404);
+        }
+
+        $this->authorize('delete', $vitalSign);
+        $this->vitalSignService->delete($vitalSign);
+
+        return $this->noContent();
     }
 
     public function history(Patient $patient): JsonResponse
