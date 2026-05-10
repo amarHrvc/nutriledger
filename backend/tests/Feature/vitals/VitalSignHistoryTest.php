@@ -101,3 +101,23 @@ test('guest cannot retrieve vitals history', function () {
 
     $response->assertUnauthorized();
 });
+
+test('patient views own vitals history', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+    $visit = Visit::factory()->create(['patient_id' => $patient->id, 'doctor_id' => $doctor->id]);
+    VitalSign::factory()->create(['visit_id' => $visit->id]);
+
+    $response = $this->actingAs($patient->user)->getJson("/api/patients/{$patient->id}/vitals");
+
+    $response->assertOk();
+});
+
+test('patient cannot retrieve another patients vitals history', function () {
+    $patient = Patient::factory()->create();
+    $otherPatient = Patient::factory()->create();
+
+    $response = $this->actingAs($patient->user)->getJson("/api/patients/{$otherPatient->id}/vitals");
+
+    $response->assertForbidden();
+});

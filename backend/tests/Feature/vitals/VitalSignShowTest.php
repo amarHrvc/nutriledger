@@ -97,3 +97,30 @@ test('guest cannot view vitals', function () {
 
     $response->assertUnauthorized();
 });
+
+test('patient views own visit vitals', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+    $visit = Visit::factory()->create(['patient_id' => $patient->id, 'doctor_id' => $doctor->id]);
+    VitalSign::factory()->create(['visit_id' => $visit->id]);
+
+    $response = $this->actingAs($patient->user)->getJson(
+        "/api/patients/{$patient->id}/visits/{$visit->id}/vitals"
+    );
+
+    $response->assertOk();
+});
+
+test('patient cannot view another patients visit vitals', function () {
+    $doctor = User::factory()->create(['role' => 'doktor']);
+    $patient = Patient::factory()->create();
+    $otherPatient = Patient::factory()->create();
+    $visit = Visit::factory()->create(['patient_id' => $otherPatient->id, 'doctor_id' => $doctor->id]);
+    VitalSign::factory()->create(['visit_id' => $visit->id]);
+
+    $response = $this->actingAs($patient->user)->getJson(
+        "/api/patients/{$otherPatient->id}/visits/{$visit->id}/vitals"
+    );
+
+    $response->assertForbidden();
+});
