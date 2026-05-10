@@ -65,7 +65,26 @@ class VitalSignController extends ApiController
 
     public function history(Patient $patient): JsonResponse
     {
-        abort(501);
+        $this->authorize('viewHistory', [VitalSign::class, $patient]);
+
+        $query = VitalSign::whereHas('visit', fn ($q) => $q->where('patient_id', $patient->id))
+            ->with(['visit.patient.user', 'visit.doctor'])
+            ->orderByDesc(Visit::select('date')->whereColumn('visits.id', 'vital_signs.visit_id'));
+
+        if ($from = request()->query('from')) {
+            $query->whereHas('visit', fn ($q) => $q->where('date', '>=', $from));
+        }
+
+        if ($to = request()->query('to')) {
+            $query->whereHas('visit', fn ($q) => $q->where('date', '<=', $to));
+        }
+
+        $vitals = $query->paginate(request()->integer('per_page', 15));
+
+        return $this->paginated(
+            'Vitals history retrieved.',
+            VitalSignResource::collection($vitals)
+        );
     }
 
     private function scopeVisitToPatient(Visit $visit, Patient $patient): void
