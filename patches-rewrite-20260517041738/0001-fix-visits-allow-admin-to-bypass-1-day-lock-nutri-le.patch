@@ -1,0 +1,36 @@
+From bb7b02a153d54e692f6666da6ac35ba8fd0fe515 Mon Sep 17 00:00:00 2001
+From: Amar Hajrovic <amar.hajrovic@stu.ibu.edu.ba>
+Date: Sun, 17 May 2026 04:06:28 +0200
+Subject: fix(visits): allow admin to bypass 1-day lock (nutri-ledger-hbh)
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
+---
+ backend/app/Policies/VisitPolicy.php | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/backend/app/Policies/VisitPolicy.php b/backend/app/Policies/VisitPolicy.php
+index e199885..1c38f24 100644
+--- a/backend/app/Policies/VisitPolicy.php
++++ b/backend/app/Policies/VisitPolicy.php
+@@ -62,14 +62,14 @@ public function globalIndex(User $user): bool
+      */
+     public function update(User $user, Visit $visit): bool
+     {
+-        if ($visit->date->toDateString() < now()->subDay()->toDateString()) {
+-            return false;
+-        }
+-
+         if ($user->isAdmin()) {
+             return true;
+         }
+ 
++        if ($visit->date->toDateString() < now()->subDay()->toDateString()) {
++            return false;
++        }
++
+         return $user->isDoctor() && $user->id === $visit->doctor_id;
+     }
+ 
+-- 
+2.53.0.windows.2
+
