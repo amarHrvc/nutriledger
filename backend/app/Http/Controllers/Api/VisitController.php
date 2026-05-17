@@ -91,6 +91,8 @@ class VisitController extends ApiController
             abort(404);
         }
 
+        $this->authorize('update', $visit);
+
         $visit->update($request->validated());
 
         return $this->ok('Visit updated successfully.', [

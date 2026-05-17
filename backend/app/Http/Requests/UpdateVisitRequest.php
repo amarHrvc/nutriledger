@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Patient;
 use App\Models\Visit;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,12 +15,6 @@ class UpdateVisitRequest extends FormRequest
     {
         /** @var Visit $visit */
         $visit = $this->route('visit');
-        /** @var Patient $patient */
-        $patient = $this->route('patient');
-
-        if ($visit->patient_id !== $patient->id) {
-            abort(404);
-        }
 
         return $this->user()->can('update', $visit);
     }
