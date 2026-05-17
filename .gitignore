@@ -215,3 +215,5 @@ graphify-out/manifest.json
 
 # local token tracking, not useful to share
 graphify-out/cost.json
+frontend/tsc-output.txt
+backend/database/database.sqlite
