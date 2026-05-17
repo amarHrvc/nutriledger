@@ -15,12 +15,12 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
 
-return response.json();
+  return response.json() as Promise<T>;
 }
 
 export const  client = {
-  get: <T>(path:string) => request(path, { method: 'GET' }),
-  post: <T>(path:string, body: any) => request(path, { method: 'POST', body: JSON.stringify(body) }),
-  put: <T>(path:string, body: any) => request(path, { method: 'PUT', body: JSON.stringify(body) }),
-  delete: <T>(path:string) => request(path, { method: 'DELETE'}),
+  get: <T,>(path: string): Promise<T> => request<T>(path, { method: 'GET' }),
+  post: <T,>(path: string, body: any): Promise<T> => request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
+  put: <T,>(path: string, body: any): Promise<T> => request<T>(path, { method: 'PUT', body: JSON.stringify(body) }),
+  delete: <T,>(path: string): Promise<T> => request<T>(path, { method: 'DELETE'}),
 }
