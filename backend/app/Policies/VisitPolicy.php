@@ -62,12 +62,12 @@ class VisitPolicy
      */
     public function update(User $user, Visit $visit): bool
     {
-        if ($visit->date->toDateString() < now()->subDay()->toDateString()) {
-            return false;
-        }
-
         if ($user->isAdmin()) {
             return true;
+        }
+
+        if ($visit->date->toDateString() < now()->subDay()->toDateString()) {
+            return false;
         }
 
         return $user->isDoctor() && $user->id === $visit->doctor_id;
