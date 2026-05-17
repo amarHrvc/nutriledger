@@ -1,10 +1,8 @@
-import { customFetchMutator } from '@/api/auth.mutator'
+import { patientsIndex } from '@/api/generated/patient/patient'
 import type { PatientsIndex200 } from '@/api/generated/nutriBaseAPI.schemas'
 
 export async function GET() {
-  const res = await customFetchMutator<{ data: PatientsIndex200; status: number }>(
-    'http://localhost:8000/api/patients', { method: 'GET' }
-  )
+  const res = await patientsIndex(undefined, { method: 'GET', credentials: 'include' })
   
   const patient = (res.data?.data as any)?.[0] ?? null
   
