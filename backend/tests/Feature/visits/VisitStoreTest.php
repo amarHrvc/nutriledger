@@ -2,7 +2,9 @@
 
 use App\Models\Patient;
 use App\Models\User;
-use App\Models\Visit;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
 
 test('doctor creates visit with date and time', function () {
     $doctor = User::factory()->create(['role' => 'doktor']);
