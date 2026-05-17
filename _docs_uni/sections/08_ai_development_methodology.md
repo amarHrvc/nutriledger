@@ -1,6 +1,6 @@
 # 8. AI-ASSISTED SPECIFICATION-DRIVEN DEVELOPMENT
 
-> **Note**: This section is a living document. The workflow described here was applied to Feature Group 14 (AI Diet Plan Generator) and will be updated as development progresses through implementation, testing, and review phases.
+> **Note**: This section is a living document. Phases 1–3 of the workflow (specification, planning, task generation) are documented in full. Phase 4 (implementation) will be added once Feature 014 reaches that stage.
 
 ---
 
@@ -112,11 +112,68 @@ No source code file was created during these two phases. The entire output is st
 
 ---
 
-## 8.6. Relationship to "Vibe Coding"
+## 8.6. Phase 3: Task Generation (`/speckit.tasks`)
+
+The task generation phase reads all planning artifacts — `plan.md`, `spec.md`, `data-model.md`, `contracts/`, and `research.md` — and produces a `tasks.md` file that decomposes the implementation into individually executable, independently verifiable steps. Each task specifies a unique identifier, a parallelisability flag, a user story label, a concrete action, and an exact file path. This format is designed so that any task can be handed to a developer or an AI coding agent without requiring additional context.
+
+### Structure enforced by the task generation phase
+
+**Organisation by user story.** Tasks are grouped into phases that correspond directly to the user stories defined in `spec.md`. Each user story phase is independently completable: a developer can stop after any story phase and have a working, demonstrable increment of the feature. This contrasts with a flat task list, where the feature is only testable once all tasks are complete.
+
+**TDD commit discipline.** For every backend user story, the task list enforces three sequential commit phases — RED, GREEN, and REFACTOR — as separate atomic commits. The RED phase consists solely of the test file; all tests must be confirmed failing before implementation begins. The GREEN phase contains the implementation code; all tests must pass. The REFACTOR phase handles route registration, code style enforcement, and static analysis. This three-phase commit structure is a non-negotiable architectural principle of the project, ensuring that the test suite accurately reflects intent rather than post-hoc rationalising existing code.
+
+**Prerequisite gating.** The task list opens with a Setup phase (external dependency installation) and a Foundational phase (database migration, model, factory, policy). These two phases are explicitly marked as blocking: no user story work may begin until both are complete and verified. This prevents the common failure mode where implementation begins before the infrastructure that supports it is in place.
+
+**Explicit parallelism.** Tasks that touch different files and have no shared dependency on an incomplete task are marked `[P]`. This annotation serves as a signal to both human developers and AI agents that these tasks can be executed concurrently. Within Phase 2 of Feature 014, for example, the model, factory, and policy files can be created simultaneously because they have no mutual dependency.
+
+### Example: Feature 014 task generation
+
+The `/speckit.tasks` command produced 36 tasks across seven phases for Feature 014:
+
+| Phase | Scope | Tasks | TDD phases |
+|---|---|---|---|
+| 1 — Setup | Install `laravel/ai`, configure Anthropic, verify queue table | T001–T003 | — |
+| 2 — Foundational | Migration, `PatientDietPlan` model, factory, policy | T004–T009 | — |
+| 3 — US1 (P1) | Generate endpoint + agent + job | T010–T017 | RED / GREEN / REFACTOR |
+| 4 — US2 (P2) | List and detail endpoints + resources | T018–T025 | RED / GREEN / REFACTOR |
+| 5 — US3 (P3) | Failure path verification | T026–T028 | RED / GREEN / REFACTOR |
+| 6 — FE | React `DietPlanSection`, `DietPlanCard`, `DietPlanHistory` | T029–T032 | — |
+| 7 — Polish | Pint, Larastan, build, documentation updates | T033–T036 | — |
+
+The MVP scope is Phases 1 through 3 (T001–T017): enough to demonstrate that a doctor can trigger generation, receive an immediate 202 acknowledgement, and have the background job produce a structured 7-day plan stored in the database. Each subsequent phase adds a verifiable increment without modifying what the previous phase delivered.
+
+Access control (User Story 4 in the spec) was not assigned a separate phase. Instead, the 401 and 403 assertions for every endpoint are embedded in the RED phase test file of whichever story introduces that endpoint. This avoids duplicating infrastructure while ensuring that access control is tested from the moment the endpoint is registered.
+
+### The role of the task list at implementation time
+
+`tasks.md` is the primary input to Phase 4. When the developer (or AI agent) begins implementation, they execute tasks in the order specified, committing after each TDD phase and running the verification command listed at each checkpoint. The task descriptions reference exact file paths, specific class and method names from `data-model.md`, and validation rules from `research.md`, so there is no need to re-read or re-interpret earlier artifacts during implementation. The knowledge captured in the specification and planning phases has been distilled into actionable steps.
+
+---
+
+## 8.7. Artifact Summary
+
+The table below shows the complete set of artifacts produced by the three completed phases for Feature 014, stored under `specs/014-ai-diet-plan/`.
+
+| Artifact | Produced by | Contains |
+|---|---|---|
+| `spec.md` | `/speckit.specify` | 4 user stories, 12 FRs, 6 success criteria, assumptions, edge cases |
+| `checklists/requirements.md` | `/speckit.specify` | Quality validation checklist — all items passed |
+| `research.md` | `/speckit.plan` | 9 technical decisions with rationale and alternatives |
+| `data-model.md` | `/speckit.plan` | Table schema, model, agent, job, policy definitions |
+| `contracts/api-endpoints.md` | `/speckit.plan` | 3 endpoint contracts with annotated JSON examples |
+| `quickstart.md` | `/speckit.plan` | Install steps, smoke test commands, `Agent::fake()` pattern |
+| `plan.md` | `/speckit.plan` | Technical context, Constitution Check, implementation sequence, risks |
+| `tasks.md` | `/speckit.tasks` | 36 tasks across 7 phases, TDD commit sequence, dependency graph, parallel map |
+
+No source code file was created during these three phases. The entire output is structured documentation. Phase 4 (`/speckit.implement`) consumes these artifacts as its input — the developer's and the AI's instructions at implementation time are drawn from `tasks.md`, `data-model.md`, and `contracts/`, not from a live verbal conversation.
+
+---
+
+## 8.8. Relationship to "Vibe Coding"
 
 The contrast with ad-hoc AI-assisted development is most visible at the moment of implementation. In a vibe-coding workflow, a developer would prompt an AI with something like "implement a diet plan generator for my Laravel app" and review the produced code for obvious errors before committing it. The AI makes dozens of implicit decisions — table names, column types, authorization approach, retry behaviour, response shape — without those decisions being documented or reviewed.
 
-In the speckit workflow, every one of those decisions appears in a named research entry, a data-model definition, or an API contract, reviewed and approved by the developer before implementation begins. When the AI generates source code in Phase 4, it is executing an explicit spec — not making creative choices. This has several practical consequences:
+In the speckit workflow, every one of those decisions appears in a named research entry, a data-model definition, or an API contract, reviewed and approved by the developer before implementation begins. When the AI generates source code in Phase 4, it is executing an explicit specification — not making creative choices. This has several practical consequences:
 
 1. **Traceability**: every implementation decision traces back to a numbered requirement (FR-NNN) or a research decision (D-N). Reviewers and future maintainers can understand why the code is the way it is.
 2. **Reviewability**: because the design was documented before implementation, a code review can check conformance with the approved design rather than trying to reverse-engineer intent from the code.
@@ -125,10 +182,10 @@ In the speckit workflow, every one of those decisions appears in a named researc
 
 ---
 
-## 8.7. Limitations and Ongoing Work
+## 8.9. Limitations and Ongoing Work
 
-The approach described here is not without cost. The specify-and-plan phases add front-loaded effort that would not exist in a direct implementation workflow. For features where the design space is well understood and the implementation is straightforward, this overhead may not be justified.
+The approach described here is not without cost. The specify, plan, and task generation phases add front-loaded effort that would not exist in a direct implementation workflow. For features where the design space is well understood and the implementation is straightforward, this overhead may not be justified.
 
-The AI Diet Plan Generator is a non-trivial case: it introduces a new external dependency (the Laravel AI SDK), a new architectural pattern (asynchronous agent execution with status polling), and a new security boundary (excluding patients from all AI endpoints). These properties make the upfront investment in specification and planning worthwhile. For simpler CRUD additions to existing resources, a lighter process is appropriate.
+The AI Diet Plan Generator is a non-trivial case: it introduces a new external dependency (the Laravel AI SDK), a new architectural pattern (asynchronous agent execution with status polling), and a new security boundary (excluding patients from all AI endpoints). These properties make the upfront investment worthwhile. For simpler CRUD additions to existing resources, a lighter process is appropriate.
 
-Additionally, the speckit workflow is still maturing in this project. The current work covers the specify and plan phases in full detail. The task generation and implementation phases will be documented as they are executed, and this section will be updated to reflect the complete end-to-end workflow once Feature 014 reaches the implementation phase.
+The speckit workflow is still maturing in this project. Phases 1 through 3 (specify, plan, task generation) are now documented in full detail through a concrete example. Phase 4 (implementation) will be executed against `tasks.md` and this section will be updated to document the complete end-to-end workflow once Feature 014 reaches the implementation phase.
