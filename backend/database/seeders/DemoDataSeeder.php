@@ -6,6 +6,7 @@ use App\Models\Patient;
 use App\Models\PatientSocioeconomic;
 use App\Models\User;
 use App\Models\Visit;
+use App\Services\VitalSignService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 
@@ -23,8 +24,8 @@ class DemoDataSeeder extends Seeder
 
         // 3 patients with ~10 visits each (realistic clinical tracking)
         $this->seedVisits($patients[0], $doctor, 11);
-        $this->seedVisits($patients[1], $doctor, 10);
-        $this->seedVisits($patients[2], $doctor, 9);
+        $this->seedFatimaJourney($patients[1], $doctor);   // VSR2: 5 visits with vitals, positive trajectory
+        $this->seedStefanJourney($patients[2], $doctor);   // VSR2: 7 visits with vitals, recovery + setback
 
         // 2 patients with sparse visits
         $this->seedVisits($patients[3], $doctor, 2);
@@ -229,6 +230,114 @@ class DemoDataSeeder extends Seeder
         PatientSocioeconomic::create(array_merge(['patient_id' => $patient->id], $socio));
 
         return $patient;
+    }
+
+    /**
+     * Fatima Hadžić — Type 2 diabetes + obesity management.
+     * 5 visits every 2 weeks, steady improvement across all markers.
+     * Height 162 cm, starting BMI ~34 (obese), ending ~31 (still obese but significant loss).
+     */
+    private function seedFatimaJourney(Patient $patient, User $doctor): void
+    {
+        $vitals = app(VitalSignService::class);
+
+        $visits = [
+            [
+                'weeksAgo' => 10,
+                'notes' => 'Initial nutritional assessment. Weight 89.2 kg, BMI 34.0. Blood pressure elevated at 152/94. Caloric deficit plan initiated, low-sodium diet recommended. Metformin continued.',
+                'vitals' => ['weight' => 89.20, 'height' => 162.0, 'systolic_bp' => 152, 'diastolic_bp' => 94, 'heart_rate' => 90, 'temperature' => 36.7],
+            ],
+            [
+                'weeksAgo' => 8,
+                'notes' => 'Two-week follow-up. Weight down 1.7 kg — patient reports good dietary adherence. BP improving. Encouraged to introduce 20-minute daily walks.',
+                'vitals' => ['weight' => 87.50, 'height' => 162.0, 'systolic_bp' => 148, 'diastolic_bp' => 92, 'heart_rate' => 88, 'temperature' => 36.8],
+            ],
+            [
+                'weeksAgo' => 6,
+                'notes' => 'Month one review. Cumulative weight loss 3.4 kg. Patient reports improved energy. Blood pressure trending down. Meal plan adjusted for variety.',
+                'vitals' => ['weight' => 85.80, 'height' => 162.0, 'systolic_bp' => 142, 'diastolic_bp' => 88, 'heart_rate' => 86, 'temperature' => 36.6],
+            ],
+            [
+                'weeksAgo' => 4,
+                'notes' => 'Excellent compliance. Weight 83.4 kg — 5.8 kg total loss. Blood pressure approaching normal range. HbA1c retest ordered. Activity level increased to moderate.',
+                'vitals' => ['weight' => 83.40, 'height' => 162.0, 'systolic_bp' => 138, 'diastolic_bp' => 86, 'heart_rate' => 83, 'temperature' => 36.7],
+            ],
+            [
+                'weeksAgo' => 2,
+                'notes' => 'Latest review. Total loss 7.6 kg over 8 weeks. BP 134/84 — significant improvement. HbA1c improved from 8.1% to 7.4%. Patient highly motivated. Continuing current plan.',
+                'vitals' => ['weight' => 81.60, 'height' => 162.0, 'systolic_bp' => 134, 'diastolic_bp' => 84, 'heart_rate' => 81, 'temperature' => 36.7],
+            ],
+        ];
+
+        foreach ($visits as $entry) {
+            $visit = Visit::create([
+                'patient_id' => $patient->id,
+                'doctor_id' => $doctor->id,
+                'date' => Carbon::now()->subWeeks($entry['weeksAgo'])->format('Y-m-d'),
+                'notes' => $entry['notes'],
+            ]);
+
+            $vitals->record($visit, $entry['vitals']);
+        }
+    }
+
+    /**
+     * Stefan Jovanović — Anorexia nervosa recovery programme.
+     * 7 visits every 2 weeks over 3 months. Slow but positive trajectory with a relapse at visit 4.
+     * Height 178 cm, starting BMI ~13.4 (severely underweight), ending ~15.8 (still underweight but recovering).
+     */
+    private function seedStefanJourney(Patient $patient, User $doctor): void
+    {
+        $vitals = app(VitalSignService::class);
+
+        $visits = [
+            [
+                'weeksAgo' => 14,
+                'notes' => 'Programme intake. Critically low weight 42.5 kg, BMI 13.4. Bradycardia noted (54 bpm), temperature 35.6°C. Inpatient monitoring recommended but patient declined. Daily check-ins arranged. High-calorie oral supplementation commenced.',
+                'vitals' => ['weight' => 42.50, 'height' => 178.0, 'systolic_bp' => 86, 'diastolic_bp' => 52, 'heart_rate' => 54, 'temperature' => 35.6],
+            ],
+            [
+                'weeksAgo' => 12,
+                'notes' => 'First progress check. Weight up 1.6 kg to 44.1 kg. Patient reports managing 5–6 small meals daily with family support. HR improving. Continuing structured meal plan.',
+                'vitals' => ['weight' => 44.10, 'height' => 178.0, 'systolic_bp' => 89, 'diastolic_bp' => 55, 'heart_rate' => 58, 'temperature' => 36.0],
+            ],
+            [
+                'weeksAgo' => 10,
+                'notes' => 'Good progress this fortnight. Weight 46.0 kg — best gain since programme start (+1.9 kg). Patient engaged and cooperative. Adjusted supplementation to include zinc and magnesium.',
+                'vitals' => ['weight' => 46.00, 'height' => 178.0, 'systolic_bp' => 92, 'diastolic_bp' => 58, 'heart_rate' => 62, 'temperature' => 36.2],
+            ],
+            [
+                'weeksAgo' => 8,
+                'notes' => 'Setback. Weight 44.3 kg — loss of 1.7 kg. Patient reports significant restriction episodes triggered by academic stress. Temperature and HR dropped. Emergency session with psychiatry arranged. Revised coping strategies provided.',
+                'vitals' => ['weight' => 44.30, 'height' => 178.0, 'systolic_bp' => 87, 'diastolic_bp' => 53, 'heart_rate' => 55, 'temperature' => 35.7],
+            ],
+            [
+                'weeksAgo' => 6,
+                'notes' => 'Recovery after last week\'s setback. Weight back to 46.5 kg following adjusted psychiatric support and increased family supervision during meals. Vitals stabilising.',
+                'vitals' => ['weight' => 46.50, 'height' => 178.0, 'systolic_bp' => 93, 'diastolic_bp' => 59, 'heart_rate' => 63, 'temperature' => 36.3],
+            ],
+            [
+                'weeksAgo' => 4,
+                'notes' => 'Steady progress. Weight 48.2 kg (+1.7 kg). Patient reports improved relationship with food. University exam period passed without further restriction episodes. Continuing current programme.',
+                'vitals' => ['weight' => 48.20, 'height' => 178.0, 'systolic_bp' => 95, 'diastolic_bp' => 61, 'heart_rate' => 65, 'temperature' => 36.4],
+            ],
+            [
+                'weeksAgo' => 2,
+                'notes' => 'Latest review. Weight 50.2 kg — total gain of 7.7 kg since intake. BMI 15.8, still underweight but trajectory encouraging. HR and temperature normalising. Target BMI 18.5 remains the medium-term goal.',
+                'vitals' => ['weight' => 50.20, 'height' => 178.0, 'systolic_bp' => 97, 'diastolic_bp' => 62, 'heart_rate' => 66, 'temperature' => 36.5],
+            ],
+        ];
+
+        foreach ($visits as $entry) {
+            $visit = Visit::create([
+                'patient_id' => $patient->id,
+                'doctor_id' => $doctor->id,
+                'date' => Carbon::now()->subWeeks($entry['weeksAgo'])->format('Y-m-d'),
+                'notes' => $entry['notes'],
+            ]);
+
+            $vitals->record($visit, $entry['vitals']);
+        }
     }
 
     private function seedVisits(Patient $patient, User $doctor, int $count): void

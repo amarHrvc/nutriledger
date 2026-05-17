@@ -40,6 +40,9 @@ dependencies:
   '@tanstack/react-table':
     specifier: ^8.21.3
     version: 8.21.3(react-dom@19.2.3)(react@19.2.3)
+  apexcharts:
+    specifier: ^5.11.0
+    version: 5.11.0
   classnames:
     specifier: 2.5.1
     version: 2.5.1
@@ -49,6 +52,9 @@ dependencies:
   react:
     specifier: 19.2.3
     version: 19.2.3
+  react-apexcharts:
+    specifier: ^2.1.0
+    version: 2.1.0(apexcharts@5.11.0)(react@19.2.3)
   react-colorful:
     specifier: 5.6.1
     version: 5.6.1(react-dom@19.2.3)(react@19.2.3)
@@ -2434,6 +2440,10 @@ packages:
     resolution: {integrity: sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg==}
     engines: {node: '>=12'}
     dev: true
+
+  /apexcharts@5.11.0:
+    resolution: {integrity: sha512-iIXnZ1DhndVgY4G5fmAbyUtGBTR5j4LlMEb561eAd4+wkJB7wJXXKLMr9u+4V5aQEPXeVYWgkAbuw9Y1z6MIrg==}
+    dev: false
 
   /argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
@@ -5433,6 +5443,17 @@ packages:
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
     dev: true
+
+  /react-apexcharts@2.1.0(apexcharts@5.11.0)(react@19.2.3):
+    resolution: {integrity: sha512-xrmeTKRKHh3cvvLc8SasqFjlOgIqGpyHc81qjnRtcjUM0Fu7qEjgVRWGPokGFjqhwRZVgEym8zmuEyYr5LMYIg==}
+    peerDependencies:
+      apexcharts: '>=5.10.1'
+      react: 19.2.3
+    dependencies:
+      apexcharts: 5.11.0
+      prop-types: 15.8.1
+      react: 19.2.3
+    dev: false
 
   /react-colorful@5.6.1(react-dom@19.2.3)(react@19.2.3):
     resolution: {integrity: sha512-1exovf0uGTGyq5mXQT0zgQ80uvj2PCwvF8zY1RN9/vbJVSjSo3fsB/4L3ObbF7u70NduSiK4xu4Y6q1MHoUGEw==}

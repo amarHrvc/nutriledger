@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\VitalSignController;
 use App\Http\Controllers\Api\VisitController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             ->where('visit', '[0-9]+')
             ->name('patients.visits.destroy');
     });
+
+    // Vital signs — outside role middleware to allow patient access (checked via policy)
+    Route::get('/patients/{patient}/visits/{visit}/vitals', [VitalSignController::class, 'show'])
+        ->name('patients.visits.vitals.show');
+    Route::post('/patients/{patient}/visits/{visit}/vitals', [VitalSignController::class, 'store'])
+        ->name('patients.visits.vitals.store');
+    Route::patch('/patients/{patient}/visits/{visit}/vitals', [VitalSignController::class, 'update'])
+        ->name('patients.visits.vitals.update');
+    Route::delete('/patients/{patient}/visits/{visit}/vitals', [VitalSignController::class, 'destroy'])
+        ->name('patients.visits.vitals.destroy');
+    Route::get('/patients/{patient}/vitals', [VitalSignController::class, 'history'])
+        ->name('patients.vitals.history');
 
     // Patients can view their own visits (checked via policy)
     Route::get('/patients/{patient}/visits', [VisitController::class, 'index'])

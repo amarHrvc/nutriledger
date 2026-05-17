@@ -8,7 +8,8 @@ import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 
 import VisitDetail from '@views/visits/VisitDetail'
-import type { VisitResource } from '@/api/generated/nutriBaseAPI.schemas'
+import PatientDetailsCard from '@views/patients/patient-left/PatientDetailsCard'
+import type { PatientResource, VisitResource } from '@/api/generated/nutriBaseAPI.schemas'
 
 export default function Page() {
 	const { id } = useParams<{ id: string }>()
@@ -16,6 +17,7 @@ export default function Page() {
 	const patientId = searchParams.get('patient') ?? ''
 
 	const [visit, setVisit] = useState<VisitResource | null>(null)
+	const [patient, setPatient] = useState<PatientResource | null>(null)
 	const [error, setError] = useState<string | null>(null)
 
 	const loadVisit = useCallback(async () => {
@@ -38,6 +40,14 @@ export default function Page() {
 	}, [id, patientId])
 
 	useEffect(() => {
+		if (!patientId) return
+		fetch(`/api/patients/${patientId}`)
+			.then(r => r.json())
+			.then(json => setPatient(json.data?.patient ?? null))
+			.catch(() => null)
+	}, [patientId])
+
+	useEffect(() => {
 		loadVisit()
 		window.addEventListener('visits:changed', loadVisit)
 		return () => window.removeEventListener('visits:changed', loadVisit)
@@ -52,7 +62,8 @@ export default function Page() {
 	}
 
 	return (
-		<Box sx={{ p: 3 }}>
+		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, p: 3 }}>
+			{patient && <PatientDetailsCard patient={patient} />}
 			{!visit ? <CircularProgress /> : <VisitDetail visit={visit} onUpdated={loadVisit} />}
 		</Box>
 	)
