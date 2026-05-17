@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 
@@ -45,7 +45,7 @@ export default function VisitForm({ patientId, onSuccess, onCancel }: Props) {
 	const [patients, setPatients] = useState<Patient[]>([])
 	const [doctors, setDoctors] = useState<Doctor[]>([])
 	const [patientsLoading, setPatientsLoading] = useState(true)
-	const [doctorsLoading, setDoctorsLoading] = useState(true)
+	const [doctorsLoading, setDoctorsLoading] = useState<boolean>(() => user == null ? true : (user.role === 'admin'))
 
 	const [errors, setErrors] = useState<Record<string, string[]>>({})
 	const [formError, setFormError] = useState('')
@@ -71,7 +71,7 @@ export default function VisitForm({ patientId, onSuccess, onCancel }: Props) {
 
 	// Fetch doctors when admin
 	useEffect(() => {
-		if (user?.role === 'admin') {
+		if (user?.role === 'admin') { setDoctorsLoading(true);
 			const fetchDoctors = async () => {
 				try {
 					const res = await fetch('/api/users')
@@ -227,3 +227,4 @@ export default function VisitForm({ patientId, onSuccess, onCancel }: Props) {
 		</Box>
 	)
 }
+
