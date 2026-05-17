@@ -7,7 +7,9 @@ export const customFetchMutator = async <T>(url: string, options: RequestInit): 
   const token = cookieStore.get('auth_token')?.value?.split('|')[1];
 
   const headers = new Headers(options.headers);
+
   headers.set('Accept', 'application/json');
+
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
