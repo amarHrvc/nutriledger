@@ -15,6 +15,11 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import { IconChevronDown } from '@tabler/icons-react'
+import SocioeconomicFields from './socioeconomic/SocioeconomicFields'
 
 interface Props {
 	onSuccess?: () => void
@@ -41,6 +46,9 @@ export default function PatientForm({ onSuccess, onCancel }: Props) {
 	const [allergies, setAllergies] = useState('')
 	const [medicalNotes, setMedicalNotes] = useState('')
 
+	// Socioeconomic data collected optionally on create. Only sent if non-empty.
+	const [socioData, setSocioData] = useState<Record<string, any>>({})
+
 	const [errors, setErrors] = useState<Record<string, string[]>>({})
 	const [formError, setFormError] = useState('')
 	const [loading, setLoading] = useState(false)
@@ -54,7 +62,7 @@ export default function PatientForm({ onSuccess, onCancel }: Props) {
 		setFormError('')
 
 		try {
-			const payload = {
+			const payload: Record<string, any> = {
 				name,
 				email,
 				password,
@@ -72,6 +80,11 @@ export default function PatientForm({ onSuccess, onCancel }: Props) {
 				blood_type: bloodType,
 				allergies,
 				medical_notes: medicalNotes,
+			}
+
+			// Only include socioeconomic when user provided any values (keeps create lean)
+			if (Object.keys(socioData).length > 0) {
+				payload.socioeconomic = socioData
 			}
 
 			const res = await fetch('/api/patients', {
@@ -303,6 +316,16 @@ export default function PatientForm({ onSuccess, onCancel }: Props) {
 						/>
 					</Stack>
 				</Box>
+
+				{/* Socioeconomic accordion (collapsed by default). Only sends data if any fields filled. */}
+				<Accordion>
+					<AccordionSummary expandIcon={<IconChevronDown size={18} />}>
+						<Typography>Socioeconomic (optional)</Typography>
+					</AccordionSummary>
+					<AccordionDetails>
+						<SocioeconomicFields value={socioData} onChange={setSocioData} />
+					</AccordionDetails>
+				</Accordion>
 
 				<Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
 					{onCancel && (

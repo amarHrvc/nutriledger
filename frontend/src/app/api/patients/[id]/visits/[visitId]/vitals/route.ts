@@ -18,22 +18,14 @@ export async function GET(_req: NextRequest, { params }: Params) {
 export async function POST(req: NextRequest, { params }: Params) {
   const { id, visitId } = await params
   const body: unknown = await req.json()
-  const res = await patientsVisitsVitalsStore(Number(id), Number(visitId), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  })
+  const res = await patientsVisitsVitalsStore(Number(id), Number(visitId), body as any)
   return new Response(JSON.stringify(res.data), { status: res.status })
 }
 
 export async function PATCH(req: NextRequest, { params }: Params) {
   const { id, visitId } = await params
   const body: unknown = await req.json()
-  const res = await patientsVisitsVitalsUpdate(Number(id), Number(visitId), {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  })
+  const res = await patientsVisitsVitalsUpdate(Number(id), Number(visitId), body as any)
   return new Response(JSON.stringify(res.data), { status: res.status })
 }
 

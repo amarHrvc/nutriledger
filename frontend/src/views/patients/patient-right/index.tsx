@@ -12,6 +12,7 @@ import type { PatientResource } from '@/api/generated/nutriBaseAPI.schemas'
 import MedicalTab from './medical'
 import VisitsTab from './visits'
 import VitalsHistoryTab from './vitals'
+import SocioeconomicTab from '../socioeconomic/SocioeconomicTab'
 
 interface Props {
 	patient: PatientResource
@@ -28,6 +29,7 @@ export default function PatientRightTabs({ patient }: Props) {
 				<Tab value='medical' label='Medical' />
 				<Tab value='visits' label='Visits' />
 				<Tab value='vitals' label='Vitals' />
+				<Tab value='socioeconomic' label='Socioeconomic' />
 			</TabList>
 			<TabPanel value='medical' sx={{ px: 0, pt: 4 }}>
 				<MedicalTab patient={patient} />
@@ -37,6 +39,10 @@ export default function PatientRightTabs({ patient }: Props) {
 			</TabPanel>
 			<TabPanel value='vitals' sx={{ px: 0, pt: 4 }}>
 				<VitalsHistoryTab patient={patient} />
+			</TabPanel>
+			<TabPanel value='socioeconomic' sx={{ px: 0, pt: 4 }}>
+				{/* SocioeconomicTab is lazy-imported above */}
+				<SocioeconomicTab patient={patient} />
 			</TabPanel>
 		</TabContext>
 	)

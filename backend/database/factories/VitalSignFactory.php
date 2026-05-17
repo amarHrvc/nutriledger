@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\VitalSign;
 use App\Models\Visit;
+use App\Models\VitalSign;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

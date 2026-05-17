@@ -58,6 +58,11 @@ class PatientResource extends JsonResource
                 'medicalNotes' => $this->medical_notes,
                 'createdAt' => $this->created_at?->toIso8601String(),
                 'updatedAt' => $this->updated_at?->toIso8601String(),
+                'socioeconomicData' => $this->whenLoaded('socioeconomic',
+                    fn () => $this->socioeconomic
+                        ? (new PatientSocioeconomicResource($this->socioeconomic))->toArray($request)
+                        : null,
+                ),
             ],
             'relationships' => [
                 'user' => [

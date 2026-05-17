@@ -55,7 +55,9 @@
       "Bash(git log *)",
       "Bash(sed -n '43,110p' src/api/generated/nutriBaseAPI.schemas.ts)",
       "Bash(sed -n '675,720p' src/api/generated/nutriBaseAPI.schemas.ts)",
-      "Bash(bd add *)"
+      "Bash(bd add *)",
+      "Bash(bd graph *)",
+      "Bash(Get-ChildItem *)"
     ]
   },
   "enableAllProjectMcpServers": true,

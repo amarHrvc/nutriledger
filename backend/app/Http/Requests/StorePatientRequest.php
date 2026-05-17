@@ -45,15 +45,22 @@ class StorePatientRequest extends FormRequest
             // Socioeconomic fields (all optional on create)
             'socioeconomic' => ['nullable', 'array'],
             'socioeconomic.marital_status' => ['nullable', 'in:single,married,divorced,widowed,separated,other'],
-            'socioeconomic.number_of_dependents' => ['nullable', 'integer', 'min:0'],
+            'socioeconomic.number_of_dependents' => ['nullable', 'integer', 'min:0', 'max:20'],
+            'socioeconomic.living_arrangement' => ['nullable', 'in:alone,with_family,with_partner,shared_housing,care_facility,other'],
             'socioeconomic.employment_status' => ['nullable', 'in:employed_full_time,employed_part_time,self_employed,unemployed,retired,student,unable_to_work,other'],
+            'socioeconomic.occupation' => ['nullable', 'string', 'max:255'],
             'socioeconomic.income_level' => ['nullable', 'in:low,lower_middle,middle,upper_middle,high'],
             'socioeconomic.has_health_insurance' => ['nullable', 'boolean'],
+            'socioeconomic.education_level' => ['nullable', 'in:no_formal,primary,secondary,vocational,bachelors,masters,doctorate,other'],
             'socioeconomic.smoking_status' => ['nullable', 'in:never,former,current_light,current_heavy'],
             'socioeconomic.alcohol_consumption' => ['nullable', 'in:none,occasional,moderate,heavy'],
             'socioeconomic.physical_activity_level' => ['nullable', 'in:sedentary,lightly_active,moderately_active,very_active'],
-            'socioeconomic.food_security_status' => ['nullable', 'in:food_secure,food_insecure,unsure'],
-            'socioeconomic.additional_notes' => ['nullable', 'string'],
+            'socioeconomic.has_family_support' => ['nullable', 'boolean'],
+            'socioeconomic.has_caregiver' => ['nullable', 'boolean'],
+            'socioeconomic.transportation_access' => ['nullable', 'in:own_vehicle,public_transport,rideshare,walking,limited,none'],
+            'socioeconomic.food_security_status' => ['nullable', 'in:food_secure,marginally_secure,food_insecure,severely_insecure'],
+            'socioeconomic.dietary_restrictions_cultural' => ['nullable', 'string', 'max:500'],
+            'socioeconomic.additional_notes' => ['nullable', 'string', 'max:2000'],
         ];
     }
 }

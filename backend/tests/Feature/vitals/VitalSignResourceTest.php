@@ -17,7 +17,7 @@ test('flags array is empty when all values are within thresholds', function () {
         'bmi' => 22.86,
     ]);
 
-    $attrs = (new VitalSignResource($vital))->toArray(new Request())['attributes'];
+    $attrs = (new VitalSignResource($vital))->toArray(new Request)['attributes'];
 
     expect($attrs['flags'])->toBeEmpty();
 });
@@ -27,7 +27,7 @@ test('flags array is empty when all values are within thresholds', function () {
 test('high systolic BP produces flag with correct field, value, and threshold', function () {
     $vital = VitalSign::factory()->create(['systolic_bp' => 155, 'bmi' => 22.00]);
 
-    $flags = (new VitalSignResource($vital))->toArray(new Request())['attributes']['flags'];
+    $flags = (new VitalSignResource($vital))->toArray(new Request)['attributes']['flags'];
     $flag = collect($flags)->firstWhere('field', 'systolicBp');
 
     expect($flag)->not->toBeNull()
@@ -38,7 +38,7 @@ test('high systolic BP produces flag with correct field, value, and threshold', 
 test('low systolic BP produces flag with correct field, value, and threshold', function () {
     $vital = VitalSign::factory()->create(['systolic_bp' => 80, 'bmi' => 22.00]);
 
-    $flags = (new VitalSignResource($vital))->toArray(new Request())['attributes']['flags'];
+    $flags = (new VitalSignResource($vital))->toArray(new Request)['attributes']['flags'];
     $flag = collect($flags)->firstWhere('field', 'systolicBp');
 
     expect($flag)->not->toBeNull()
@@ -51,7 +51,7 @@ test('low systolic BP produces flag with correct field, value, and threshold', f
 test('high diastolic BP produces flag with correct field, value, and threshold', function () {
     $vital = VitalSign::factory()->create(['diastolic_bp' => 95, 'bmi' => 22.00]);
 
-    $flags = (new VitalSignResource($vital))->toArray(new Request())['attributes']['flags'];
+    $flags = (new VitalSignResource($vital))->toArray(new Request)['attributes']['flags'];
     $flag = collect($flags)->firstWhere('field', 'diastolicBp');
 
     expect($flag)->not->toBeNull()
@@ -62,7 +62,7 @@ test('high diastolic BP produces flag with correct field, value, and threshold',
 test('low diastolic BP produces flag with correct field, value, and threshold', function () {
     $vital = VitalSign::factory()->create(['diastolic_bp' => 55, 'bmi' => 22.00]);
 
-    $flags = (new VitalSignResource($vital))->toArray(new Request())['attributes']['flags'];
+    $flags = (new VitalSignResource($vital))->toArray(new Request)['attributes']['flags'];
     $flag = collect($flags)->firstWhere('field', 'diastolicBp');
 
     expect($flag)->not->toBeNull()
@@ -75,7 +75,7 @@ test('low diastolic BP produces flag with correct field, value, and threshold', 
 test('high heart rate produces flag with correct field, value, and threshold', function () {
     $vital = VitalSign::factory()->create(['heart_rate' => 110, 'bmi' => 22.00]);
 
-    $flags = (new VitalSignResource($vital))->toArray(new Request())['attributes']['flags'];
+    $flags = (new VitalSignResource($vital))->toArray(new Request)['attributes']['flags'];
     $flag = collect($flags)->firstWhere('field', 'heartRate');
 
     expect($flag)->not->toBeNull()
@@ -86,7 +86,7 @@ test('high heart rate produces flag with correct field, value, and threshold', f
 test('low heart rate produces flag with correct field, value, and threshold', function () {
     $vital = VitalSign::factory()->create(['heart_rate' => 45, 'bmi' => 22.00]);
 
-    $flags = (new VitalSignResource($vital))->toArray(new Request())['attributes']['flags'];
+    $flags = (new VitalSignResource($vital))->toArray(new Request)['attributes']['flags'];
     $flag = collect($flags)->firstWhere('field', 'heartRate');
 
     expect($flag)->not->toBeNull()
@@ -99,7 +99,7 @@ test('low heart rate produces flag with correct field, value, and threshold', fu
 test('high temperature produces flag with correct field, value, and threshold', function () {
     $vital = VitalSign::factory()->create(['temperature' => 38.0, 'bmi' => 22.00]);
 
-    $flags = (new VitalSignResource($vital))->toArray(new Request())['attributes']['flags'];
+    $flags = (new VitalSignResource($vital))->toArray(new Request)['attributes']['flags'];
     $flag = collect($flags)->firstWhere('field', 'temperature');
 
     expect($flag)->not->toBeNull()
@@ -110,7 +110,7 @@ test('high temperature produces flag with correct field, value, and threshold', 
 test('low temperature produces flag with correct field, value, and threshold', function () {
     $vital = VitalSign::factory()->create(['temperature' => 35.5, 'bmi' => 22.00]);
 
-    $flags = (new VitalSignResource($vital))->toArray(new Request())['attributes']['flags'];
+    $flags = (new VitalSignResource($vital))->toArray(new Request)['attributes']['flags'];
     $flag = collect($flags)->firstWhere('field', 'temperature');
 
     expect($flag)->not->toBeNull()
@@ -123,7 +123,7 @@ test('low temperature produces flag with correct field, value, and threshold', f
 test('underweight BMI produces bmi flag with underweight category', function () {
     $vital = VitalSign::factory()->create(['bmi' => 17.00, 'weight' => null, 'height' => null]);
 
-    $flags = (new VitalSignResource($vital))->toArray(new Request())['attributes']['flags'];
+    $flags = (new VitalSignResource($vital))->toArray(new Request)['attributes']['flags'];
     $flag = collect($flags)->firstWhere('field', 'bmi');
 
     expect($flag)->not->toBeNull()
@@ -133,7 +133,7 @@ test('underweight BMI produces bmi flag with underweight category', function () 
 test('overweight BMI produces bmi flag with overweight category', function () {
     $vital = VitalSign::factory()->create(['bmi' => 27.00, 'weight' => null, 'height' => null]);
 
-    $flags = (new VitalSignResource($vital))->toArray(new Request())['attributes']['flags'];
+    $flags = (new VitalSignResource($vital))->toArray(new Request)['attributes']['flags'];
     $flag = collect($flags)->firstWhere('field', 'bmi');
 
     expect($flag)->not->toBeNull()
@@ -143,7 +143,7 @@ test('overweight BMI produces bmi flag with overweight category', function () {
 test('obese BMI produces bmi flag with obese category', function () {
     $vital = VitalSign::factory()->create(['bmi' => 32.00, 'weight' => null, 'height' => null]);
 
-    $flags = (new VitalSignResource($vital))->toArray(new Request())['attributes']['flags'];
+    $flags = (new VitalSignResource($vital))->toArray(new Request)['attributes']['flags'];
     $flag = collect($flags)->firstWhere('field', 'bmi');
 
     expect($flag)->not->toBeNull()
@@ -155,22 +155,22 @@ test('obese BMI produces bmi flag with obese category', function () {
 test('bmiCategory returns correct string at BMI boundaries', function (float $bmi, string $expected) {
     $vital = VitalSign::factory()->create(['bmi' => $bmi]);
 
-    $attrs = (new VitalSignResource($vital))->toArray(new Request())['attributes'];
+    $attrs = (new VitalSignResource($vital))->toArray(new Request)['attributes'];
 
     expect($attrs['bmiCategory'])->toBe($expected);
 })->with([
     'below 18.5 → underweight' => [18.4, 'underweight'],
-    'at 18.5 → normal'         => [18.5, 'normal'],
-    'mid normal'               => [22.0, 'normal'],
-    'at 25.0 → overweight'     => [25.0, 'overweight'],
-    'mid overweight'           => [27.5, 'overweight'],
-    'at 30.0 → obese'          => [30.0, 'obese'],
+    'at 18.5 → normal' => [18.5, 'normal'],
+    'mid normal' => [22.0, 'normal'],
+    'at 25.0 → overweight' => [25.0, 'overweight'],
+    'mid overweight' => [27.5, 'overweight'],
+    'at 30.0 → obese' => [30.0, 'obese'],
 ]);
 
 test('bmiCategory is null when bmi is null', function () {
     $vital = VitalSign::factory()->create(['bmi' => null, 'weight' => null, 'height' => null]);
 
-    $attrs = (new VitalSignResource($vital))->toArray(new Request())['attributes'];
+    $attrs = (new VitalSignResource($vital))->toArray(new Request)['attributes'];
 
     expect($attrs['bmiCategory'])->toBeNull();
 });
@@ -180,7 +180,7 @@ test('bmiCategory is null when bmi is null', function () {
 test('previousVisit block is absent when previousVitals is not set', function () {
     $vital = VitalSign::factory()->create();
 
-    $attrs = (new VitalSignResource($vital))->toArray(new Request())['attributes'];
+    $attrs = (new VitalSignResource($vital))->toArray(new Request)['attributes'];
 
     expect($attrs)->not->toHaveKey('previousVisit');
 });
@@ -192,7 +192,7 @@ test('previousVisit block is present when previousVitals is set', function () {
     $prevVital->load('visit');
     $currVital->previousVitals = $prevVital;
 
-    $attrs = (new VitalSignResource($currVital))->toArray(new Request())['attributes'];
+    $attrs = (new VitalSignResource($currVital))->toArray(new Request)['attributes'];
 
     expect($attrs)->toHaveKey('previousVisit')
         ->and($attrs['previousVisit'])->not->toBeNull();
@@ -207,7 +207,7 @@ test('weightDelta computes correctly as current minus previous weight', function
     $prevVital->load('visit');
     $currVital->previousVitals = $prevVital;
 
-    $attrs = (new VitalSignResource($currVital))->toArray(new Request())['attributes'];
+    $attrs = (new VitalSignResource($currVital))->toArray(new Request)['attributes'];
 
     expect($attrs['previousVisit']['weightDelta'])->toBe(3.0);
 });
@@ -219,7 +219,7 @@ test('bmiDelta computes correctly as current minus previous BMI', function () {
     $prevVital->load('visit');
     $currVital->previousVitals = $prevVital;
 
-    $attrs = (new VitalSignResource($currVital))->toArray(new Request())['attributes'];
+    $attrs = (new VitalSignResource($currVital))->toArray(new Request)['attributes'];
 
     expect($attrs['previousVisit']['bmiDelta'])->toBe(2.0);
 });
@@ -231,7 +231,7 @@ test('weightDelta is null when previous weight is null', function () {
     $prevVital->load('visit');
     $currVital->previousVitals = $prevVital;
 
-    $attrs = (new VitalSignResource($currVital))->toArray(new Request())['attributes'];
+    $attrs = (new VitalSignResource($currVital))->toArray(new Request)['attributes'];
 
     expect($attrs['previousVisit']['weightDelta'])->toBeNull();
 });

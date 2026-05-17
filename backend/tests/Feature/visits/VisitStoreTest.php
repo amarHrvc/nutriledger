@@ -2,7 +2,6 @@
 
 use App\Models\Patient;
 use App\Models\User;
-use App\Models\Visit;
 
 test('doctor creates visit with date and time', function () {
     $doctor = User::factory()->create(['role' => 'doktor']);

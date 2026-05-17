@@ -9,10 +9,10 @@ uses(RefreshDatabase::class);
 test('doctor sees only own visits', function () {
     $doctor1 = User::factory()->create(['role' => 'doktor']);
     $doctor2 = User::factory()->create(['role' => 'doktor']);
-    
+
     // Create a visit for doctor1
     $visit1 = Visit::factory()->create(['doctor_id' => $doctor1->id]);
-    
+
     // Create a visit for doctor2
     $visit2 = Visit::factory()->create(['doctor_id' => $doctor2->id]);
 
@@ -22,7 +22,7 @@ test('doctor sees only own visits', function () {
     $response->assertOk()
         ->assertJsonCount(1, 'data')
         ->assertJsonPath('data.0.id', (string) $visit1->id);
-    
+
     // Verify doctor2's visit is not included
     $visitIds = collect($response->json('data'))->pluck('id')->all();
     $this->assertNotContains((string) $visit2->id, $visitIds);
@@ -30,7 +30,7 @@ test('doctor sees only own visits', function () {
 
 test('doctor with no visits returns empty array', function () {
     $doctor = User::factory()->create(['role' => 'doktor']);
-    
+
     // Create a visit for another doctor
     $otherDoctor = User::factory()->create(['role' => 'doktor']);
     Visit::factory()->create(['doctor_id' => $otherDoctor->id]);
