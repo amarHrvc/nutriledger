@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        Gate::define('viewVantage', fn (?object $user): bool => app()->environment('local') || $user?->isAdmin());
+        Gate::define('viewVantage', fn (?object $user): bool =>  (bool) $user?->isAdmin());
 
         Gate::policy(VitalSign::class, VitalSignPolicy::class);
 
