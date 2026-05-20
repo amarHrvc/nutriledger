@@ -96,6 +96,12 @@ class Patient extends Model
         return $this->hasMany(Visit::class)->latest('date');
     }
 
+    /** @return HasMany<PatientDietPlan, $this> */
+    public function dietPlans(): HasMany
+    {
+        return $this->hasMany(PatientDietPlan::class);
+    }
+
     protected function casts(): array
     {
         return [

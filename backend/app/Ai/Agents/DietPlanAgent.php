@@ -18,7 +18,7 @@ use Stringable;
 
 #[UseCheapestModel]
 #[Temperature(0.3)]
-class DietPlanAgentclear implements Agent, Conversational, HasStructuredOutput, HasTools
+class DietPlanAgent implements Agent, Conversational, HasStructuredOutput, HasTools
 {
     use Promptable;
 
@@ -35,7 +35,7 @@ class DietPlanAgentclear implements Agent, Conversational, HasStructuredOutput, 
     {
 
         $socio = $this->patient->socioeconomic;
-        $age = now()->diffInYears($this->patient->date_of_birth);
+        $age = $this->patient->date_of_birth->age;
 
         $allergies           = $this->patient->allergies ?? 'None';
         $medicalNotes        = $this->patient->medical_notes ?? 'None';
