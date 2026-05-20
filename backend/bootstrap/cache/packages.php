@@ -62,4 +62,15 @@
       0 => 'Pest\\Laravel\\PestServiceProvider',
     ),
   ),
+  'storviaio/vantage' => 
+  array (
+    'aliases' => 
+    array (
+      'Vantage' => 'Storvia\\Vantage\\Facades\\Vantage',
+    ),
+    'providers' => 
+    array (
+      0 => 'Storvia\\Vantage\\VantageServiceProvider',
+    ),
+  ),
 );

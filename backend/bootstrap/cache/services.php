@@ -33,7 +33,8 @@
     29 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     30 => 'Termwind\\Laravel\\TermwindServiceProvider',
     31 => 'Pest\\Laravel\\PestServiceProvider',
-    32 => 'App\\Providers\\AppServiceProvider',
+    32 => 'Storvia\\Vantage\\VantageServiceProvider',
+    33 => 'App\\Providers\\AppServiceProvider',
   ),
   'eager' => 
   array (
@@ -55,7 +56,8 @@
     15 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     16 => 'Termwind\\Laravel\\TermwindServiceProvider',
     17 => 'Pest\\Laravel\\PestServiceProvider',
-    18 => 'App\\Providers\\AppServiceProvider',
+    18 => 'Storvia\\Vantage\\VantageServiceProvider',
+    19 => 'App\\Providers\\AppServiceProvider',
   ),
   'deferred' => 
   array (
