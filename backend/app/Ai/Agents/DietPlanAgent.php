@@ -40,11 +40,11 @@ class DietPlanAgent implements Agent, Conversational, HasStructuredOutput, HasTo
         $allergies           = $this->patient->allergies ?? 'None';
         $medicalNotes        = $this->patient->medical_notes ?? 'None';
         $dietaryRestrictions = $this->patient->dietary_restrictions ?? 'None';
-        $foodSecurity        = $socio?->food_security_status ?? 'Unknown';
-        $incomeLevel         = $socio?->income_level ?? 'Unknown';
-        $activityLevel       = $socio?->physical_activity_level ?? 'Unknown';
-        $smoking             = $socio?->smoking_status ?? 'Unknown';
-        $alcohol             = $socio?->alcohol_consumption ?? 'Unknown';
+        $foodSecurity        = $socio !== null ? ($socio->food_security_status ?? 'Unknown') : 'Unknown';
+        $incomeLevel         = $socio !== null ? ($socio->income_level ?? 'Unknown') : 'Unknown';
+        $activityLevel       = $socio !== null ? ($socio->physical_activity_level ?? 'Unknown') : 'Unknown';
+        $smoking             = $socio !== null ? ($socio->smoking_status ?? 'Unknown') : 'Unknown';
+        $alcohol             = $socio !== null ? ($socio->alcohol_consumption ?? 'Unknown') : 'Unknown';
 
         return <<<PROMPT
         You are a clinical nutritionist generating a 7-day meal plan for a specific patient.

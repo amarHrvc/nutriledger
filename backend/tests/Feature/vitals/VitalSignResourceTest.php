@@ -177,12 +177,13 @@ test('bmiCategory is null when bmi is null', function () {
 
 // ─── previousVisit block ──────────────────────────────────────────────────────
 
-test('previousVisit block is absent when previousVitals is not set', function () {
+test('previousVisit block is null when previousVitals is not set', function () {
     $vital = VitalSign::factory()->create();
 
     $attrs = (new VitalSignResource($vital))->toArray(new Request)['attributes'];
 
-    expect($attrs)->not->toHaveKey('previousVisit');
+    expect($attrs)->toHaveKey('previousVisit')
+        ->and($attrs['previousVisit'])->toBeNull();
 });
 
 test('previousVisit block is present when previousVitals is set', function () {

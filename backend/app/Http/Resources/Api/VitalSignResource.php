@@ -40,7 +40,7 @@ class VitalSignResource extends JsonResource
                 'doctorName' => $this->whenLoaded('visit', fn () => $this->visit->relationLoaded('doctor')
                     ? $this->visit->doctor->name
                     : null),
-                ...($this->resource->previousVitals !== null ? ['previousVisit' => $this->buildPreviousVisit()] : []),
+                'previousVisit' => $this->resource->previousVitals !== null ? $this->buildPreviousVisit() : null,
                 'createdAt' => $this->created_at?->toIso8601String(),
                 'updatedAt' => $this->updated_at?->toIso8601String(),
             ],

@@ -23,13 +23,14 @@ class GenerateDietPlanJob implements ShouldQueue
     public function handle(): void
     {
         try {
+            /** @var \App\Models\Patient $patient */
             $patient = $this->plan->patient()->with('socioeconomic')->firstOrFail();
             $lastError = null;
 
             for($attempt = 1; $attempt <= 2; $attempt++) {
                 $response = (new DietPlanAgent($patient))->prompt('Generate the plan.');
 
-                $validator = Validator::make($response->toArray(), [
+                $validator = Validator::make(json_decode($response->text, true) ?? [], [
                     'rationale'                   => ['required', 'string'],
                     'daily_calories'              => ['required', 'integer', 'between:1000,4000'],
                     'nutritional_goals'           => ['required', 'array'],

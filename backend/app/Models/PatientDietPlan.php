@@ -33,11 +33,13 @@ class PatientDietPlan extends Model
         ];
     }
 
+    /** @return BelongsTo<Patient, $this> */
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function doctor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'generated_by');
@@ -50,6 +52,6 @@ class PatientDietPlan extends Model
 
     public function scopeLatestCompleted(Builder $query): void
     {
-        $query->completed()->latest();
+        $query->where('status', 'completed')->latest();
     }
 }

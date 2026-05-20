@@ -128,7 +128,7 @@ test('failed plan preserves history when a new plan is created', function () {
 
     expect($plan->status)->toBe('failed');
 
-    $doctor  = User::find($plan->generated_by);
+    $doctor  = User::findOrFail($plan->generated_by);
     $patient = $plan->patient;
 
     $newPlan = PatientDietPlan::factory()->pending()->create([
