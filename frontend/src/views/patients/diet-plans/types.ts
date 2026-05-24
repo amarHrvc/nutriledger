@@ -17,6 +17,19 @@ export interface GeneratedBy {
   name: string
 }
 
+export interface EditedBy {
+  id: string
+  name: string
+}
+
+export interface DeliveryRecord {
+  id: string
+  status: 'pending' | 'sent' | 'failed'
+  recipientEmail: string
+  failureReason: string | null
+  createdAt: string
+}
+
 export interface DietPlanSummary {
   id: string
   status: 'pending' | 'completed' | 'failed'
@@ -24,6 +37,7 @@ export interface DietPlanSummary {
   nutritionalGoals: NutritionalGoals | null
   warnings: string[] | null
   failureReason: string | null
+  isEdited: boolean
   generatedBy?: GeneratedBy
   createdAt: string
 }
@@ -31,4 +45,7 @@ export interface DietPlanSummary {
 export interface DietPlan extends DietPlanSummary {
   rationale: string | null
   days: DietDay[] | null
+  editedAt: string | null
+  editedBy: EditedBy | null
+  latestDelivery: DeliveryRecord | null
 }
