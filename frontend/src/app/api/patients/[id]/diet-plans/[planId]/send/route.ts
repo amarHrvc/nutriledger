@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { customFetchMutator } from '@/api/auth.mutator'
+import { patientsDietPlansSend } from '@/api/generated/diet-plan/diet-plan'
 
 type Params = { params: Promise<{ id: string; planId: string }> }
 
@@ -8,9 +8,6 @@ export async function POST(
 	{ params }: Params
 ) {
 	const { id, planId } = await params
-	const res = await customFetchMutator<{ data: unknown; status: number }>(
-		`http://localhost:8000/api/patients/${id}/diet-plans/${planId}/send`,
-		{ method: 'POST' }
-	)
+	const res = await patientsDietPlansSend(Number(id), Number(planId))
 	return new Response(JSON.stringify(res.data), { status: res.status })
 }

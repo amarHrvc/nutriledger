@@ -4,6 +4,15 @@
  * NutriBase API
  * OpenAPI spec version: 1.0.0
  */
+export interface DietPlanDeliveryResource {
+  id: string;
+  status: string;
+  recipientEmail: string;
+  /** @nullable */
+  failureReason?: string | null;
+  createdAt: string;
+}
+
 export interface Patient {
   id: number;
   user_id: number;
@@ -71,6 +80,9 @@ export interface DietPlanResource {
   days: string;
   warnings: string;
   failureReason: string;
+  isEdited: string;
+  editedAt?: string;
+  editedBy?: UserResource;
   generatedBy?: UserResource;
   createdAt: string;
 }
@@ -82,6 +94,7 @@ export interface DietPlanSummaryResource {
   nutritionalGoals: string;
   warnings: string;
   failureReason: string;
+  isEdited: string;
   generatedBy?: UserResource;
   createdAt: string;
 }
@@ -540,6 +553,34 @@ export interface StoreVitalSignRequest {
      * @nullable
      */
   height?: number | null;
+}
+
+export type UpdateDietPlanRequestDaysItem = {
+  day?: string;
+  breakfast?: string;
+  lunch?: string;
+  dinner?: string;
+  snack?: string;
+};
+
+export interface UpdateDietPlanRequest {
+  /** @nullable */
+  rationale?: string | null;
+  /**
+     * @minimum 1000
+     * @maximum 4000
+     */
+  daily_calories?: number;
+  /** @nullable */
+  nutritional_goals?: string[] | null;
+  /** @nullable */
+  warnings?: string[] | null;
+  /**
+     * @minItems 7
+     * @maxItems 7
+     * @nullable
+     */
+  days?: UpdateDietPlanRequestDaysItem[] | null;
 }
 
 export type UpdatePatientRequestGender = typeof UpdatePatientRequestGender[keyof typeof UpdatePatientRequestGender];
@@ -1019,6 +1060,26 @@ export type PatientsDietPlansShow200 = {
   message: 'Diet plan retrieved successfully.';
   status: 200;
   data: PatientsDietPlansShow200Data;
+};
+
+export type PatientsDietPlansUpdate200Data = {
+  diet_plan: DietPlanResource;
+};
+
+export type PatientsDietPlansUpdate200 = {
+  message: 'Diet plan updated successfully.';
+  status: 200;
+  data: PatientsDietPlansUpdate200Data;
+};
+
+export type PatientsDietPlansSend202Data = {
+  delivery: DietPlanDeliveryResource;
+};
+
+export type PatientsDietPlansSend202 = {
+  message: 'Diet plan delivery initiated.';
+  status: 202;
+  data: PatientsDietPlansSend202Data;
 };
 
 export type PatientsIndexParams = {
