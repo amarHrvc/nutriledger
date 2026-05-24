@@ -35,6 +35,8 @@ class PatientDietPlan extends Model
             'nutritional_goals' => 'array',
             'days'              => 'array',
             'warnings'          => 'array',
+            'is_edited'         => 'boolean',
+            'edited_at'         => 'datetime',
         ];
     }
 
