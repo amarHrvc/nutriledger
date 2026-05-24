@@ -106,8 +106,9 @@ Add two methods:
 ## New Mailable: `DietPlanMailable`
 
 **Namespace**: `App\Mail\DietPlanMailable`
-**Constructor**: `public function __construct(public PatientDietPlan $plan, public string $recipientEmail) {}`
+**Constructor**: `public function __construct(public PatientDietPlan $plan) {}`
 **build()**: renders `resources/views/emails/diet-plan.blade.php`, subject "Your Personalised Diet Plan"
+**Note**: recipient email is already stored on `DietPlanDelivery->recipient_email` and passed to `Mail::to()` by the job — no need to carry it in the Mailable.
 
 ---
 
@@ -119,7 +120,7 @@ Add two methods:
 
 **`handle()` flow**:
 1. Load `$plan = $this->delivery->dietPlan`
-2. `Mail::to($this->delivery->recipient_email)->send(new DietPlanMailable($plan, $this->delivery->recipient_email))`
+2. `Mail::to($this->delivery->recipient_email)->send(new DietPlanMailable($plan))`
 3. On success: `$this->delivery->update(['status' => 'sent'])`
 4. `catch (Throwable $e)`: `$this->delivery->update(['status' => 'failed', 'failure_reason' => $e->getMessage()])`
 

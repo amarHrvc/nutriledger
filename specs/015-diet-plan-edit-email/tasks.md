@@ -94,10 +94,10 @@ Feature 014 provides all queue, database, and SDK infrastructure. Proceed direct
   ```php
   'isEdited'       => $this->is_edited,
   'editedAt'       => $this->when($this->is_edited, fn () => $this->edited_at?->toDateTimeString()),
-  'editedBy'       => $this->when($this->is_edited, fn () => new UserResource($this->whenLoaded('editor'))),
+  'editedBy'       => $this->when($this->is_edited, fn () => $this->whenLoaded('editor', fn () => new UserResource($this->editor))),
   'latestDelivery' => $this->whenLoaded('latestDelivery', fn () => new DietPlanDeliveryResource($this->latestDelivery)),
   ```
-  **⚠️ Do NOT write** `new DietPlanDeliveryResource($this->whenLoaded('latestDelivery'))` — passing `MissingValue` to a Resource constructor causes it to be serialized as an empty object. Use the callback form shown above. Add import: `use App\Http\Resources\Api\DietPlanDeliveryResource;`
+  **⚠️ Do NOT write** `new SomeResource($this->whenLoaded('relation'))` — passing `MissingValue` to a Resource constructor causes it to be serialized as an empty object. Always use the callback form: `$this->whenLoaded('relation', fn () => new SomeResource($this->relation))`. Both `editedBy` and `latestDelivery` above use the correct callback form. Add import: `use App\Http\Resources\Api\DietPlanDeliveryResource;`
 
   **`backend/app/Http/Resources/Api/DietPlanSummaryResource.php`** — add `'isEdited' => $this->is_edited` to `toArray()` (index list contract includes this field)
 
@@ -119,7 +119,7 @@ Feature 014 provides all queue, database, and SDK infrastructure. Proceed direct
 
 ### RED Phase — Write failing tests first, confirm they FAIL before GREEN
 
-- [ ] T016 [US2] Create `backend/tests/Feature/diet-plans/DietPlanSendTest.php` using Pest `test()` syntax — cover: (a) doctor sends completed plan → 202, response has `data.delivery.id` and `data.delivery.status === 'pending'`; (b) `Mail::fake()` + `Mail::assertQueued(DietPlanMailable::class, fn ($m) => $m->hasTo($patient->user->email))` — **use `Mail::fake()` not `Queue::fake()`** (Queue::fake stops jobs; Mail::fake intercepts Mailables directly); (c) `DietPlanDelivery` created in DB with `status=pending`, `recipient_email`, `sent_by=doctor->id`; (d) admin sends → 202; (e) guest → 401; (f) patient role → 403; (g) `status=pending` plan → 422 with non-empty `message`; (h) `status=failed` plan → 422; (i) dietPlan belonging to different patient → 404; (j) patient user has `email=null` → 422 with message about missing email; (k) two consecutive POSTs create two separate `DietPlanDelivery` rows; run `php artisan test tests/Feature/diet-plans/DietPlanSendTest.php` and confirm ALL fail (RED)
+- [ ] T016 [US2] Create `backend/tests/Feature/diet-plans/DietPlanSendTest.php` using Pest `test()` syntax — **requires `QUEUE_CONNECTION=sync` in test environment (Laravel default — verify `.env.testing` does not override it)** — cover: (a) doctor sends completed plan → 202, response has `data.delivery.id` and `data.delivery.status === 'pending'`; (b) `Mail::fake()` + `Mail::assertSent(DietPlanMailable::class, fn ($m) => $m->hasTo($patient->user->email))` — **use `Mail::fake()` not `Queue::fake()`**; `assertSent` (not `assertQueued`) because `SendDietPlanEmailJob::handle()` calls `Mail::to()->send()` (synchronous dispatch), not `Mail::to()->queue()`; (c) `DietPlanDelivery` created in DB with `status=pending`, `recipient_email`, `sent_by=doctor->id`; (d) admin sends → 202; (e) guest → 401; (f) patient role → 403; (g) `status=pending` plan → 422 with non-empty `message`; (h) `status=failed` plan → 422; (i) dietPlan belonging to different patient → 404; (j) patient user has `email=null` → 422 with message about missing email; (k) two consecutive POSTs create two separate `DietPlanDelivery` rows; run `php artisan test tests/Feature/diet-plans/DietPlanSendTest.php` and confirm ALL fail (RED)
 
 ### GREEN Phase — Implement to make T016 tests pass
 
@@ -302,7 +302,7 @@ US2:
 - **Policy registration was missing from 014** — T006 adds `Gate::policy(PatientDietPlan::class, DietPlanPolicy::class)` to `AppServiceProvider`; without it all `authorize()` calls return 403
 - **`authorize()` in FormRequest — single vs array form**: `can('update', $this->route('dietPlan'))` (single model, routes to `DietPlanPolicy::update`) vs `can('generate', [PatientDietPlan::class, $patient])` (array form used when the policy arg is a *different* model). Use single form for `update` and `send`
 - **`whenLoaded` wrapping**: `new SomeResource($this->whenLoaded('relation'))` is WRONG — use `$this->whenLoaded('relation', fn () => new SomeResource($this->relation))` callback form
-- **`Mail::fake()` not `Queue::fake()`**: use `Mail::fake()` in `DietPlanSendTest`; `Queue::fake()` intercepts jobs but not Mailables sent via `Mail::to()->send()`
+- **`Mail::fake()` not `Queue::fake()`**: use `Mail::fake()` in `DietPlanSendTest`; `Queue::fake()` intercepts jobs but not Mailables sent via `Mail::to()->send()`; use `Mail::assertSent()` (not `Mail::assertQueued()`) because the job calls `->send()`, not `->queue()`
 - **`$tries = 1` on `SendDietPlanEmailJob`**: prevents Laravel default of 3 retries (= 3 emails sent on transient failure)
 - **Blade email — inline styles only**: email clients strip `<style>` tags; use `style=""` attributes on every element
 - **`patient.user` in job NOT needed**: recipient email is already stored in `delivery->recipient_email`; only `patient` and `doctor` relations are needed for the email template
