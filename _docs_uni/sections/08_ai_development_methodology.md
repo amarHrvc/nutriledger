@@ -1,9 +1,5 @@
 # 8. AI-ASSISTED SPECIFICATION-DRIVEN DEVELOPMENT
 
-> **Note**: This section is a living document. Phases 1–3 of the workflow (specification, planning, task generation) are documented in full. Phase 4 (implementation) will be added once Feature 014 reaches that stage.
-
----
-
 ## 8.1. Motivation and Problem Statement
 
 The emergence of large language model (LLM)-powered coding assistants has introduced a new risk in software engineering practice: *vibe coding* — the habit of issuing a loosely worded prompt to an AI and accepting whatever code is produced, without first defining requirements, validating assumptions, or establishing any traceability between the stated need and the resulting implementation. While this approach can produce rapid initial output, it tends to accumulate undocumented decisions, unclear scope boundaries, and untestable behaviour. The resulting system may function in demonstration conditions while being structurally unsound for production use.
@@ -152,7 +148,7 @@ Access control (User Story 4 in the spec) was not assigned a separate phase. Ins
 
 ## 8.7. Artifact Summary
 
-The table below shows the complete set of artifacts produced by the three completed phases for Feature 014, stored under `specs/014-ai-diet-plan/`.
+The table below shows the complete set of artifacts produced by the three planning phases for Feature 014, stored under `specs/014-ai-diet-plan/`.
 
 | Artifact | Produced by | Contains |
 |---|---|---|
@@ -169,7 +165,35 @@ No source code file was created during these three phases. The entire output is 
 
 ---
 
-## 8.8. Relationship to "Vibe Coding"
+## 8.8. Phase 4: Implementation (`/speckit.implement`)
+
+The implementation phase consumes `tasks.md` as its primary input and produces source code as its output. Unlike the preceding phases, which are entirely document-producing, Phase 4 is iterative: each task is executed, verified, and committed before the next begins. The AI coding agent operates strictly within the boundaries established by `data-model.md` and `contracts/` — it is executing a specification, not making design decisions.
+
+### Structure enforced by the implementation phase
+
+**Task-by-task execution.** The developer (or AI agent) works through `tasks.md` in the order specified, treating each task as an atomic unit of work. A task is not considered complete until its verification command passes. This prevents the common failure mode of implementing several tasks simultaneously and encountering cascading failures that are difficult to attribute to a specific change.
+
+**TDD commit sequence in practice.** For each backend user story, the three-phase commit discipline enforced in `tasks.md` plays out as follows. The RED commit contains only the Pest test file, with all tests confirmed failing — this establishes what "done" means before a single line of implementation code is written. The GREEN commit introduces the implementation code (migration, model, controller, service, resource, route registration) and brings all tests to passing. The REFACTOR commit runs Laravel Pint for code style, Larastan for static analysis, and confirms the full test suite still passes. Only after all three commits are complete does the next user story begin.
+
+**Deviation handling.** When a task cannot be completed as specified — for example, if an SDK API differs from what `research.md` documented — the deviation is recorded in a brief note and the affected `research.md` entry is updated before proceeding. This keeps the planning artifacts accurate as a record of what was actually built, not only what was planned.
+
+### Example: Feature 014 implementation
+
+The implementation of Feature 014 proceeded across all seven phases defined in `tasks.md`. The Setup phase (T001–T003) installed the `laravel/ai` package with the Anthropic provider, added the `ANTHROPIC_API_KEY` environment variable to the Railway deployment configuration, and verified that the `jobs` queue table was present from a prior migration.
+
+The Foundational phase (T004–T009) created the `patient_diet_plans` migration with all eleven columns as specified in `data-model.md`, the `PatientDietPlan` Eloquent model with its JSON casts and `belongsTo` relationships, a factory with named states, and the `DietPlanPolicy` with the doctor/admin permission rules and the explicit patient exclusion required by FR-012.
+
+User Story 1 (T010–T017) was the most complex phase, introducing three new classes that had not existed in the codebase: `DietPlanAgent` (the structured-output AI agent), `GenerateDietPlanJob` (the queued job with manual retry logic), and `DietPlanController` with its `store` action. The RED commit established the test file covering the 202 acknowledgement response, the background job dispatch assertion using `Queue::fake()`, and the 401/403 access control cases. The GREEN commit introduced all three classes and registered the `POST` route. The REFACTOR commit resolved two Larastan type warnings introduced by the dynamic JSON schema construction in `DietPlanAgent`.
+
+User Stories 2 and 3 (T018–T028) added the list and detail endpoints with their `DietPlanResource` and `DietPlanCollection` resources, and verified the failure path by asserting that a job that exhausts its retry budget sets `status` to `failed` and persists the `failure_reason` column.
+
+The Frontend phase (T029–T032) added three React components to the patient profile page: `DietPlanSection` (the trigger button and status display), `DietPlanCard` (a single plan rendered as a collapsible day-by-day view), and `DietPlanHistory` (the paginated list of past plans). These components consume the same three endpoints specified in `contracts/api-endpoints.md` and use the same API client pattern established in the existing frontend codebase.
+
+The Polish phase (T033–T036) ran the full Pint formatter across all modified files, confirmed Larastan at level 5 with no errors, executed the complete Pest suite to verify no regressions, and updated the project's OpenAPI documentation to include the three new endpoints.
+
+---
+
+## 8.9. Relationship to "Vibe Coding"
 
 The contrast with ad-hoc AI-assisted development is most visible at the moment of implementation. In a vibe-coding workflow, a developer would prompt an AI with something like "implement a diet plan generator for my Laravel app" and review the produced code for obvious errors before committing it. The AI makes dozens of implicit decisions — table names, column types, authorization approach, retry behaviour, response shape — without those decisions being documented or reviewed.
 
@@ -182,10 +206,10 @@ In the speckit workflow, every one of those decisions appears in a named researc
 
 ---
 
-## 8.9. Limitations and Ongoing Work
+## 8.10. Limitations
 
 The approach described here is not without cost. The specify, plan, and task generation phases add front-loaded effort that would not exist in a direct implementation workflow. For features where the design space is well understood and the implementation is straightforward, this overhead may not be justified.
 
 The AI Diet Plan Generator is a non-trivial case: it introduces a new external dependency (the Laravel AI SDK), a new architectural pattern (asynchronous agent execution with status polling), and a new security boundary (excluding patients from all AI endpoints). These properties make the upfront investment worthwhile. For simpler CRUD additions to existing resources, a lighter process is appropriate.
 
-The speckit workflow is still maturing in this project. Phases 1 through 3 (specify, plan, task generation) are now documented in full detail through a concrete example. Phase 4 (implementation) will be executed against `tasks.md` and this section will be updated to document the complete end-to-end workflow once Feature 014 reaches the implementation phase.
+A second limitation is that the speckit workflow relies on the AI agent accurately executing the task list without introducing unspecified behaviour. In practice, static analysis (Larastan) and the Pest test suite catch most deviations, but they cannot verify that the implementation fully captures the intent of the original specification. Human review of the GREEN commit against `contracts/api-endpoints.md` remains a necessary step that the tooling does not automate.
