@@ -119,7 +119,7 @@ class DietPlanController extends ApiController
         $delivery = DietPlanDelivery::create([
             'diet_plan_id' => $dietPlan->id,
             'sent_by' => $request->user()->id,
-            'recipient_email' => $request->input('email'),
+            'recipient_email' => $patient->user->email,
             'status' => 'pending',
         ]);
 

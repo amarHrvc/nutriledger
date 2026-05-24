@@ -122,19 +122,23 @@ describe('DietPlanSendTest', function () {
             $response->assertUnprocessable();
         });
 
-        it('rejects email null', function () {
-            $patient = Patient::factory()->create();
+        it('uses patient user email as recipient without body param', function () {
+            Mail::fake();
+
+            $patientUser = User::factory()->create(['role' => 'pacijent', 'email' => 'patient@example.com']);
+            $patient = Patient::factory()->create(['user_id' => $patientUser->id]);
             $doctor = User::factory()->doctor()->create();
             $dietPlan = PatientDietPlan::factory()->for($patient)->completed()->create([
                 'generated_by' => $doctor->id,
             ]);
 
             $response = $this->actingAs($doctor)
-                ->postJson("/api/patients/{$patient->id}/diet-plans/{$dietPlan->id}/send", [
-                    'email' => null,
-                ]);
+                ->postJson("/api/patients/{$patient->id}/diet-plans/{$dietPlan->id}/send");
 
-            $response->assertUnprocessable();
+            $response->assertAccepted();
+
+            $delivery = DietPlanDelivery::where('diet_plan_id', $dietPlan->id)->first();
+            expect($delivery->recipient_email)->toBe('patient@example.com');
         });
     });
 
@@ -142,16 +146,15 @@ describe('DietPlanSendTest', function () {
         it('creates DietPlanDelivery record with pending status', function () {
             Mail::fake();
 
-            $patient = Patient::factory()->create();
+            $patientUser = User::factory()->create(['role' => 'pacijent', 'email' => 'patient@example.com']);
+            $patient = Patient::factory()->create(['user_id' => $patientUser->id]);
             $doctor = User::factory()->doctor()->create();
             $dietPlan = PatientDietPlan::factory()->for($patient)->completed()->create([
                 'generated_by' => $doctor->id,
             ]);
 
             $this->actingAs($doctor)
-                ->postJson("/api/patients/{$patient->id}/diet-plans/{$dietPlan->id}/send", [
-                    'email' => 'patient@example.com',
-                ]);
+                ->postJson("/api/patients/{$patient->id}/diet-plans/{$dietPlan->id}/send");
 
             $delivery = DietPlanDelivery::where('diet_plan_id', $dietPlan->id)->first();
             expect($delivery)->not->toBeNull();
