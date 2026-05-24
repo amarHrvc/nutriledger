@@ -56,7 +56,7 @@ class DietPlanController extends ApiController
 
         $this->authorize('view', $dietPlan);
 
-        $dietPlan->load('doctor');
+        $dietPlan->load(['doctor', 'editor', 'latestDelivery']);
 
         return $this->ok('Diet plan retrieved successfully.', [
             'diet_plan' => new DietPlanResource($dietPlan),

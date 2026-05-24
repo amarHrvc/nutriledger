@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PatientDietPlan extends Model
 {
@@ -22,6 +24,9 @@ class PatientDietPlan extends Model
         'days',
         'warnings',
         'failure_reason',
+        'is_edited',
+        'edited_by',
+        'edited_at',
     ];
 
     protected function casts(): array
@@ -43,6 +48,24 @@ class PatientDietPlan extends Model
     public function doctor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'generated_by');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function editor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'edited_by');
+    }
+
+    /** @return HasMany<DietPlanDelivery> */
+    public function deliveries(): HasMany
+    {
+        return $this->hasMany(DietPlanDelivery::class, 'diet_plan_id');
+    }
+
+    /** @return HasOne<DietPlanDelivery> */
+    public function latestDelivery(): HasOne
+    {
+        return $this->hasOne(DietPlanDelivery::class, 'diet_plan_id')->latest();
     }
 
     public function scopeCompleted(Builder $query): void
