@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\SendDietPlanRequest;
 use App\Http\Requests\StoreDietPlanRequest;
 use App\Http\Requests\UpdateDietPlanRequest;
+use App\Http\Resources\Api\DietPlanDeliveryResource;
 use App\Http\Resources\Api\DietPlanResource;
 use App\Http\Resources\Api\DietPlanSummaryResource;
 use App\Jobs\GenerateDietPlanJob;
+use App\Jobs\SendDietPlanEmailJob;
+use App\Models\DietPlanDelivery;
 use App\Models\Patient;
 use App\Models\PatientDietPlan;
 use Illuminate\Http\JsonResponse;
@@ -91,6 +95,38 @@ class DietPlanController extends ApiController
 
         return $this->ok('Diet plan updated successfully.', [
             'diet_plan' => new DietPlanResource($dietPlan),
+        ]);
+    }
+
+    public function send(SendDietPlanRequest $request, Patient $patient, PatientDietPlan $dietPlan): JsonResponse
+    {
+        if ($dietPlan->patient_id !== $patient->id) {
+            abort(404);
+        }
+
+        $this->authorize('send', $dietPlan);
+
+        if ($dietPlan->status !== 'completed') {
+            return $this->error('Diet plan must be completed to be sent.', 422);
+        }
+
+        $patient->loadMissing('user');
+
+        if (! $patient->user->email) {
+            return $this->error('Patient email is not set.', 422);
+        }
+
+        $delivery = DietPlanDelivery::create([
+            'diet_plan_id' => $dietPlan->id,
+            'sent_by' => $request->user()->id,
+            'recipient_email' => $request->input('email'),
+            'status' => 'pending',
+        ]);
+
+        SendDietPlanEmailJob::dispatch($delivery);
+
+        return $this->success('Diet plan delivery initiated.', 202, [
+            'delivery' => new DietPlanDeliveryResource($delivery),
         ]);
     }
 }
