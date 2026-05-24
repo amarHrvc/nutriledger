@@ -64,12 +64,6 @@ class PatientDietPlan extends Model
         return $this->hasMany(DietPlanDelivery::class, 'diet_plan_id');
     }
 
-    /** @return HasOne<DietPlanDelivery> */
-    public function latestDelivery(): HasOne
-    {
-        return $this->hasOne(DietPlanDelivery::class, 'diet_plan_id')->latest();
-    }
-
     public function scopeCompleted(Builder $query): void
     {
         $query->where('status', 'completed');

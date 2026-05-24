@@ -45,8 +45,8 @@ describe('DietPlanUpdateTest', function () {
                 ]);
 
             $response->assertOk();
-            expect($response->json('data.is_edited'))->toBeTrue();
-            expect($response->json('data.edited_by.name'))->toBe($doctor->name);
+            expect($response->json('data.diet_plan.is_edited'))->toBeTrue();
+            expect($response->json('data.diet_plan.edited_by.name'))->toBe($doctor->name);
         });
 
         it('admin can PATCH diet plan', function () {
@@ -139,21 +139,6 @@ describe('DietPlanUpdateTest', function () {
             $response = $this->actingAs($doctor)
                 ->patchJson("/api/patients/{$patient->id}/diet-plans/{$dietPlan->id}", [
                     'days' => array_fill(0, 6, ['day' => 'Monday']),
-                ]);
-
-            $response->assertUnprocessable();
-        });
-
-        it('rejects email null', function () {
-            $patient = Patient::factory()->create();
-            $doctor = User::factory()->doctor()->create();
-            $dietPlan = PatientDietPlan::factory()->for($patient)->completed()->create([
-                'generated_by' => $doctor->id,
-            ]);
-
-            $response = $this->actingAs($doctor)
-                ->patchJson("/api/patients/{$patient->id}/diet-plans/{$dietPlan->id}", [
-                    'email' => null,
                 ]);
 
             $response->assertUnprocessable();

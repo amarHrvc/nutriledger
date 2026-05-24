@@ -61,7 +61,7 @@ class DietPlanController extends ApiController
 
         $this->authorize('view', $dietPlan);
 
-        $dietPlan->load(['doctor', 'editor', 'latestDelivery']);
+        $dietPlan->load(['doctor', 'editor']);
 
         return $this->ok('Diet plan retrieved successfully.', [
             'diet_plan' => new DietPlanResource($dietPlan),
@@ -91,7 +91,7 @@ class DietPlanController extends ApiController
             'edited_at' => now(),
         ]);
 
-        $dietPlan->load(['doctor', 'editor', 'latestDelivery']);
+        $dietPlan->load(['doctor', 'editor']);
 
         return $this->ok('Diet plan updated successfully.', [
             'diet_plan' => new DietPlanResource($dietPlan),

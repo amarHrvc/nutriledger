@@ -19,7 +19,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property-read \Carbon\Carbon|null $edited_at
  * @property-read \App\Models\User|null $doctor
  * @property-read \App\Models\User|null $editor
- * @property-read \App\Models\DietPlanDelivery|null $latestDelivery
  */
 class DietPlanResource extends JsonResource
 {
@@ -37,7 +36,6 @@ class DietPlanResource extends JsonResource
             'isEdited'         => $this->is_edited,
             'editedAt'         => $this->when($this->is_edited, $this->edited_at?->toDateTimeString()),
             'editedBy'         => $this->whenLoaded('editor', fn () => new UserResource($this->editor)),
-            'latestDelivery'   => $this->whenLoaded('latestDelivery', fn () => new DietPlanDeliveryResource($this->latestDelivery)),
             'generatedBy'      => new UserResource($this->whenLoaded('doctor')),
             'createdAt'        => $this->created_at->toDateTimeString(),
         ];
