@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\StoreDietPlanRequest;
+use App\Http\Requests\UpdateDietPlanRequest;
 use App\Http\Resources\Api\DietPlanResource;
 use App\Http\Resources\Api\DietPlanSummaryResource;
 use App\Jobs\GenerateDietPlanJob;
@@ -59,6 +60,36 @@ class DietPlanController extends ApiController
         $dietPlan->load(['doctor', 'editor', 'latestDelivery']);
 
         return $this->ok('Diet plan retrieved successfully.', [
+            'diet_plan' => new DietPlanResource($dietPlan),
+        ]);
+    }
+
+    public function update(UpdateDietPlanRequest $request, Patient $patient, PatientDietPlan $dietPlan): JsonResponse
+    {
+        if ($dietPlan->patient_id !== $patient->id) {
+            abort(404);
+        }
+
+        $this->authorize('update', $dietPlan);
+
+        if ($dietPlan->status !== 'completed') {
+            return $this->error('Diet plan must be completed to be edited.', 422);
+        }
+
+        $dietPlan->update([
+            'daily_calories' => $request->input('daily_calories') ?? $dietPlan->daily_calories,
+            'macros' => $request->input('macros') ?? $dietPlan->macros,
+            'days' => $request->input('days') ?? $dietPlan->days,
+            'warnings' => $request->input('warnings') ?? $dietPlan->warnings,
+            'rationale' => $request->input('rationale') ?? $dietPlan->rationale,
+            'is_edited' => true,
+            'edited_by' => $request->user()->id,
+            'edited_at' => now(),
+        ]);
+
+        $dietPlan->load(['doctor', 'editor', 'latestDelivery']);
+
+        return $this->ok('Diet plan updated successfully.', [
             'diet_plan' => new DietPlanResource($dietPlan),
         ]);
     }
