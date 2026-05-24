@@ -58,7 +58,7 @@ class PatientDietPlan extends Model
         return $this->belongsTo(User::class, 'edited_by');
     }
 
-    /** @return HasMany<DietPlanDelivery> */
+    /** @return HasMany<DietPlanDelivery, $this> */
     public function deliveries(): HasMany
     {
         return $this->hasMany(DietPlanDelivery::class, 'diet_plan_id');

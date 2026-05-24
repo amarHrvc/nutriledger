@@ -82,7 +82,7 @@ class DietPlanController extends ApiController
 
         $dietPlan->update([
             'daily_calories' => $request->input('daily_calories') ?? $dietPlan->daily_calories,
-            'macros' => $request->input('macros') ?? $dietPlan->macros,
+            'nutritional_goals' => $request->input('nutritional_goals') ?? $dietPlan->nutritional_goals,
             'days' => $request->input('days') ?? $dietPlan->days,
             'warnings' => $request->input('warnings') ?? $dietPlan->warnings,
             'rationale' => $request->input('rationale') ?? $dietPlan->rationale,
