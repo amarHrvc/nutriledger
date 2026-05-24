@@ -55,14 +55,19 @@ curl -X PATCH http://localhost:8000/api/patients/1/diet-plans/1 \
   -H "Accept: application/json" \
   -d '{"rationale": "Clinician reviewed and approved."}'
 
-# 3. Send the plan to the patient
+# 3. Send the plan to the patient (email field is required in the request body)
 curl -X POST http://localhost:8000/api/patients/1/diet-plans/1/send \
   -H "Authorization: Bearer $TOKEN" \
-  -H "Accept: application/json"
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"email": "patient@example.com"}'
 
 # 4. Verify delivery record in DB
 php artisan tinker --execute="App\Models\DietPlanDelivery::latest()->first();"
 ```
+
+> **Note:** The `POST /send` endpoint requires an `email` field in the request body
+> (`SendDietPlanRequest` validates `email` as required string). Omitting it returns 422.
 
 ---
 
@@ -84,20 +89,62 @@ cd backend && php artisan test
 
 ## Faking Mail in Tests
 
+The Mailable class is `App\Mail\DietPlanMail` (not `DietPlanMailable`).
+
+The job (`SendDietPlanEmailJob`) uses `Mail::to(...)->send()` synchronously inside
+the job — it does **not** queue the mailable itself. The job is the queued unit.
+
+To assert mail in tests, fake Mail **and** run the job synchronously:
+
 ```php
 use Illuminate\Support\Facades\Mail;
-use App\Mail\DietPlanMailable;
+use App\Mail\DietPlanMail;
 
 Mail::fake();
 
 // ... trigger send endpoint ...
+// The job is dispatched to the queue; in tests the queue is synchronous by default.
 
-Mail::assertSent(DietPlanMailable::class, function ($mail) use ($patient) {
-    return $mail->hasTo($patient->user->email);
+Mail::assertSent(DietPlanMail::class, function ($mail) use ($recipientEmail) {
+    return $mail->hasTo($recipientEmail);
 });
 ```
 
-Use `Queue::fake()` alongside to assert jobs dispatched without running the worker.
+> **Gotcha:** `Mail::assertSent()` requires the queue to run synchronously in the test
+> environment. Add `QUEUE_CONNECTION=sync` to `backend/.env.testing`, or use
+> `Queue::fake()` + `Queue::assertPushed(SendDietPlanEmailJob::class)` instead to
+> assert the job was queued without running it. The shipped tests use `Mail::fake()`
+> with `Mail::assertSent()` commented out pending queue configuration.
+
+---
+
+## `latestDelivery` Eager-Loading Gotcha
+
+`DietPlanResource` does **not** automatically include `latestDelivery`. The show
+and update controller methods load `['doctor', 'editor']` but not deliveries:
+
+```php
+$dietPlan->load(['doctor', 'editor']);   // latestDelivery NOT included
+```
+
+As a result, `latestDelivery` is **not** returned by `GET /diet-plans/{id}` or
+`PATCH /diet-plans/{id}`. The frontend re-fetches delivery state by calling
+`GET /diet-plans/{id}` after the send endpoint returns the delivery object in its
+own response envelope (`data.delivery`).
+
+If you need `latestDelivery` in the show/update response in future, add to
+the controller loads:
+
+```php
+$dietPlan->load(['doctor', 'editor', 'latestDelivery']);
+```
+
+and add to `DietPlanResource::toArray()`:
+
+```php
+'latestDelivery' => $this->whenLoaded('latestDelivery',
+    fn () => new DietPlanDeliveryResource($this->latestDelivery)),
+```
 
 ---
 
@@ -110,14 +157,15 @@ backend/
 │   │   ├── Controllers/Api/
 │   │   │   └── DietPlanController.php          ← modified (add update, send methods)
 │   │   ├── Requests/
-│   │   │   └── UpdateDietPlanRequest.php        ← new
+│   │   │   ├── UpdateDietPlanRequest.php        ← new
+│   │   │   └── SendDietPlanRequest.php          ← new (validates required email field)
 │   │   └── Resources/Api/
-│   │       ├── DietPlanResource.php             ← modified (add edit fields + latestDelivery)
+│   │       ├── DietPlanResource.php             ← modified (add edit fields: isEdited, editedAt, editedBy)
 │   │       └── DietPlanDeliveryResource.php     ← new
 │   ├── Jobs/
-│   │   └── SendDietPlanEmailJob.php             ← new
+│   │   └── SendDietPlanEmailJob.php             ← new (ShouldQueue, calls Mail::to()->send() inside handle())
 │   ├── Mail/
-│   │   └── DietPlanMailable.php                 ← new
+│   │   └── DietPlanMail.php                     ← new (class name: DietPlanMail, not DietPlanMailable)
 │   ├── Models/
 │   │   ├── PatientDietPlan.php                  ← modified (edit columns, deliveries relation)
 │   │   └── DietPlanDelivery.php                 ← new
@@ -139,6 +187,13 @@ backend/
 
 frontend/
 └── src/views/patients/diet-plans/
-    ├── DietPlanCard.tsx                         ← modified (Edit + Send buttons, Edited badge)
-    └── DietPlanEditForm.tsx                     ← new (inline edit form)
+    ├── types.ts                                 ← extended (EditedBy, DeliveryRecord, isEdited, editedAt, editedBy, latestDelivery)
+    ├── DietPlanDeliveryBadge.tsx                ← new (MUI Chip: sent/pending/failed)
+    ├── DietPlanEditForm.tsx                     ← new (PATCH form with 7-day meal grid, isDirty guard, 422 errors)
+    ├── DietPlanCard.tsx                         ← modified (Edit + Send buttons, Edited chip, DeliveryBadge, Snackbar)
+    └── DietPlanSection.tsx                      ← modified (pass patientId/onUpdate, re-fetch after update)
+
+frontend/src/app/api/patients/[id]/diet-plans/
+    ├── [planId]/route.ts                        ← extended (add PATCH handler)
+    └── [planId]/send/route.ts                   ← new (POST proxy for /send endpoint)
 ```
