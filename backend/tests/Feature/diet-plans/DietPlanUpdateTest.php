@@ -21,10 +21,9 @@ describe('DietPlanUpdateTest', function () {
 
         it('patient cannot PATCH diet plan', function () {
             $patient = Patient::factory()->create();
-            $patientUser = User::factory()->patient()->for($patient)->create();
             $dietPlan = PatientDietPlan::factory()->for($patient)->completed()->create();
 
-            $response = $this->actingAs($patientUser)
+            $response = $this->actingAs($patient->user)
                 ->patchJson("/api/patients/{$patient->id}/diet-plans/{$dietPlan->id}", [
                     'daily_calories' => 2000,
                 ]);
@@ -45,8 +44,8 @@ describe('DietPlanUpdateTest', function () {
                 ]);
 
             $response->assertOk();
-            expect($response->json('data.diet_plan.is_edited'))->toBeTrue();
-            expect($response->json('data.diet_plan.edited_by.name'))->toBe($doctor->name);
+            expect($response->json('data.diet_plan.isEdited'))->toBeTrue();
+            expect($response->json('data.diet_plan.editedBy.attributes.name'))->toBe($doctor->name);
         });
 
         it('admin can PATCH diet plan', function () {
@@ -186,14 +185,17 @@ describe('DietPlanUpdateTest', function () {
                     'diet_plan' => [
                         'id',
                         'status',
-                        'is_edited',
-                        'edited_by' => [
-                            'id',
-                            'name',
-                        ],
-                        'edited_at',
-                    ],
-                ],
+                        'isEdited',
+                        'editedBy' => [
+                           'type',
+                           'id',
+                           'attributes' => [
+                               'name',
+                           ],
+                       ],
+                       'editedAt',
+                   ],
+               ],
             ]);
         });
     });
