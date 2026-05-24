@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DietPlanDelivery extends Model
 {
+    /** @use HasFactory<\Database\Factories\DietPlanDeliveryFactory> */
+    use HasFactory;
     protected $table = 'diet_plan_deliveries';
 
     protected $fillable = [
