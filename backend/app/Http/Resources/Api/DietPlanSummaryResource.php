@@ -13,6 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property-read array|null $warnings
  * @property-read string|null $failure_reason
  * @property-read \Carbon\Carbon $created_at
+ * @property-read bool $is_edited
  * @property-read \App\Models\User|null $doctor
  */
 class DietPlanSummaryResource extends JsonResource
@@ -26,6 +27,7 @@ class DietPlanSummaryResource extends JsonResource
             'nutritionalGoals' => $this->nutritional_goals,
             'warnings'         => $this->warnings,
             'failureReason'    => $this->failure_reason,
+            'isEdited'         => $this->is_edited,
             'generatedBy'      => new UserResource($this->whenLoaded('doctor')),
             'createdAt'        => $this->created_at->toDateTimeString(),
         ];
