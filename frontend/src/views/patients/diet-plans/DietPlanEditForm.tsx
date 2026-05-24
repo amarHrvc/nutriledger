@@ -35,6 +35,7 @@ export default function DietPlanEditForm({ plan, patientId, onSave, onCancel }: 
   const [proteinG, setProteinG] = useState(String(plan.nutritionalGoals?.protein_g ?? ''))
   const [carbsG, setCarbsG] = useState(String(plan.nutritionalGoals?.carbs_g ?? ''))
   const [fatG, setFatG] = useState(String(plan.nutritionalGoals?.fat_g ?? ''))
+
   const [days, setDays] = useState<DietDay[]>(
     plan.days ?? [
       { day: 'Monday', breakfast: '', lunch: '', dinner: '', snack: '' },
@@ -46,6 +47,7 @@ export default function DietPlanEditForm({ plan, patientId, onSave, onCancel }: 
       { day: 'Sunday', breakfast: '', lunch: '', dinner: '', snack: '' },
     ]
   )
+
   const [warningsRaw, setWarningsRaw] = useState((plan.warnings ?? []).join('\n'))
   const [isDirty, setIsDirty] = useState(false)
   const [saving, setSaving] = useState(false)

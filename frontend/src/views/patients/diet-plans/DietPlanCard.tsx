@@ -33,6 +33,7 @@ interface Props {
 export default function DietPlanCard({ plan, patientId, onRegenerate, onUpdate }: Props) {
   const [isEditing, setIsEditing] = useState(false)
   const [sending, setSending] = useState(false)
+
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
     open: false,
     message: '',
@@ -57,6 +58,7 @@ export default function DietPlanCard({ plan, patientId, onRegenerate, onUpdate }
 
       if (res.status === 202) {
         setSnackbar({ open: true, message: 'Diet plan queued for delivery.', severity: 'success' })
+
         // Propagate so DietPlanSection can refresh latestDelivery
         onUpdate({ ...plan, latestDelivery: json.data?.delivery ?? plan.latestDelivery })
       } else {
