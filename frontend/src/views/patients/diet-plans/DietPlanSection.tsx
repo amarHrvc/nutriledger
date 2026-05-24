@@ -106,6 +106,18 @@ export default function DietPlanSection({ patientId }: Props) {
     }
   }
 
+  const handleUpdate = async (updated: DietPlan) => {
+    // Update summaries list optimistically
+    setPlans(prev => prev.map(p => p.id === updated.id ? { ...p, ...updated } : p))
+
+    // Re-fetch full plan to get fresh latestDelivery and all fields
+    const fresh = await fetchFullPlan(updated.id)
+
+    if (fresh) {
+      setFullPlan(fresh)
+    }
+  }
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
@@ -155,7 +167,9 @@ export default function DietPlanSection({ patientId }: Props) {
       {displayPlan && (
         <DietPlanCard
           plan={displayPlan}
+          patientId={patientId}
           onRegenerate={() => { setSelected(null); setFullPlan(null); handleGenerate() }}
+          onUpdate={handleUpdate}
         />
       )}
 
