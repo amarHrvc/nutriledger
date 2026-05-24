@@ -59,6 +59,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->name('patients.diet-plans.store');
     Route::get('/patients/{patient}/diet-plans/{dietPlan}', [DietPlanController::class, 'show'])
         ->name('patients.diet-plans.show');
+    Route::patch('/patients/{patient}/diet-plans/{dietPlan}', [DietPlanController::class, 'update'])
+        ->name('patients.diet-plans.update');
 
     // Patients can view their own visits (checked via policy)
     Route::get('/patients/{patient}/visits', [VisitController::class, 'index'])
