@@ -106,6 +106,18 @@ export default function DietPlanSection({ patientId }: Props) {
     }
   }
 
+  const handleUpdate = async (updated: DietPlan) => {
+    // Update summaries list optimistically
+    setPlans(prev => prev.map(p => p.id === updated.id ? { ...p, ...updated } : p))
+
+    // Re-fetch full plan to get fresh latestDelivery and all fields
+    const fresh = await fetchFullPlan(updated.id)
+
+    if (fresh) {
+      setFullPlan(fresh)
+    }
+  }
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
@@ -116,7 +128,6 @@ export default function DietPlanSection({ patientId }: Props) {
 
   const latest = plans[0] ?? null
   const isPending = latest?.status === 'pending'
-  const isCompleted = latest?.status === 'completed'
   const isFailed = latest?.status === 'failed'
   const displayPlan = fullPlan
   const history = selected ? plans : plans.slice(1)
@@ -134,7 +145,7 @@ export default function DietPlanSection({ patientId }: Props) {
 
       {isPending && (
         <Alert severity='info' icon={<CircularProgress size={18} />} sx={{ mb: 2 }}>
-          Generating your patient's diet plan… This takes about 10–30 seconds.
+          Generating your patient&apos;s diet plan… This takes about 10–30 seconds.
         </Alert>
       )}
 
@@ -155,7 +166,9 @@ export default function DietPlanSection({ patientId }: Props) {
       {displayPlan && (
         <DietPlanCard
           plan={displayPlan}
+          patientId={patientId}
           onRegenerate={() => { setSelected(null); setFullPlan(null); handleGenerate() }}
+          onUpdate={handleUpdate}
         />
       )}
 

@@ -12,7 +12,7 @@ export default function PatientsView() {
     (async () => {
       try {
         // Use client-side fetch to avoid importing server-only helpers
-        const res = await fetch('http://localhost:8000/api/patients', { method: 'GET' });
+        const res = await fetch('/api/patients', { method: 'GET' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         if (mounted) setPatients(json);

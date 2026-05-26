@@ -9,8 +9,11 @@ import type {
   AuthorizationExceptionResponse,
   ModelNotFoundExceptionResponse,
   PatientsDietPlansIndex200,
+  PatientsDietPlansSend202,
   PatientsDietPlansShow200,
   PatientsDietPlansStore202,
+  PatientsDietPlansUpdate200,
+  UpdateDietPlanRequest,
   ValidationExceptionResponse
 } from '../nutriBaseAPI.schemas';
 
@@ -164,6 +167,120 @@ export const patientsDietPlansShow = async (patient: number,
   {
     ...options,
     method: 'GET'
+
+
+  }
+);}
+
+
+export type patientsDietPlansUpdateResponse200 = {
+  data: PatientsDietPlansUpdate200
+  status: 200
+}
+
+export type patientsDietPlansUpdateResponse401 = {
+  data: AuthenticationExceptionResponse
+  status: 401
+}
+
+export type patientsDietPlansUpdateResponse403 = {
+  data: AuthorizationExceptionResponse
+  status: 403
+}
+
+export type patientsDietPlansUpdateResponse404 = {
+  data: ModelNotFoundExceptionResponse
+  status: 404
+}
+
+export type patientsDietPlansUpdateResponse422 = {
+  data: ValidationExceptionResponse
+  status: 422
+}
+
+export type patientsDietPlansUpdateResponseSuccess = (patientsDietPlansUpdateResponse200) & {
+  headers: Headers;
+};
+export type patientsDietPlansUpdateResponseError = (patientsDietPlansUpdateResponse401 | patientsDietPlansUpdateResponse403 | patientsDietPlansUpdateResponse404 | patientsDietPlansUpdateResponse422) & {
+  headers: Headers;
+};
+
+export type patientsDietPlansUpdateResponse = (patientsDietPlansUpdateResponseSuccess | patientsDietPlansUpdateResponseError)
+
+export const getPatientsDietPlansUpdateUrl = (patient: number,
+    dietPlan: number,) => {
+
+
+
+
+  return `http://localhost:8000/api/patients/${patient}/diet-plans/${dietPlan}`
+}
+
+export const patientsDietPlansUpdate = async (patient: number,
+    dietPlan: number,
+    updateDietPlanRequest: UpdateDietPlanRequest, options?: RequestInit): Promise<patientsDietPlansUpdateResponse> => {
+
+  return customFetchMutator<patientsDietPlansUpdateResponse>(getPatientsDietPlansUpdateUrl(patient,dietPlan),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateDietPlanRequest,)
+  }
+);}
+
+
+export type patientsDietPlansSendResponse202 = {
+  data: PatientsDietPlansSend202
+  status: 202
+}
+
+export type patientsDietPlansSendResponse401 = {
+  data: AuthenticationExceptionResponse
+  status: 401
+}
+
+export type patientsDietPlansSendResponse403 = {
+  data: AuthorizationExceptionResponse
+  status: 403
+}
+
+export type patientsDietPlansSendResponse404 = {
+  data: ModelNotFoundExceptionResponse
+  status: 404
+}
+
+export type patientsDietPlansSendResponse422 = {
+  data: ValidationExceptionResponse
+  status: 422
+}
+
+export type patientsDietPlansSendResponseSuccess = (patientsDietPlansSendResponse202) & {
+  headers: Headers;
+};
+export type patientsDietPlansSendResponseError = (patientsDietPlansSendResponse401 | patientsDietPlansSendResponse403 | patientsDietPlansSendResponse404 | patientsDietPlansSendResponse422) & {
+  headers: Headers;
+};
+
+export type patientsDietPlansSendResponse = (patientsDietPlansSendResponseSuccess | patientsDietPlansSendResponseError)
+
+export const getPatientsDietPlansSendUrl = (patient: number,
+    dietPlan: number,) => {
+
+
+
+
+  return `http://localhost:8000/api/patients/${patient}/diet-plans/${dietPlan}/send`
+}
+
+export const patientsDietPlansSend = async (patient: number,
+    dietPlan: number, options?: RequestInit): Promise<patientsDietPlansSendResponse> => {
+
+  return customFetchMutator<patientsDietPlansSendResponse>(getPatientsDietPlansSendUrl(patient,dietPlan),
+  {
+    ...options,
+    method: 'POST'
 
 
   }

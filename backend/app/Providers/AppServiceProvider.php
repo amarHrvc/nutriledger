@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\PatientDietPlan;
 use App\Models\VitalSign;
+use App\Policies\DietPlanPolicy;
 use App\Policies\VitalSignPolicy;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
@@ -22,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('viewVantage', fn (?object $user): bool =>  (bool) $user?->isAdmin());
 
         Gate::policy(VitalSign::class, VitalSignPolicy::class);
+        Gate::policy(PatientDietPlan::class, DietPlanPolicy::class);
 
         RateLimiter::for('login', fn ($r) => Limit::perMinute(5)->by($r->ip()));
 
