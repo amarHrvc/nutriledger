@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DietPlanController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VisitController;
@@ -50,6 +51,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->name('patients.visits.vitals.destroy');
     Route::get('/patients/{patient}/vitals', [VitalSignController::class, 'history'])
         ->name('patients.vitals.history');
+
+    // Diet plans — admin and doctor only (checked via policy)
+    Route::get('/patients/{patient}/diet-plans', [DietPlanController::class, 'index'])
+        ->name('patients.diet-plans.index');
+    Route::post('/patients/{patient}/diet-plans', [DietPlanController::class, 'store'])
+        ->name('patients.diet-plans.store');
+    Route::get('/patients/{patient}/diet-plans/{dietPlan}', [DietPlanController::class, 'show'])
+        ->name('patients.diet-plans.show');
 
     // Patients can view their own visits (checked via policy)
     Route::get('/patients/{patient}/visits', [VisitController::class, 'index'])

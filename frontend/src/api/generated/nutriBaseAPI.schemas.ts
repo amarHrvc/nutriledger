@@ -4,11 +4,6 @@
  * NutriBase API
  * OpenAPI spec version: 1.0.0
  */
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
 export interface Patient {
   id: number;
   user_id: number;
@@ -38,6 +33,62 @@ export interface Patient {
   created_at: string | null;
   /** @nullable */
   updated_at: string | null;
+}
+
+export type UserResourceAttributes = {
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+  /** @nullable */
+  deletedAt: string | null;
+  isDeleted: boolean;
+};
+
+export type UserResourceRelationships = {
+  patient?: Patient;
+};
+
+export type UserResourceLinks = {
+  self: string;
+};
+
+export interface UserResource {
+  type: 'users';
+  id: number;
+  attributes: UserResourceAttributes;
+  relationships: UserResourceRelationships;
+  links: UserResourceLinks;
+}
+
+export interface DietPlanResource {
+  id: string;
+  status: string;
+  rationale: string;
+  dailyCalories: string;
+  nutritionalGoals: string;
+  days: string;
+  warnings: string;
+  failureReason: string;
+  generatedBy?: UserResource;
+  createdAt: string;
+}
+
+export interface DietPlanSummaryResource {
+  id: string;
+  status: string;
+  dailyCalories: string;
+  nutritionalGoals: string;
+  warnings: string;
+  failureReason: string;
+  generatedBy?: UserResource;
+  createdAt: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
 }
 
 /**
@@ -816,33 +867,6 @@ export interface UpdateVitalSignRequest {
   height?: number | null;
 }
 
-export type UserResourceAttributes = {
-  name: string;
-  email: string;
-  role: string;
-  createdAt: string;
-  updatedAt: string;
-  /** @nullable */
-  deletedAt: string | null;
-  isDeleted: boolean;
-};
-
-export type UserResourceRelationships = {
-  patient?: Patient;
-};
-
-export type UserResourceLinks = {
-  self: string;
-};
-
-export interface UserResource {
-  type: 'users';
-  id: number;
-  attributes: UserResourceAttributes;
-  relationships: UserResourceRelationships;
-  links: UserResourceLinks;
-}
-
 export type VisitResourceAttributes = {
   date: string;
   /** @nullable */
@@ -958,6 +982,43 @@ export type UserMe200 = {
   message: 'Profile retrieved';
   status: 200;
   data: UserMe200Data;
+};
+
+export type PatientsDietPlansIndex200Data = {
+  diet_plans: DietPlanSummaryResource[];
+};
+
+export type PatientsDietPlansIndex200 = {
+  message: 'Diet plans retrieved successfully.';
+  status: 200;
+  data: PatientsDietPlansIndex200Data;
+};
+
+export type PatientsDietPlansStore202DataDietPlan = {
+  id: number;
+  status: string;
+  /** @nullable */
+  created_at: string | null;
+};
+
+export type PatientsDietPlansStore202Data = {
+  diet_plan: PatientsDietPlansStore202DataDietPlan;
+};
+
+export type PatientsDietPlansStore202 = {
+  message: 'Diet plan generation started.';
+  status: 202;
+  data: PatientsDietPlansStore202Data;
+};
+
+export type PatientsDietPlansShow200Data = {
+  diet_plan: DietPlanResource;
+};
+
+export type PatientsDietPlansShow200 = {
+  message: 'Diet plan retrieved successfully.';
+  status: 200;
+  data: PatientsDietPlansShow200Data;
 };
 
 export type PatientsIndexParams = {

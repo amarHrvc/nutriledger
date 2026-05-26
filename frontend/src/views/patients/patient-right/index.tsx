@@ -9,6 +9,7 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 
 import type { PatientResource } from '@/api/generated/nutriBaseAPI.schemas'
+import DietPlanSection from '../diet-plans/DietPlanSection'
 import MedicalTab from './medical'
 import VisitsTab from './visits'
 import VitalsHistoryTab from './vitals'
@@ -30,6 +31,7 @@ export default function PatientRightTabs({ patient }: Props) {
 				<Tab value='visits' label='Visits' />
 				<Tab value='vitals' label='Vitals' />
 				<Tab value='socioeconomic' label='Socioeconomic' />
+				<Tab value='diet-plans' label='Diet Plans' />
 			</TabList>
 			<TabPanel value='medical' sx={{ px: 0, pt: 4 }}>
 				<MedicalTab patient={patient} />
@@ -41,8 +43,10 @@ export default function PatientRightTabs({ patient }: Props) {
 				<VitalsHistoryTab patient={patient} />
 			</TabPanel>
 			<TabPanel value='socioeconomic' sx={{ px: 0, pt: 4 }}>
-				{/* SocioeconomicTab is lazy-imported above */}
 				<SocioeconomicTab patient={patient} />
+			</TabPanel>
+			<TabPanel value='diet-plans' sx={{ px: 0, pt: 4 }}>
+				<DietPlanSection patientId={Number(patient.id)} />
 			</TabPanel>
 		</TabContext>
 	)

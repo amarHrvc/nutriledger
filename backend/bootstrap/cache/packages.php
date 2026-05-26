@@ -6,6 +6,13 @@
       0 => 'Dedoc\\Scramble\\ScrambleServiceProvider',
     ),
   ),
+  'laravel/ai' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Ai\\AiServiceProvider',
+    ),
+  ),
   'laravel/pail' => 
   array (
     'providers' => 
@@ -53,6 +60,17 @@
     'providers' => 
     array (
       0 => 'Pest\\Laravel\\PestServiceProvider',
+    ),
+  ),
+  'storviaio/vantage' => 
+  array (
+    'aliases' => 
+    array (
+      'Vantage' => 'Storvia\\Vantage\\Facades\\Vantage',
+    ),
+    'providers' => 
+    array (
+      0 => 'Storvia\\Vantage\\VantageServiceProvider',
     ),
   ),
 );
