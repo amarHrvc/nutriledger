@@ -1,0 +1,471 @@
+﻿
+> vuexy-mui-nextjs-admin-template@5.0.1 lint D:\_Learn\_PhpstormProjects\nutri-ledger\frontend
+> eslint . --ext .js,.jsx,.ts,.tsx
+
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\api\auth.mutator.ts
+  10:3  error  Expected blank line before this statement  padding-line-between-statements
+  11:3  error  Expected blank line before this statement  padding-line-between-statements
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\api\client.ts
+  22:9   error  'T' is defined but never used  @typescript-eslint/no-unused-vars
+  23:10  error  'T' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\api\generated\nutriBaseAPI.schemas.ts
+    11:3  error  Expected line before comment  lines-around-comment
+    23:3  error  Expected line before comment  lines-around-comment
+    25:3  error  Expected line before comment  lines-around-comment
+    27:3  error  Expected line before comment  lines-around-comment
+    29:3  error  Expected line before comment  lines-around-comment
+    33:3  error  Expected line before comment  lines-around-comment
+    35:3  error  Expected line before comment  lines-around-comment
+    37:3  error  Expected line before comment  lines-around-comment
+    39:3  error  Expected line before comment  lines-around-comment
+    41:3  error  Expected line before comment  lines-around-comment
+    43:3  error  Expected line before comment  lines-around-comment
+    53:3  error  Expected line before comment  lines-around-comment
+   114:3  error  Expected line before comment  lines-around-comment
+   116:3  error  Expected line before comment  lines-around-comment
+   118:3  error  Expected line before comment  lines-around-comment
+   120:3  error  Expected line before comment  lines-around-comment
+   122:3  error  Expected line before comment  lines-around-comment
+   124:3  error  Expected line before comment  lines-around-comment
+   127:3  error  Expected line before comment  lines-around-comment
+   129:3  error  Expected line before comment  lines-around-comment
+   131:3  error  Expected line before comment  lines-around-comment
+   133:3  error  Expected line before comment  lines-around-comment
+   137:3  error  Expected line before comment  lines-around-comment
+   139:3  error  Expected line before comment  lines-around-comment
+   141:3  error  Expected line before comment  lines-around-comment
+   143:3  error  Expected line before comment  lines-around-comment
+   156:3  error  Expected line before comment  lines-around-comment
+   158:3  error  Expected line before comment  lines-around-comment
+   160:3  error  Expected line before comment  lines-around-comment
+   162:3  error  Expected line before comment  lines-around-comment
+   166:3  error  Expected line before comment  lines-around-comment
+   168:3  error  Expected line before comment  lines-around-comment
+   170:3  error  Expected line before comment  lines-around-comment
+   174:3  error  Expected line before comment  lines-around-comment
+   196:3  error  Expected line before comment  lines-around-comment
+   395:3  error  Expected line before comment  lines-around-comment
+   397:3  error  Expected line before comment  lines-around-comment
+   403:3  error  Expected line before comment  lines-around-comment
+   405:3  error  Expected line before comment  lines-around-comment
+   407:3  error  Expected line before comment  lines-around-comment
+   412:3  error  Expected line before comment  lines-around-comment
+   414:3  error  Expected line before comment  lines-around-comment
+   416:3  error  Expected line before comment  lines-around-comment
+   418:3  error  Expected line before comment  lines-around-comment
+   420:3  error  Expected line before comment  lines-around-comment
+   422:3  error  Expected line before comment  lines-around-comment
+   424:3  error  Expected line before comment  lines-around-comment
+   426:3  error  Expected line before comment  lines-around-comment
+   428:3  error  Expected line before comment  lines-around-comment
+   430:3  error  Expected line before comment  lines-around-comment
+   432:3  error  Expected line before comment  lines-around-comment
+   437:3  error  Expected line before comment  lines-around-comment
+   445:3  error  Expected line before comment  lines-around-comment
+   447:3  error  Expected line before comment  lines-around-comment
+   452:3  error  Expected line before comment  lines-around-comment
+   456:3  error  Expected line before comment  lines-around-comment
+   458:3  error  Expected line before comment  lines-around-comment
+   463:3  error  Expected line before comment  lines-around-comment
+   468:3  error  Expected line before comment  lines-around-comment
+   473:3  error  Expected line before comment  lines-around-comment
+   475:3  error  Expected line before comment  lines-around-comment
+   477:3  error  Expected line before comment  lines-around-comment
+   479:3  error  Expected line before comment  lines-around-comment
+   481:3  error  Expected line before comment  lines-around-comment
+   483:3  error  Expected line before comment  lines-around-comment
+   497:3  error  Expected line before comment  lines-around-comment
+   500:3  error  Expected line before comment  lines-around-comment
+   503:3  error  Expected line before comment  lines-around-comment
+   510:3  error  Expected line before comment  lines-around-comment
+   515:3  error  Expected line before comment  lines-around-comment
+   520:3  error  Expected line before comment  lines-around-comment
+   526:3  error  Expected line before comment  lines-around-comment
+   532:3  error  Expected line before comment  lines-around-comment
+   538:3  error  Expected line before comment  lines-around-comment
+   544:3  error  Expected line before comment  lines-around-comment
+   550:3  error  Expected line before comment  lines-around-comment
+   567:3  error  Expected line before comment  lines-around-comment
+   569:3  error  Expected line before comment  lines-around-comment
+   574:3  error  Expected line before comment  lines-around-comment
+   576:3  error  Expected line before comment  lines-around-comment
+   578:3  error  Expected line before comment  lines-around-comment
+   757:3  error  Expected line before comment  lines-around-comment
+   759:3  error  Expected line before comment  lines-around-comment
+   765:3  error  Expected line before comment  lines-around-comment
+   767:3  error  Expected line before comment  lines-around-comment
+   769:3  error  Expected line before comment  lines-around-comment
+   774:3  error  Expected line before comment  lines-around-comment
+   776:3  error  Expected line before comment  lines-around-comment
+   778:3  error  Expected line before comment  lines-around-comment
+   780:3  error  Expected line before comment  lines-around-comment
+   782:3  error  Expected line before comment  lines-around-comment
+   784:3  error  Expected line before comment  lines-around-comment
+   786:3  error  Expected line before comment  lines-around-comment
+   788:3  error  Expected line before comment  lines-around-comment
+   790:3  error  Expected line before comment  lines-around-comment
+   792:3  error  Expected line before comment  lines-around-comment
+   794:3  error  Expected line before comment  lines-around-comment
+   799:3  error  Expected line before comment  lines-around-comment
+   807:3  error  Expected line before comment  lines-around-comment
+   809:3  error  Expected line before comment  lines-around-comment
+   813:3  error  Expected line before comment  lines-around-comment
+   815:3  error  Expected line before comment  lines-around-comment
+   820:3  error  Expected line before comment  lines-around-comment
+   825:3  error  Expected line before comment  lines-around-comment
+   830:3  error  Expected line before comment  lines-around-comment
+   832:3  error  Expected line before comment  lines-around-comment
+   834:3  error  Expected line before comment  lines-around-comment
+   836:3  error  Expected line before comment  lines-around-comment
+   838:3  error  Expected line before comment  lines-around-comment
+   854:3  error  Expected line before comment  lines-around-comment
+   857:3  error  Expected line before comment  lines-around-comment
+   865:3  error  Expected line before comment  lines-around-comment
+   873:3  error  Expected line before comment  lines-around-comment
+   879:3  error  Expected line before comment  lines-around-comment
+   885:3  error  Expected line before comment  lines-around-comment
+   891:3  error  Expected line before comment  lines-around-comment
+   897:3  error  Expected line before comment  lines-around-comment
+   903:3  error  Expected line before comment  lines-around-comment
+   913:3  error  Expected line before comment  lines-around-comment
+   915:3  error  Expected line before comment  lines-around-comment
+   961:3  error  Expected line before comment  lines-around-comment
+   963:3  error  Expected line before comment  lines-around-comment
+   968:3  error  Expected line before comment  lines-around-comment
+   973:3  error  Expected line before comment  lines-around-comment
+   978:3  error  Expected line before comment  lines-around-comment
+   985:3  error  Expected line before comment  lines-around-comment
+  1014:3  error  Expected line before comment  lines-around-comment
+  1041:3  error  Expected line before comment  lines-around-comment
+  1086:1  error  Expected line before comment  lines-around-comment
+  1090:1  error  Expected line before comment  lines-around-comment
+  1094:1  error  Expected line before comment  lines-around-comment
+  1099:1  error  Expected line before comment  lines-around-comment
+  1166:1  error  Expected line before comment  lines-around-comment
+  1170:1  error  Expected line before comment  lines-around-comment
+  1175:1  error  Expected line before comment  lines-around-comment
+  1320:3  error  Expected line before comment  lines-around-comment
+  1322:3  error  Expected line before comment  lines-around-comment
+  1327:3  error  Expected line before comment  lines-around-comment
+  1329:3  error  Expected line before comment  lines-around-comment
+  1331:3  error  Expected line before comment  lines-around-comment
+  1333:3  error  Expected line before comment  lines-around-comment
+  1335:3  error  Expected line before comment  lines-around-comment
+  1337:3  error  Expected line before comment  lines-around-comment
+  1339:3  error  Expected line before comment  lines-around-comment
+  1341:3  error  Expected line before comment  lines-around-comment
+  1349:3  error  Expected line before comment  lines-around-comment
+  1397:3  error  Expected line before comment  lines-around-comment
+  1399:3  error  Expected line before comment  lines-around-comment
+  1404:3  error  Expected line before comment  lines-around-comment
+  1406:3  error  Expected line before comment  lines-around-comment
+  1408:3  error  Expected line before comment  lines-around-comment
+  1410:3  error  Expected line before comment  lines-around-comment
+  1412:3  error  Expected line before comment  lines-around-comment
+  1414:3  error  Expected line before comment  lines-around-comment
+  1416:3  error  Expected line before comment  lines-around-comment
+  1418:3  error  Expected line before comment  lines-around-comment
+  1426:3  error  Expected line before comment  lines-around-comment
+  1479:3  error  Expected line before comment  lines-around-comment
+  1481:3  error  Expected line before comment  lines-around-comment
+  1486:3  error  Expected line before comment  lines-around-comment
+  1488:3  error  Expected line before comment  lines-around-comment
+  1490:3  error  Expected line before comment  lines-around-comment
+  1492:3  error  Expected line before comment  lines-around-comment
+  1494:3  error  Expected line before comment  lines-around-comment
+  1496:3  error  Expected line before comment  lines-around-comment
+  1498:3  error  Expected line before comment  lines-around-comment
+  1500:3  error  Expected line before comment  lines-around-comment
+  1508:3  error  Expected line before comment  lines-around-comment
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\(blank-layout-pages)\login\page.tsx
+  1:1  error  There should be at least one empty line between import groups  import/order
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\(dashboard)\dashboard\patients\[id]\page.tsx
+   3:1  error  There should be at least one empty line between import groups  import/order
+  25:5  error  Expected newline before return statement                       newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\(dashboard)\dashboard\profile\page.tsx
+  1:8  error  'DashboardHome' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\(dashboard)\dashboard\users\[id]\page.tsx
+   3:1  error  There should be at least one empty line between import groups  import/order
+  25:9  error  Expected newline before return statement                       newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\(dashboard)\dashboard\visits\[id]\page.tsx
+   3:1  error  There should be at least one empty line between import groups  import/order
+  26:4  error  Expected newline before return statement                       newline-before-return
+  28:3  error  Expected blank line before this statement                      padding-line-between-statements
+  31:4  error  Expected blank line before this statement                      padding-line-between-statements
+  33:5  error  Expected newline before return statement                       newline-before-return
+  35:4  error  Expected blank line before this statement                      padding-line-between-statements
+  53:3  error  Expected newline before return statement                       newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\auth\logout\route.ts
+  22:3  error  Expected newline before return statement  newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\dashboard\stats\route.ts
+  1:10  error  'cookies' is defined but never used                            @typescript-eslint/no-unused-vars
+  2:1   error  There should be at least one empty line between import groups  import/order
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\patients\[id]\diet-plans\[planId]\route.ts
+   1:1  error  There should be at least one empty line between import groups  import/order
+  15:2  error  Expected blank line before this statement                      padding-line-between-statements
+  15:2  error  Expected newline before return statement                       newline-before-return
+  25:2  error  Expected blank line before this statement                      padding-line-between-statements
+  25:2  error  Expected newline before return statement                       newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\patients\[id]\diet-plans\[planId]\send\route.ts
+   1:1  error  There should be at least one empty line between import groups  import/order
+  12:2  error  Expected blank line before this statement                      padding-line-between-statements
+  12:2  error  Expected newline before return statement                       newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\patients\[id]\diet-plans\route.ts
+   1:1  error  There should be at least one empty line between import groups  import/order
+  10:2  error  Expected blank line before this statement                      padding-line-between-statements
+  10:2  error  Expected newline before return statement                       newline-before-return
+  19:2  error  Expected blank line before this statement                      padding-line-between-statements
+  19:2  error  Expected newline before return statement                       newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\patients\[id]\route.ts
+   1:1  error  There should be at least one empty line between import groups  import/order
+   8:3  error  Expected blank line before this statement                      padding-line-between-statements
+   8:3  error  Expected newline before return statement                       newline-before-return
+  16:3  error  Expected blank line before this statement                      padding-line-between-statements
+  16:3  error  Expected newline before return statement                       newline-before-return
+  23:3  error  Expected blank line before this statement                      padding-line-between-statements
+  23:3  error  Expected newline before return statement                       newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\patients\[id]\visits\[visitId]\route.ts
+  14:2  error  Expected blank line before this statement  padding-line-between-statements
+  14:2  error  Expected newline before return statement   newline-before-return
+  24:2  error  Expected blank line before this statement  padding-line-between-statements
+  24:2  error  Expected newline before return statement   newline-before-return
+  33:2  error  Expected blank line before this statement  padding-line-between-statements
+  33:2  error  Expected newline before return statement   newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\patients\[id]\visits\[visitId]\vitals\route.ts
+  15:3  error  Expected blank line before this statement  padding-line-between-statements
+  15:3  error  Expected newline before return statement   newline-before-return
+  22:3  error  Expected blank line before this statement  padding-line-between-statements
+  22:3  error  Expected newline before return statement   newline-before-return
+  29:3  error  Expected blank line before this statement  padding-line-between-statements
+  29:3  error  Expected newline before return statement   newline-before-return
+  36:3  error  Expected blank line before this statement  padding-line-between-statements
+  36:3  error  Expected newline before return statement   newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\patients\[id]\visits\route.ts
+   1:1  error  There should be at least one empty line between import groups  import/order
+  11:2  error  Expected blank line before this statement                      padding-line-between-statements
+  11:2  error  Expected newline before return statement                       newline-before-return
+  21:2  error  Expected blank line before this statement                      padding-line-between-statements
+  21:2  error  Expected newline before return statement                       newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\patients\[id]\vitals\route.ts
+  10:3  error  Expected blank line before this statement  padding-line-between-statements
+  10:3  error  Expected newline before return statement   newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\patients\me\route.ts
+  6:3  error  Expected blank line before this statement  padding-line-between-statements
+  6:3  error  Expected newline before return statement   newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\patients\route.ts
+  40:11  error  'name' is assigned a value but never used                   @typescript-eslint/no-unused-vars
+  40:17  error  'email' is assigned a value but never used                  @typescript-eslint/no-unused-vars
+  40:24  error  'password' is assigned a value but never used               @typescript-eslint/no-unused-vars
+  40:34  error  'password_confirmation' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\users\[id]\route.ts
+   1:1  error  There should be at least one empty line between import groups  import/order
+   7:3  error  Expected blank line before this statement                      padding-line-between-statements
+   7:3  error  Expected newline before return statement                       newline-before-return
+  14:3  error  Expected blank line before this statement                      padding-line-between-statements
+  14:3  error  Expected newline before return statement                       newline-before-return
+  20:3  error  Expected blank line before this statement                      padding-line-between-statements
+  20:3  error  Expected newline before return statement                       newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\users\route.ts
+  1:1   error  All imports in the declaration are only used as types. Use `import type`  @typescript-eslint/consistent-type-imports
+  1:1   error  There should be at least one empty line between import groups             import/order
+  4:27  error  'request' is defined but never used                                       @typescript-eslint/no-unused-vars
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\app\api\visits\route.ts
+  5:3  error  Expected blank line before this statement  padding-line-between-statements
+  5:3  error  Expected newline before return statement   newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\components\layout\horizontal\FooterContent.tsx
+   4:8   error  'Link' is defined but never used                          @typescript-eslint/no-unused-vars
+  17:11  error  'isBreakpointReached' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\components\layout\shared\Logo.tsx
+  17:8  error  'themeConfig' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\components\layout\shared\UserDropdown.tsx
+  24:1  error  There should be at least one empty line between import groups                            import/order
+  25:1  error  `@mui/material/MenuItem` import should occur before import of `@core/hooks/useSettings`  import/order
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\components\layout\vertical\FooterContent.tsx
+   4:8   error  'Link' is defined but never used                          @typescript-eslint/no-unused-vars
+  17:11  error  'isBreakpointReached' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\PatientsView.tsx
+   2:1  error  There should be at least one empty line between import groups  import/order
+  12:5  error  Expected blank line before this statement                      padding-line-between-statements
+  16:9  error  Expected blank line before this statement                      padding-line-between-statements
+  18:9  error  Expected blank line before this statement                      padding-line-between-statements
+  25:5  error  Expected blank line before this statement                      padding-line-between-statements
+  25:5  error  Expected newline before return statement                       newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\patients\PatientEditForm.tsx
+    3:1   error  There should be at least one empty line between import groups  import/order
+   21:1   error  There should be at least one empty line between import groups  import/order
+   93:5   error  Expected newline before return statement                       newline-before-return
+   95:4   error  Expected blank line before this statement                      padding-line-between-statements
+   97:5   error  Expected newline before return statement                       newline-before-return
+  103:12  error  'error' is defined but never used                              @typescript-eslint/no-unused-vars
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\patients\PatientForm.tsx
+    3:1   error  There should be at least one empty line between import groups  import/order
+   21:1   error  There should be at least one empty line between import groups  import/order
+  100:5   error  Expected newline before return statement                       newline-before-return
+  102:4   error  Expected blank line before this statement                      padding-line-between-statements
+  104:5   error  Expected newline before return statement                       newline-before-return
+  110:12  error  'error' is defined but never used                              @typescript-eslint/no-unused-vars
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\patients\PatientList.tsx
+   3:1  error  There should be at least one empty line between import groups  import/order
+   4:1  error  There should be at least one empty line between import groups  import/order
+  51:9  error  Expected line before comment                                   lines-around-comment
+  55:9  error  Expected line before comment                                   lines-around-comment
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\patients\diet-plans\DietPlanSection.tsx
+  45:9  warning  The 'fetchPlans' function makes the dependencies of useEffect Hook (at line 91) change on every render. To fix this, wrap the definition of 'fetchPlans' in its own useCallback() Hook      react-hooks/exhaustive-deps
+  73:9  warning  The 'startPolling' function makes the dependencies of useEffect Hook (at line 91) change on every render. To fix this, wrap the definition of 'startPolling' in its own useCallback() Hook  react-hooks/exhaustive-deps
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\patients\patient-right\visits\index.tsx
+   7:1  error    `@/context/AuthContext` import should occur after import of `@mui/material/Typography`                          import/order
+  36:1  error    Expected blank line before this statement                                                                       padding-line-between-statements
+  56:5  error    Expected newline before return statement                                                                        newline-before-return
+  70:5  warning  React Hook useEffect has a missing dependency: 'fetchVisits'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  76:3  error    Expected blank line before this statement                                                                       padding-line-between-statements
+  77:3  error    Expected newline before return statement                                                                        newline-before-return
+  78:5  warning  React Hook useEffect has a missing dependency: 'fetchVisits'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\patients\patient-right\vitals\index.tsx
+  68:5  error  Expected blank line before this statement  padding-line-between-statements
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\patients\socioeconomic\SocioeconomicTab.tsx
+    3:1   error    There should be at least one empty line between import groups                                                          import/order
+   17:40  warning  'D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\patients\socioeconomic\types.ts' imported multiple times  import/no-duplicates
+   20:47  warning  'D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\patients\socioeconomic\types.ts' imported multiple times  import/no-duplicates
+   41:3   error    Expected newline before return statement                                                                               newline-before-return
+  113:5   error    Expected blank line before this statement                                                                              padding-line-between-statements
+  119:7   error    Expected blank line before this statement                                                                              padding-line-between-statements
+  121:9   error    Expected blank line before this statement                                                                              padding-line-between-statements
+  123:7   error    Expected blank line before this statement                                                                              padding-line-between-statements
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\profile\DoctorProfile.tsx
+   9:1  error  All imports in the declaration are only used as types. Use `import type`                        @typescript-eslint/consistent-type-imports
+  10:1  error  There should be at least one empty line between import groups                                   import/order
+  11:1  error  `@mui/material/CircularProgress` import should occur before import of `./shared/ProfileHeader`  import/order
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\profile\index.tsx
+  16:81  error  Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\users\UserForm.tsx
+  44:7  error  Expected blank line before this statement  padding-line-between-statements
+  62:9  error  Expected newline before return statement   newline-before-return
+  64:7  error  Expected blank line before this statement  padding-line-between-statements
+  66:9  error  Expected newline before return statement   newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\users\UserList.tsx
+  23:1  error  There should be at least one empty line between import groups                                import/order
+  23:1  error  `./shared/UserStatusChip` import should occur after import of `@mui/material/DialogContent`  import/order
+  26:1  error  There should be at least one empty line between import groups                                import/order
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\users\index.tsx
+  5:1  error  There should be at least one empty line between import groups      import/order
+  6:1  error  `@mui/material` import should occur before import of `./UserList`  import/order
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\users\user-left\UserDetailsCard.tsx
+   3:1  error  There should be at least one empty line between import groups            import/order
+   4:1  error  There should be at least one empty line between import groups            import/order
+   5:1  error  `next/navigation` import should occur before import of `react-toastify`  import/order
+  77:9  error  Expected blank line before this statement                                padding-line-between-statements
+  78:9  error  Expected newline before return statement                                 newline-before-return
+  85:9  error  Expected newline before return statement                                 newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\users\user-right\security\RecentDevice.tsx
+  11:1  error  There should be at least one empty line between import groups           import/order
+  12:1  error  `react` type import should occur before import of `@mui/material/Card`  import/order
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\visits\VisitDetail.tsx
+    3:1  error  There should be at least one empty line between import groups  import/order
+    5:1  error  There should be at least one empty line between import groups  import/order
+   54:2  error  Expected blank line before this statement                      padding-line-between-statements
+   58:3  error  Expected blank line before this statement                      padding-line-between-statements
+   60:4  error  Expected blank line before this statement                      padding-line-between-statements
+   62:5  error  Expected newline before return statement                       newline-before-return
+   64:4  error  Expected blank line before this statement                      padding-line-between-statements
+   66:4  error  Expected blank line before this statement                      padding-line-between-statements
+   81:3  error  Expected blank line before this statement                      padding-line-between-statements
+   83:4  error  Expected blank line before this statement                      padding-line-between-statements
+   85:5  error  Expected blank line before this statement                      padding-line-between-statements
+   86:5  error  Expected newline before return statement                       newline-before-return
+   88:4  error  Expected blank line before this statement                      padding-line-between-statements
+  100:3  error  Expected blank line before this statement                      padding-line-between-statements
+  104:4  error  Expected blank line before this statement                      padding-line-between-statements
+  110:5  error  Expected blank line before this statement                      padding-line-between-statements
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\visits\VisitEditForm.tsx
+   3:1   error  There should be at least one empty line between import groups  import/order
+  26:2   error  Expected blank line before this statement                      padding-line-between-statements
+  60:5   error  Expected newline before return statement                       newline-before-return
+  62:4   error  Expected blank line before this statement                      padding-line-between-statements
+  64:5   error  Expected newline before return statement                       newline-before-return
+  70:12  error  'error' is defined but never used                              @typescript-eslint/no-unused-vars
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\visits\VisitForm.tsx
+   62:5   error  Expected blank line before this statement  padding-line-between-statements
+   63:13  error  'error' is defined but never used          @typescript-eslint/no-unused-vars
+   69:3   error  Expected blank line before this statement  padding-line-between-statements
+   81:6   error  Expected blank line before this statement  padding-line-between-statements
+   88:4   error  Expected blank line before this statement  padding-line-between-statements
+  101:3   error  Expected blank line before this statement  padding-line-between-statements
+  104:4   error  Expected newline before return statement   newline-before-return
+  132:5   error  Expected newline before return statement   newline-before-return
+  134:4   error  Expected blank line before this statement  padding-line-between-statements
+  136:5   error  Expected newline before return statement   newline-before-return
+  141:12  error  'error' is defined but never used          @typescript-eslint/no-unused-vars
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\visits\VitalsCard.tsx
+  32:3  error  Expected newline before return statement   newline-before-return
+  51:5  error  Expected blank line before this statement  padding-line-between-statements
+  51:5  error  Expected newline before return statement   newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\visits\VitalsForm.tsx
+  37:3  error  Expected newline before return statement  newline-before-return
+  89:9  error  Expected newline before return statement  newline-before-return
+  94:9  error  Expected newline before return statement  newline-before-return
+  99:9  error  Expected newline before return statement  newline-before-return
+
+D:\_Learn\_PhpstormProjects\nutri-ledger\frontend\src\views\visits\index.tsx
+   3:1  error  There should be at least one empty line between import groups  import/order
+   4:1  error  There should be at least one empty line between import groups  import/order
+  50:4  error  Expected blank line before this statement                      padding-line-between-statements
+  53:4  error  Expected blank line before this statement                      padding-line-between-statements
+  54:4  error  Expected blank line before this statement                      padding-line-between-statements
+  70:3  error  Expected blank line before this statement                      padding-line-between-statements
+  70:3  error  Expected newline before return statement                       newline-before-return
+  76:2  error  Expected blank line before this statement                      padding-line-between-statements
+  80:4  error  Expected blank line before this statement                      padding-line-between-statements
+  83:4  error  Expected blank line before this statement                      padding-line-between-statements
+  83:4  error  Expected newline before return statement                       newline-before-return
+
+Γ£û 366 problems (360 errors, 6 warnings)
+  340 errors and 1 warning potentially fixable with the `--fix` option.
+
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

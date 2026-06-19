@@ -1,9 +1,11 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
+
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
+
+import { toast } from 'react-toastify'
 
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
@@ -21,6 +23,7 @@ import { useTheme } from '@mui/material/styles'
 import { IconUserCancel } from '@tabler/icons-react'
 import type { ApexOptions } from 'apexcharts'
 
+import { useAuth } from '@/context/AuthContext'
 import type { PatientResource } from '@/api/generated/nutriBaseAPI.schemas'
 import type { VitalSignResource } from '@/views/visits/vitals.types'
 import ConfirmDialog from '@views/users/shared/ConfirmDialog'
@@ -93,6 +96,8 @@ interface Props {
 }
 
 export default function PatientDetailsCard({ patient }: Props) {
+	const { user } = useAuth()
+	const isPatient = user?.role === 'pacijent'
 	const [confirmOpen, setConfirmOpen] = useState(false)
 	const [editOpen, setEditOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
@@ -277,16 +282,18 @@ export default function PatientDetailsCard({ patient }: Props) {
 								>
 									Edit
 								</Button>
-								<Button
-									size='small'
-									variant='tonal'
-									color='error'
-									startIcon={<IconUserCancel size={16} />}
-									onClick={() => setConfirmOpen(true)}
-									disabled={loading}
-								>
-									Suspend
-								</Button>
+								{!isPatient && (
+									<Button
+										size='small'
+										variant='tonal'
+										color='error'
+										startIcon={<IconUserCancel size={16} />}
+										onClick={() => setConfirmOpen(true)}
+										disabled={loading}
+									>
+										Suspend
+									</Button>
+								)}
 							</Box>
 						</Box>
 
@@ -329,7 +336,7 @@ export default function PatientDetailsCard({ patient }: Props) {
 			</Card>
 
 			<ConfirmDialog
-				open={confirmOpen}
+				open={confirmOpen && !isPatient}
 				title='Suspend Patient'
 				message='Are you sure you want to suspend this patient?'
 				onConfirm={onConfirm}

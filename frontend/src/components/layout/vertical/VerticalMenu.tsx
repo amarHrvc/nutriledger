@@ -74,10 +74,11 @@ const VerticalMenu = ({ scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='tabler-circle text-xs' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        {/* All roles */}
-        <MenuItem href='/dashboard/home' icon={<i className='tabler-smart-home' />}>
-          Dashboard
-        </MenuItem>
+        {(role === 'admin' || role === 'doktor') && (
+          <MenuItem href='/dashboard/home' icon={<i className='tabler-smart-home' />}>
+            Dashboard
+          </MenuItem>
+        )}
 
         {/* Admin + Doctor only */}
         {(role === 'admin' || role === 'doktor') && (

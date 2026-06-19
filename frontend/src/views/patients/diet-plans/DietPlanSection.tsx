@@ -8,6 +8,8 @@ import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 
+import { useAuth } from '@/context/AuthContext'
+
 import type { DietPlan, DietPlanSummary } from './types'
 import DietPlanCard from './DietPlanCard'
 import DietPlanHistory from './DietPlanHistory'
@@ -17,6 +19,8 @@ interface Props {
 }
 
 export default function DietPlanSection({ patientId }: Props) {
+  const { user } = useAuth()
+  const isPatient = user?.role === 'pacijent'
   const [plans, setPlans] = useState<DietPlanSummary[]>([])
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
@@ -84,7 +88,7 @@ export default function DietPlanSection({ patientId }: Props) {
     })
 
     return stopPolling
-  }, [patientId])
+  }, [patientId, fetchPlans, startPolling])
 
   const handleGenerate = async () => {
     setGenerating(true)
@@ -136,9 +140,11 @@ export default function DietPlanSection({ patientId }: Props) {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant='h6'>Diet Plans</Typography>
-        <Button variant='contained' onClick={handleGenerate} disabled={generating || isPending}>
-          {generating ? 'Starting…' : isPending ? 'Generating…' : 'Generate Diet Plan'}
-        </Button>
+        {!isPatient && (
+          <Button variant='contained' onClick={handleGenerate} disabled={generating || isPending}>
+            {generating ? 'Starting…' : isPending ? 'Generating…' : 'Generate Diet Plan'}
+          </Button>
+        )}
       </Box>
 
       {error && <Alert severity='error' sx={{ mb: 2 }}>{error}</Alert>}
