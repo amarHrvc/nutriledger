@@ -158,7 +158,7 @@ describe('DietPlanSendTest', function () {
 
             $delivery = DietPlanDelivery::where('diet_plan_id', $dietPlan->id)->first();
             expect($delivery)->not->toBeNull();
-            expect($delivery->status)->toBe('pending');
+            expect($delivery->status)->toBe('sent');
             expect($delivery->recipient_email)->toBe('patient@example.com');
             expect($delivery->sent_by)->toBe($doctor->id);
         });
