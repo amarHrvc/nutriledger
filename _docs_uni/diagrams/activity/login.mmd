@@ -1,16 +1,20 @@
 flowchart TD
     A([Start]) --> B[Navigate to /login]
     B --> C[Enter email and password]
-    C --> D{Credentials valid?}
-    D -->|No| E[Show validation error]
+    C --> D{Client-side valid?}
+    D -->|No| E[Show field validation error]
     E --> C
-    D -->|Yes| F{2FA enabled?}
-    F -->|No| G[Create authenticated session]
-    F -->|Yes| H[Redirect to /two-factor-challenge]
-    H --> I[Enter TOTP code]
-    I --> J{Code valid?}
-    J -->|No| K[Show error]
-    K --> I
-    J -->|Yes| G
-    G --> L[Redirect to /dashboard]
-    L --> M([End])
+    D -->|Yes| F[POST /api/auth/login]
+    F --> G{Credentials valid?}
+    G -->|No - Invalid| H[Show: Invalid credentials]
+    H --> C
+    G -->|No - Deactivated| I[Show: Account is deactivated]
+    I --> C
+    G -->|Yes| J[Issue Sanctum token\nStore in httpOnly cookie]
+    J --> K{User role?}
+    K -->|admin / doktor| L[Redirect to /dashboard/home]
+    K -->|pacijent| M[Redirect to /dashboard/home\nPatientRedirectGuard intercepts]
+    M --> N[Fetch /api/patients/me]
+    N --> O[Redirect to /dashboard/patients/id]
+    L --> P([End])
+    O --> P

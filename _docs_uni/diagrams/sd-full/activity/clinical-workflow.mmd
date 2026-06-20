@@ -1,0 +1,39 @@
+flowchart TD
+    subgraph COL1["① User & Patient Setup"]
+        direction TD
+        A([Start]) --> B{Actor role?}
+        B -->|Admin| C[Create user account\nPOST /api/users]
+        B -->|Doktor| G
+        C --> D{Validation passes?}
+        D -->|No| E[Show errors]
+        E --> C
+        D -->|Yes| F[User created with role assigned]
+        F --> G[Register patient\nPOST /api/patients]
+        G --> H{Authorized?\nAdmin or Doktor}
+        H -->|No| I1[403 Forbidden]
+        I1 --> Z1([End])
+        H -->|Yes| J{Validation passes?}
+        J -->|No| K[Show errors]
+        K --> G
+        J -->|Yes| L[Patient + Socioeconomic\nrecord created]
+    end
+
+    subgraph COL2["② Visit & Vitals"]
+        direction TD
+        M[Navigate to Patient Profile] --> N[Create visit\nPOST /api/patients/id/visits]
+        N --> O{Authorized?\nAdmin or Doktor}
+        O -->|No| I2[403 Forbidden]
+        I2 --> Z2([End])
+        O -->|Yes| Q{Validation passes?}
+        Q -->|No| R[Show errors]
+        R --> N
+        Q -->|Yes| S[Visit persisted with doctor_id]
+        S --> T{Record vitals?}
+        T -->|Yes| U[POST /api/.../vitals]
+        U --> V[VitalSign created\nBMI calculated]
+        V --> W[Visit detail shows vitals panel]
+        T -->|No| W
+        W --> Z3([End])
+    end
+
+    L --> M

@@ -1,0 +1,18 @@
+flowchart TD
+    A([Start]) --> B[Navigate to Patient Profile — Diet Plans tab]
+    B --> C{Authorized?\nAdmin or Doktor}
+    C -->|No| D[403 Forbidden]
+    D --> Z([End])
+    C -->|Yes| E[Click Generate Diet Plan]
+    E --> F[POST /api/patients/id/diet-plans]
+    F --> G[Dispatch GenerateDietPlanJob to queue]
+    G --> H[Return 202 — status: pending]
+    H --> I[Frontend begins polling]
+    I --> J{Job complete?}
+    J -->|No — poll again| I
+    J -->|Yes| K{Generation succeeded?}
+    K -->|No| L[Show error — generation failed]
+    L --> Z
+    K -->|Yes| M[DietPlan record status → completed\nContent stored as JSON]
+    M --> N[Display generated diet plan card]
+    N --> Z
