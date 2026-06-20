@@ -21,6 +21,10 @@ pest()->extend(TestCase::class)
 pest()->extend(TestCase::class)
     ->in('Unit');
 
+pest()->extend(TestCase::class)
+    ->use(RefreshDatabase::class)
+    ->in('Jobs');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations

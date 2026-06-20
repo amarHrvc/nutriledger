@@ -9,34 +9,44 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 
 import type { PatientResource } from '@/api/generated/nutriBaseAPI.schemas'
-import OverviewTab from './overview'
+import DietPlanSection from '../diet-plans/DietPlanSection'
 import MedicalTab from './medical'
 import VisitsTab from './visits'
+import VitalsHistoryTab from './vitals'
+import SocioeconomicTab from '../socioeconomic/SocioeconomicTab'
 
 interface Props {
 	patient: PatientResource
 }
 
 export default function PatientRightTabs({ patient }: Props) {
-	const [activeTab, setActiveTab] = useState('overview')
+	const [activeTab, setActiveTab] = useState('medical')
 
 	const handleChange = (_: SyntheticEvent, value: string) => setActiveTab(value)
 
 	return (
 		<TabContext value={activeTab}>
 			<TabList onChange={handleChange} variant='scrollable'>
-				<Tab value='overview' label='Overview' />
 				<Tab value='medical' label='Medical' />
 				<Tab value='visits' label='Visits' />
+				<Tab value='vitals' label='Vitals' />
+				<Tab value='socioeconomic' label='Socioeconomic' />
+				<Tab value='diet-plans' label='Diet Plans' />
 			</TabList>
-			<TabPanel value='overview' sx={{ px: 0, pt: 4 }}>
-				<OverviewTab patient={patient} />
-			</TabPanel>
 			<TabPanel value='medical' sx={{ px: 0, pt: 4 }}>
 				<MedicalTab patient={patient} />
 			</TabPanel>
 			<TabPanel value='visits' sx={{ px: 0, pt: 4 }}>
 				<VisitsTab patient={patient} />
+			</TabPanel>
+			<TabPanel value='vitals' sx={{ px: 0, pt: 4 }}>
+				<VitalsHistoryTab patient={patient} />
+			</TabPanel>
+			<TabPanel value='socioeconomic' sx={{ px: 0, pt: 4 }}>
+				<SocioeconomicTab patient={patient} />
+			</TabPanel>
+			<TabPanel value='diet-plans' sx={{ px: 0, pt: 4 }}>
+				<DietPlanSection patientId={Number(patient.id)} />
 			</TabPanel>
 		</TabContext>
 	)

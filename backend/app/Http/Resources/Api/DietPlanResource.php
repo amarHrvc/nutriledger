@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Http\Resources\Api;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+/**
+ * @property-read int $id
+ * @property-read string $status
+ * @property-read string|null $rationale
+ * @property-read int|null $daily_calories
+ * @property-read array|null $nutritional_goals
+ * @property-read array|null $days
+ * @property-read array|null $warnings
+ * @property-read string|null $failure_reason
+ * @property-read \Carbon\Carbon $created_at
+ * @property-read bool $is_edited
+ * @property-read \Carbon\Carbon|null $edited_at
+ * @property-read \App\Models\User|null $doctor
+ * @property-read \App\Models\User|null $editor
+ */
+class DietPlanResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id'               => $this->id,
+            'status'           => $this->status,
+            'rationale'        => $this->rationale,
+            'dailyCalories'    => $this->daily_calories,
+            'nutritionalGoals' => $this->nutritional_goals,
+            'days'             => $this->days,
+            'warnings'         => $this->warnings,
+            'failureReason'    => $this->failure_reason,
+            'isEdited'         => $this->is_edited,
+            'editedAt'         => $this->when($this->is_edited, $this->edited_at?->toDateTimeString()),
+            'editedBy'         => $this->whenLoaded('editor', fn () => new UserResource($this->editor)),
+            'generatedBy'      => new UserResource($this->whenLoaded('doctor')),
+            'createdAt'        => $this->created_at->toDateTimeString(),
+        ];
+    }
+}

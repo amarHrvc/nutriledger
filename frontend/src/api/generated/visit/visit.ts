@@ -14,7 +14,8 @@ import type {
   PatientsVisitsUpdate200,
   StoreVisitRequest,
   UpdateVisitRequest,
-  ValidationExceptionResponse
+  ValidationExceptionResponse,
+  VisitsIndex200
 } from '../nutriBaseAPI.schemas';
 
 import { customFetchMutator } from '../../auth.mutator';
@@ -275,6 +276,50 @@ export const patientsVisitsShow = async (patient: number,
     visit: number, options?: RequestInit): Promise<patientsVisitsShowResponse> => {
 
   return customFetchMutator<patientsVisitsShowResponse>(getPatientsVisitsShowUrl(patient,visit),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+export type visitsIndexResponse200 = {
+  data: VisitsIndex200
+  status: 200
+}
+
+export type visitsIndexResponse401 = {
+  data: AuthenticationExceptionResponse
+  status: 401
+}
+
+export type visitsIndexResponse403 = {
+  data: AuthorizationExceptionResponse
+  status: 403
+}
+
+export type visitsIndexResponseSuccess = (visitsIndexResponse200) & {
+  headers: Headers;
+};
+export type visitsIndexResponseError = (visitsIndexResponse401 | visitsIndexResponse403) & {
+  headers: Headers;
+};
+
+export type visitsIndexResponse = (visitsIndexResponseSuccess | visitsIndexResponseError)
+
+export const getVisitsIndexUrl = () => {
+
+
+
+
+  return `http://localhost:8000/api/visits`
+}
+
+export const visitsIndex = async ( options?: RequestInit): Promise<visitsIndexResponse> => {
+
+  return customFetchMutator<visitsIndexResponse>(getVisitsIndexUrl(),
   {
     ...options,
     method: 'GET'

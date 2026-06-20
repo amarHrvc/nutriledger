@@ -4,9 +4,13 @@
  * NutriBase API
  * OpenAPI spec version: 1.0.0
  */
-export interface LoginRequest {
-  email: string;
-  password: string;
+export interface DietPlanDeliveryResource {
+  id: string;
+  status: string;
+  recipientEmail: string;
+  /** @nullable */
+  failureReason?: string | null;
+  createdAt: string;
 }
 
 export interface Patient {
@@ -40,6 +44,109 @@ export interface Patient {
   updated_at: string | null;
 }
 
+export type UserResourceAttributes = {
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+  /** @nullable */
+  deletedAt: string | null;
+  isDeleted: boolean;
+};
+
+export type UserResourceRelationships = {
+  patient?: Patient;
+};
+
+export type UserResourceLinks = {
+  self: string;
+};
+
+export interface UserResource {
+  type: 'users';
+  id: number;
+  attributes: UserResourceAttributes;
+  relationships: UserResourceRelationships;
+  links: UserResourceLinks;
+}
+
+export interface DietPlanResource {
+  id: string;
+  status: string;
+  rationale: string;
+  dailyCalories: string;
+  nutritionalGoals: string;
+  days: string;
+  warnings: string;
+  failureReason: string;
+  isEdited: string;
+  editedAt?: string;
+  editedBy?: UserResource;
+  generatedBy?: UserResource;
+  createdAt: string;
+}
+
+export interface DietPlanSummaryResource {
+  id: string;
+  status: string;
+  dailyCalories: string;
+  nutritionalGoals: string;
+  warnings: string;
+  failureReason: string;
+  isEdited: string;
+  generatedBy?: UserResource;
+  createdAt: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+/**
+ * @nullable
+ */
+export type PatientResourceAttributesSocioeconomicData = {
+  type: 'patient_socioeconomic';
+  id: string;
+  attributes: {
+  /** @nullable */
+  maritalStatus: string | null;
+  /** @nullable */
+  numberOfDependents: number | null;
+  /** @nullable */
+  livingArrangement: string | null;
+  /** @nullable */
+  employmentStatus: string | null;
+  /** @nullable */
+  occupation: string | null;
+  /** @nullable */
+  incomeLevel: string | null;
+  hasHealthInsurance: boolean;
+  /** @nullable */
+  educationLevel: string | null;
+  /** @nullable */
+  smokingStatus: string | null;
+  /** @nullable */
+  alcoholConsumption: string | null;
+  /** @nullable */
+  physicalActivityLevel: string | null;
+  hasFamilySupport: boolean;
+  hasCaregiver: boolean;
+  /** @nullable */
+  transportationAccess: string | null;
+  /** @nullable */
+  foodSecurityStatus: string | null;
+  /** @nullable */
+  dietaryRestrictionsCultural: string | null;
+  /** @nullable */
+  additionalNotes: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+} | null;
+
 export type PatientResourceAttributes = {
   firstName: string;
   lastName: string;
@@ -64,6 +171,8 @@ export type PatientResourceAttributes = {
   medicalNotes: string | null;
   createdAt: string;
   updatedAt: string;
+  /** @nullable */
+  socioeconomicData?: PatientResourceAttributesSocioeconomicData;
 };
 
 export type PatientResourceRelationshipsUserData = {
@@ -152,6 +261,21 @@ export const StorePatientRequestSocioeconomicMaritalStatus = {
 /**
  * @nullable
  */
+export type StorePatientRequestSocioeconomicLivingArrangement = typeof StorePatientRequestSocioeconomicLivingArrangement[keyof typeof StorePatientRequestSocioeconomicLivingArrangement] | null;
+
+
+export const StorePatientRequestSocioeconomicLivingArrangement = {
+  alone: 'alone',
+  with_family: 'with_family',
+  with_partner: 'with_partner',
+  shared_housing: 'shared_housing',
+  care_facility: 'care_facility',
+  other: 'other',
+} as const;
+
+/**
+ * @nullable
+ */
 export type StorePatientRequestSocioeconomicEmploymentStatus = typeof StorePatientRequestSocioeconomicEmploymentStatus[keyof typeof StorePatientRequestSocioeconomicEmploymentStatus] | null;
 
 
@@ -178,6 +302,23 @@ export const StorePatientRequestSocioeconomicIncomeLevel = {
   middle: 'middle',
   upper_middle: 'upper_middle',
   high: 'high',
+} as const;
+
+/**
+ * @nullable
+ */
+export type StorePatientRequestSocioeconomicEducationLevel = typeof StorePatientRequestSocioeconomicEducationLevel[keyof typeof StorePatientRequestSocioeconomicEducationLevel] | null;
+
+
+export const StorePatientRequestSocioeconomicEducationLevel = {
+  no_formal: 'no_formal',
+  primary: 'primary',
+  secondary: 'secondary',
+  vocational: 'vocational',
+  bachelors: 'bachelors',
+  masters: 'masters',
+  doctorate: 'doctorate',
+  other: 'other',
 } as const;
 
 /**
@@ -222,13 +363,29 @@ export const StorePatientRequestSocioeconomicPhysicalActivityLevel = {
 /**
  * @nullable
  */
+export type StorePatientRequestSocioeconomicTransportationAccess = typeof StorePatientRequestSocioeconomicTransportationAccess[keyof typeof StorePatientRequestSocioeconomicTransportationAccess] | null;
+
+
+export const StorePatientRequestSocioeconomicTransportationAccess = {
+  own_vehicle: 'own_vehicle',
+  public_transport: 'public_transport',
+  rideshare: 'rideshare',
+  walking: 'walking',
+  limited: 'limited',
+  none: 'none',
+} as const;
+
+/**
+ * @nullable
+ */
 export type StorePatientRequestSocioeconomicFoodSecurityStatus = typeof StorePatientRequestSocioeconomicFoodSecurityStatus[keyof typeof StorePatientRequestSocioeconomicFoodSecurityStatus] | null;
 
 
 export const StorePatientRequestSocioeconomicFoodSecurityStatus = {
   food_secure: 'food_secure',
+  marginally_secure: 'marginally_secure',
   food_insecure: 'food_insecure',
-  unsure: 'unsure',
+  severely_insecure: 'severely_insecure',
 } as const;
 
 /**
@@ -239,15 +396,25 @@ export type StorePatientRequestSocioeconomic = {
   marital_status?: StorePatientRequestSocioeconomicMaritalStatus;
   /**
      * @minimum 0
+     * @maximum 20
      * @nullable
      */
   number_of_dependents?: number | null;
   /** @nullable */
+  living_arrangement?: StorePatientRequestSocioeconomicLivingArrangement;
+  /** @nullable */
   employment_status?: StorePatientRequestSocioeconomicEmploymentStatus;
+  /**
+     * @maxLength 255
+     * @nullable
+     */
+  occupation?: string | null;
   /** @nullable */
   income_level?: StorePatientRequestSocioeconomicIncomeLevel;
   /** @nullable */
   has_health_insurance?: boolean | null;
+  /** @nullable */
+  education_level?: StorePatientRequestSocioeconomicEducationLevel;
   /** @nullable */
   smoking_status?: StorePatientRequestSocioeconomicSmokingStatus;
   /** @nullable */
@@ -255,8 +422,22 @@ export type StorePatientRequestSocioeconomic = {
   /** @nullable */
   physical_activity_level?: StorePatientRequestSocioeconomicPhysicalActivityLevel;
   /** @nullable */
-  food_security_status?: StorePatientRequestSocioeconomicFoodSecurityStatus;
+  has_family_support?: boolean | null;
   /** @nullable */
+  has_caregiver?: boolean | null;
+  /** @nullable */
+  transportation_access?: StorePatientRequestSocioeconomicTransportationAccess;
+  /** @nullable */
+  food_security_status?: StorePatientRequestSocioeconomicFoodSecurityStatus;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  dietary_restrictions_cultural?: string | null;
+  /**
+     * @maxLength 2000
+     * @nullable
+     */
   additional_notes?: string | null;
 };
 
@@ -325,11 +506,81 @@ export interface StoreUserRequest {
 
 export interface StoreVisitRequest {
   date: string;
+  time: string;
   /**
      * @maxLength 10000
      * @nullable
      */
   notes?: string | null;
+  /** @nullable */
+  doctor_id?: number | null;
+}
+
+export interface StoreVitalSignRequest {
+  /**
+     * @minimum 1
+     * @maximum 350
+     * @nullable
+     */
+  systolic_bp?: number | null;
+  /**
+     * @minimum 1
+     * @maximum 250
+     * @nullable
+     */
+  diastolic_bp?: number | null;
+  /**
+     * @minimum 1
+     * @maximum 350
+     * @nullable
+     */
+  heart_rate?: number | null;
+  /**
+     * @minimum 30
+     * @maximum 45
+     * @nullable
+     */
+  temperature?: number | null;
+  /**
+     * @minimum 1
+     * @maximum 500
+     * @nullable
+     */
+  weight?: number | null;
+  /**
+     * @minimum 50
+     * @maximum 300
+     * @nullable
+     */
+  height?: number | null;
+}
+
+export type UpdateDietPlanRequestDaysItem = {
+  day?: string;
+  breakfast?: string;
+  lunch?: string;
+  dinner?: string;
+  snack?: string;
+};
+
+export interface UpdateDietPlanRequest {
+  /** @nullable */
+  rationale?: string | null;
+  /**
+     * @minimum 1000
+     * @maximum 4000
+     */
+  daily_calories?: number;
+  /** @nullable */
+  nutritional_goals?: string[] | null;
+  /** @nullable */
+  warnings?: string[] | null;
+  /**
+     * @minItems 7
+     * @maxItems 7
+     * @nullable
+     */
+  days?: UpdateDietPlanRequestDaysItem[] | null;
 }
 
 export type UpdatePatientRequestGender = typeof UpdatePatientRequestGender[keyof typeof UpdatePatientRequestGender];
@@ -375,6 +626,21 @@ export const UpdatePatientRequestSocioeconomicMaritalStatus = {
 /**
  * @nullable
  */
+export type UpdatePatientRequestSocioeconomicLivingArrangement = typeof UpdatePatientRequestSocioeconomicLivingArrangement[keyof typeof UpdatePatientRequestSocioeconomicLivingArrangement] | null;
+
+
+export const UpdatePatientRequestSocioeconomicLivingArrangement = {
+  alone: 'alone',
+  with_family: 'with_family',
+  with_partner: 'with_partner',
+  shared_housing: 'shared_housing',
+  care_facility: 'care_facility',
+  other: 'other',
+} as const;
+
+/**
+ * @nullable
+ */
 export type UpdatePatientRequestSocioeconomicEmploymentStatus = typeof UpdatePatientRequestSocioeconomicEmploymentStatus[keyof typeof UpdatePatientRequestSocioeconomicEmploymentStatus] | null;
 
 
@@ -401,6 +667,23 @@ export const UpdatePatientRequestSocioeconomicIncomeLevel = {
   middle: 'middle',
   upper_middle: 'upper_middle',
   high: 'high',
+} as const;
+
+/**
+ * @nullable
+ */
+export type UpdatePatientRequestSocioeconomicEducationLevel = typeof UpdatePatientRequestSocioeconomicEducationLevel[keyof typeof UpdatePatientRequestSocioeconomicEducationLevel] | null;
+
+
+export const UpdatePatientRequestSocioeconomicEducationLevel = {
+  no_formal: 'no_formal',
+  primary: 'primary',
+  secondary: 'secondary',
+  vocational: 'vocational',
+  bachelors: 'bachelors',
+  masters: 'masters',
+  doctorate: 'doctorate',
+  other: 'other',
 } as const;
 
 /**
@@ -445,13 +728,29 @@ export const UpdatePatientRequestSocioeconomicPhysicalActivityLevel = {
 /**
  * @nullable
  */
+export type UpdatePatientRequestSocioeconomicTransportationAccess = typeof UpdatePatientRequestSocioeconomicTransportationAccess[keyof typeof UpdatePatientRequestSocioeconomicTransportationAccess] | null;
+
+
+export const UpdatePatientRequestSocioeconomicTransportationAccess = {
+  own_vehicle: 'own_vehicle',
+  public_transport: 'public_transport',
+  rideshare: 'rideshare',
+  walking: 'walking',
+  limited: 'limited',
+  none: 'none',
+} as const;
+
+/**
+ * @nullable
+ */
 export type UpdatePatientRequestSocioeconomicFoodSecurityStatus = typeof UpdatePatientRequestSocioeconomicFoodSecurityStatus[keyof typeof UpdatePatientRequestSocioeconomicFoodSecurityStatus] | null;
 
 
 export const UpdatePatientRequestSocioeconomicFoodSecurityStatus = {
   food_secure: 'food_secure',
+  marginally_secure: 'marginally_secure',
   food_insecure: 'food_insecure',
-  unsure: 'unsure',
+  severely_insecure: 'severely_insecure',
 } as const;
 
 export type UpdatePatientRequestSocioeconomic = {
@@ -459,15 +758,25 @@ export type UpdatePatientRequestSocioeconomic = {
   marital_status?: UpdatePatientRequestSocioeconomicMaritalStatus;
   /**
      * @minimum 0
+     * @maximum 20
      * @nullable
      */
   number_of_dependents?: number | null;
   /** @nullable */
+  living_arrangement?: UpdatePatientRequestSocioeconomicLivingArrangement;
+  /** @nullable */
   employment_status?: UpdatePatientRequestSocioeconomicEmploymentStatus;
+  /**
+     * @maxLength 255
+     * @nullable
+     */
+  occupation?: string | null;
   /** @nullable */
   income_level?: UpdatePatientRequestSocioeconomicIncomeLevel;
   /** @nullable */
   has_health_insurance?: boolean | null;
+  /** @nullable */
+  education_level?: UpdatePatientRequestSocioeconomicEducationLevel;
   /** @nullable */
   smoking_status?: UpdatePatientRequestSocioeconomicSmokingStatus;
   /** @nullable */
@@ -475,8 +784,22 @@ export type UpdatePatientRequestSocioeconomic = {
   /** @nullable */
   physical_activity_level?: UpdatePatientRequestSocioeconomicPhysicalActivityLevel;
   /** @nullable */
-  food_security_status?: UpdatePatientRequestSocioeconomicFoodSecurityStatus;
+  has_family_support?: boolean | null;
   /** @nullable */
+  has_caregiver?: boolean | null;
+  /** @nullable */
+  transportation_access?: UpdatePatientRequestSocioeconomicTransportationAccess;
+  /** @nullable */
+  food_security_status?: UpdatePatientRequestSocioeconomicFoodSecurityStatus;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  dietary_restrictions_cultural?: string | null;
+  /**
+     * @maxLength 2000
+     * @nullable
+     */
   additional_notes?: string | null;
 };
 
@@ -538,6 +861,7 @@ export interface UpdateUserRequest {
 
 export interface UpdateVisitRequest {
   date?: string;
+  time?: string;
   /**
      * @maxLength 10000
      * @nullable
@@ -545,70 +869,88 @@ export interface UpdateVisitRequest {
   notes?: string | null;
 }
 
-export type UserResourceAttributes = {
-  name: string;
-  email: string;
-  role: string;
+export interface UpdateVitalSignRequest {
+  /**
+     * @minimum 1
+     * @maximum 350
+     * @nullable
+     */
+  systolic_bp?: number | null;
+  /**
+     * @minimum 1
+     * @maximum 250
+     * @nullable
+     */
+  diastolic_bp?: number | null;
+  /**
+     * @minimum 1
+     * @maximum 350
+     * @nullable
+     */
+  heart_rate?: number | null;
+  /**
+     * @minimum 30
+     * @maximum 45
+     * @nullable
+     */
+  temperature?: number | null;
+  /**
+     * @minimum 1
+     * @maximum 500
+     * @nullable
+     */
+  weight?: number | null;
+  /**
+     * @minimum 50
+     * @maximum 300
+     * @nullable
+     */
+  height?: number | null;
+}
+
+export type VisitResourceAttributes = {
+  date: string;
+  /** @nullable */
+  time: string | null;
+  /** @nullable */
+  notes: string | null;
+  doctorName?: string;
+  patientName?: string;
+  patientId?: string;
+  isEditable: boolean;
   createdAt: string;
   updatedAt: string;
-  /** @nullable */
-  deletedAt: string | null;
-  isDeleted: boolean;
 };
 
-export type UserResourceRelationships = {
-  patient?: Patient;
+export type VisitResourceRelationshipsPatientData = {
+  type: 'patient';
+  id: string;
 };
 
-export type UserResourceLinks = {
-  self: string;
+export type VisitResourceRelationshipsPatient = {
+  data?: VisitResourceRelationshipsPatientData;
 };
 
-export interface UserResource {
-  type: 'users';
-  id: number;
-  attributes: UserResourceAttributes;
-  relationships: UserResourceRelationships;
-  links: UserResourceLinks;
-}
+export type VisitResourceRelationshipsDoctorData = {
+  type: 'user';
+  id: string;
+};
 
-export interface VisitResourceAttributes {
-  date: string;
-  time: string | null;
-  notes: string | null;
-  doctorName: string | null;
-  patientName: string | null;
-  patientId: string | null;
-  isEditable: boolean;
-  createdAt: string | null;
-  updatedAt: string | null;
-}
+export type VisitResourceRelationshipsDoctor = {
+  data?: VisitResourceRelationshipsDoctorData;
+};
+
+export type VisitResourceRelationships = {
+  patient: VisitResourceRelationshipsPatient;
+  doctor: VisitResourceRelationshipsDoctor;
+};
 
 export interface VisitResource {
   type: 'visit';
   id: string;
   attributes: VisitResourceAttributes;
-  relationships: {
-    patient: { data?: { type: 'patient'; id: string } };
-    doctor:  { data?: { type: 'user';    id: string } };
-  };
+  relationships: VisitResourceRelationships;
 }
-
-export type VisitsGlobalIndex200 = {
-  message: string;
-  status: 200;
-  data: VisitResource[];
-  meta: PatientsIndex200Meta;
-  links: PatientsIndex200Links;
-};
-
-export type PatientVisitsIndex200 = {
-  message: string;
-  status: 200;
-  data: VisitResource[];
-  meta: PatientsIndex200Meta;
-  links: PatientsIndex200Links;
-};
 
 /**
  * A detailed description of each field that failed validation.
@@ -683,6 +1025,63 @@ export type UserMe200 = {
   data: UserMe200Data;
 };
 
+export type PatientsDietPlansIndex200Data = {
+  diet_plans: DietPlanSummaryResource[];
+};
+
+export type PatientsDietPlansIndex200 = {
+  message: 'Diet plans retrieved successfully.';
+  status: 200;
+  data: PatientsDietPlansIndex200Data;
+};
+
+export type PatientsDietPlansStore202DataDietPlan = {
+  id: number;
+  status: string;
+  /** @nullable */
+  created_at: string | null;
+};
+
+export type PatientsDietPlansStore202Data = {
+  diet_plan: PatientsDietPlansStore202DataDietPlan;
+};
+
+export type PatientsDietPlansStore202 = {
+  message: 'Diet plan generation started.';
+  status: 202;
+  data: PatientsDietPlansStore202Data;
+};
+
+export type PatientsDietPlansShow200Data = {
+  diet_plan: DietPlanResource;
+};
+
+export type PatientsDietPlansShow200 = {
+  message: 'Diet plan retrieved successfully.';
+  status: 200;
+  data: PatientsDietPlansShow200Data;
+};
+
+export type PatientsDietPlansUpdate200Data = {
+  diet_plan: DietPlanResource;
+};
+
+export type PatientsDietPlansUpdate200 = {
+  message: 'Diet plan updated successfully.';
+  status: 200;
+  data: PatientsDietPlansUpdate200Data;
+};
+
+export type PatientsDietPlansSend202Data = {
+  delivery: DietPlanDeliveryResource;
+};
+
+export type PatientsDietPlansSend202 = {
+  message: 'Diet plan delivery initiated.';
+  status: 202;
+  data: PatientsDietPlansSend202Data;
+};
+
 export type PatientsIndexParams = {
 /**
  * @nullable
@@ -719,26 +1118,18 @@ export const PatientsIndexFormat = {
   summary: 'summary',
 } as const;
 
-export type PatientsIndex200Meta = {
-  current_page: number;
-  last_page: number;
-  per_page: number;
-  total: number;
-};
-
-export type PatientsIndex200Links = {
-  first: string | null;
-  last: string | null;
-  prev: string | null;
-  next: string | null;
-};
-
 export type PatientsIndex200 = {
   message: 'Patients retrieved successfully.';
   status: 200;
-  data: PatientResource[];
-  meta: PatientsIndex200Meta;
-  links: PatientsIndex200Links;
+  data: string;
+  meta: string;
+  links: string;
+} | {
+  message: 'Patients retrieved successfully.';
+  status: 200;
+  data: {
+  patients: PatientSummaryResource[] | PatientResource[];
+};
 };
 
 export type PatientsStore201Data = {
@@ -886,5 +1277,257 @@ export type PatientsVisitsShow200 = {
   message: 'Visit retrieved successfully.';
   status: 200;
   data: PatientsVisitsShow200Data;
+};
+
+export type VisitsIndex200 = {
+  message: 'Visits retrieved successfully.';
+  status: 200;
+  data: string;
+  meta: string;
+  links: string;
+};
+
+/**
+ * @nullable
+ */
+export type PatientsVisitsVitalsShow200DataAttributesBmiCategory = typeof PatientsVisitsVitalsShow200DataAttributesBmiCategory[keyof typeof PatientsVisitsVitalsShow200DataAttributesBmiCategory] | null;
+
+
+export const PatientsVisitsVitalsShow200DataAttributesBmiCategory = {
+  obese: 'obese',
+  overweight: 'overweight',
+  normal: 'normal',
+  underweight: 'underweight',
+} as const;
+
+export type PatientsVisitsVitalsShow200DataAttributesVisitDate = string | { [key: string]: unknown };
+
+export type PatientsVisitsVitalsShow200DataAttributesPatientId = string | null | { [key: string]: unknown };
+
+export type PatientsVisitsVitalsShow200DataAttributesPatientName = string | null | { [key: string]: unknown };
+
+export type PatientsVisitsVitalsShow200DataAttributesDoctorName = string | null | { [key: string]: unknown };
+
+/**
+ * @nullable
+ */
+export type PatientsVisitsVitalsShow200DataAttributesPreviousVisit = {
+  visitDate: string;
+  weight: string;
+  bmi: string;
+  systolicBp: string;
+  diastolicBp: string;
+  /** @nullable */
+  weightDelta: number | null;
+  /** @nullable */
+  bmiDelta: number | null;
+} | null;
+
+export type PatientsVisitsVitalsShow200DataAttributes = {
+  /** @nullable */
+  systolicBp: number | null;
+  /** @nullable */
+  diastolicBp: number | null;
+  /** @nullable */
+  heartRate: number | null;
+  /** @nullable */
+  temperature: string | null;
+  /** @nullable */
+  weight: string | null;
+  /** @nullable */
+  height: string | null;
+  /** @nullable */
+  bmi: string | null;
+  /** @nullable */
+  bmiCategory: PatientsVisitsVitalsShow200DataAttributesBmiCategory;
+  flags: string;
+  visitId: string;
+  visitDate: PatientsVisitsVitalsShow200DataAttributesVisitDate;
+  patientId: PatientsVisitsVitalsShow200DataAttributesPatientId;
+  patientName: PatientsVisitsVitalsShow200DataAttributesPatientName;
+  doctorName: PatientsVisitsVitalsShow200DataAttributesDoctorName;
+  /** @nullable */
+  previousVisit: PatientsVisitsVitalsShow200DataAttributesPreviousVisit;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PatientsVisitsVitalsShow200Data = {
+  id: string;
+  type: 'vital_sign';
+  attributes: PatientsVisitsVitalsShow200DataAttributes;
+};
+
+export type PatientsVisitsVitalsShow200 = {
+  message: 'Vital signs retrieved.';
+  status: 200;
+  data: PatientsVisitsVitalsShow200Data;
+};
+
+/**
+ * @nullable
+ */
+export type PatientsVisitsVitalsStore201DataAttributesBmiCategory = typeof PatientsVisitsVitalsStore201DataAttributesBmiCategory[keyof typeof PatientsVisitsVitalsStore201DataAttributesBmiCategory] | null;
+
+
+export const PatientsVisitsVitalsStore201DataAttributesBmiCategory = {
+  obese: 'obese',
+  overweight: 'overweight',
+  normal: 'normal',
+  underweight: 'underweight',
+} as const;
+
+export type PatientsVisitsVitalsStore201DataAttributesVisitDate = string | { [key: string]: unknown };
+
+export type PatientsVisitsVitalsStore201DataAttributesPatientId = string | null | { [key: string]: unknown };
+
+export type PatientsVisitsVitalsStore201DataAttributesPatientName = string | null | { [key: string]: unknown };
+
+export type PatientsVisitsVitalsStore201DataAttributesDoctorName = string | null | { [key: string]: unknown };
+
+/**
+ * @nullable
+ */
+export type PatientsVisitsVitalsStore201DataAttributesPreviousVisit = {
+  visitDate: string;
+  weight: string;
+  bmi: string;
+  systolicBp: string;
+  diastolicBp: string;
+  /** @nullable */
+  weightDelta: number | null;
+  /** @nullable */
+  bmiDelta: number | null;
+} | null;
+
+export type PatientsVisitsVitalsStore201DataAttributes = {
+  /** @nullable */
+  systolicBp: number | null;
+  /** @nullable */
+  diastolicBp: number | null;
+  /** @nullable */
+  heartRate: number | null;
+  /** @nullable */
+  temperature: string | null;
+  /** @nullable */
+  weight: string | null;
+  /** @nullable */
+  height: string | null;
+  /** @nullable */
+  bmi: string | null;
+  /** @nullable */
+  bmiCategory: PatientsVisitsVitalsStore201DataAttributesBmiCategory;
+  flags: string;
+  visitId: string;
+  visitDate: PatientsVisitsVitalsStore201DataAttributesVisitDate;
+  patientId: PatientsVisitsVitalsStore201DataAttributesPatientId;
+  patientName: PatientsVisitsVitalsStore201DataAttributesPatientName;
+  doctorName: PatientsVisitsVitalsStore201DataAttributesDoctorName;
+  /** @nullable */
+  previousVisit: PatientsVisitsVitalsStore201DataAttributesPreviousVisit;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PatientsVisitsVitalsStore201Data = {
+  id: string;
+  type: 'vital_sign';
+  attributes: PatientsVisitsVitalsStore201DataAttributes;
+};
+
+export type PatientsVisitsVitalsStore201 = {
+  message: 'Vital signs recorded.';
+  status: 201;
+  data: PatientsVisitsVitalsStore201Data;
+};
+
+export type PatientsVisitsVitalsStore409 = {
+  message: 'Vital signs already recorded for this visit.';
+  status: 409;
+};
+
+/**
+ * @nullable
+ */
+export type PatientsVisitsVitalsUpdate200DataAttributesBmiCategory = typeof PatientsVisitsVitalsUpdate200DataAttributesBmiCategory[keyof typeof PatientsVisitsVitalsUpdate200DataAttributesBmiCategory] | null;
+
+
+export const PatientsVisitsVitalsUpdate200DataAttributesBmiCategory = {
+  obese: 'obese',
+  overweight: 'overweight',
+  normal: 'normal',
+  underweight: 'underweight',
+} as const;
+
+export type PatientsVisitsVitalsUpdate200DataAttributesVisitDate = string | { [key: string]: unknown };
+
+export type PatientsVisitsVitalsUpdate200DataAttributesPatientId = string | null | { [key: string]: unknown };
+
+export type PatientsVisitsVitalsUpdate200DataAttributesPatientName = string | null | { [key: string]: unknown };
+
+export type PatientsVisitsVitalsUpdate200DataAttributesDoctorName = string | null | { [key: string]: unknown };
+
+/**
+ * @nullable
+ */
+export type PatientsVisitsVitalsUpdate200DataAttributesPreviousVisit = {
+  visitDate: string;
+  weight: string;
+  bmi: string;
+  systolicBp: string;
+  diastolicBp: string;
+  /** @nullable */
+  weightDelta: number | null;
+  /** @nullable */
+  bmiDelta: number | null;
+} | null;
+
+export type PatientsVisitsVitalsUpdate200DataAttributes = {
+  /** @nullable */
+  systolicBp: number | null;
+  /** @nullable */
+  diastolicBp: number | null;
+  /** @nullable */
+  heartRate: number | null;
+  /** @nullable */
+  temperature: string | null;
+  /** @nullable */
+  weight: string | null;
+  /** @nullable */
+  height: string | null;
+  /** @nullable */
+  bmi: string | null;
+  /** @nullable */
+  bmiCategory: PatientsVisitsVitalsUpdate200DataAttributesBmiCategory;
+  flags: string;
+  visitId: string;
+  visitDate: PatientsVisitsVitalsUpdate200DataAttributesVisitDate;
+  patientId: PatientsVisitsVitalsUpdate200DataAttributesPatientId;
+  patientName: PatientsVisitsVitalsUpdate200DataAttributesPatientName;
+  doctorName: PatientsVisitsVitalsUpdate200DataAttributesDoctorName;
+  /** @nullable */
+  previousVisit: PatientsVisitsVitalsUpdate200DataAttributesPreviousVisit;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PatientsVisitsVitalsUpdate200Data = {
+  id: string;
+  type: 'vital_sign';
+  attributes: PatientsVisitsVitalsUpdate200DataAttributes;
+};
+
+export type PatientsVisitsVitalsUpdate200 = {
+  message: 'Vital signs updated.';
+  status: 200;
+  data: PatientsVisitsVitalsUpdate200Data;
+};
+
+export type PatientsVitalsHistory200 = {
+  message: 'Vitals history retrieved.';
+  status: 200;
+  data: string;
+  meta: string;
+  links: string;
 };
 

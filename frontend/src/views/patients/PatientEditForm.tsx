@@ -15,6 +15,11 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import { IconChevronDown } from '@tabler/icons-react'
+import SocioeconomicFields from './socioeconomic/SocioeconomicFields'
 
 import type { PatientResource } from '@/api/generated/nutriBaseAPI.schemas'
 
@@ -39,6 +44,10 @@ export default function PatientEditForm({ patient, onSuccess, onCancel }: Props)
 	const [allergies, setAllergies] = useState(patient.attributes?.allergies ?? '')
 	const [medicalNotes, setMedicalNotes] = useState(patient.attributes?.medicalNotes ?? '')
 
+	// Socioeconomic payload should always be sent on edit (allows clearing values)
+	const initialSocio = (patient.attributes as any)?.socioeconomicData?.attributes ?? {}
+	const [socioData, setSocioData] = useState<Record<string, any>>(initialSocio)
+
 	const [errors, setErrors] = useState<Record<string, string[]>>({})
 	const [formError, setFormError] = useState('')
 	const [loading, setLoading] = useState(false)
@@ -52,7 +61,7 @@ export default function PatientEditForm({ patient, onSuccess, onCancel }: Props)
 		setFormError('')
 
 		try {
-			const payload = {
+			const payload: Record<string, any> = {
 				first_name: firstName,
 				last_name: lastName,
 				date_of_birth: dateOfBirth,
@@ -67,6 +76,9 @@ export default function PatientEditForm({ patient, onSuccess, onCancel }: Props)
 				allergies,
 				medical_notes: medicalNotes,
 			}
+
+			// Always include socioeconomic on edit so clearing works server-side
+			payload.socioeconomic = socioData
 
 			const res = await fetch(`/api/patients/${patient.id}`, {
 				method: 'PATCH',
@@ -252,6 +264,16 @@ export default function PatientEditForm({ patient, onSuccess, onCancel }: Props)
             />
           </Stack>
         </Box>
+
+        {/* Socioeconomic accordion — always sent on edit to allow clearing values */}
+        <Accordion>
+          <AccordionSummary expandIcon={<IconChevronDown size={18} />}>
+            <Typography>Socioeconomic</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <SocioeconomicFields value={socioData} onChange={setSocioData} />
+          </AccordionDetails>
+        </Accordion>
 
         <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
           {onCancel && (

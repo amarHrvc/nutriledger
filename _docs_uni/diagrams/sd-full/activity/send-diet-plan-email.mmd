@@ -1,0 +1,22 @@
+flowchart TD
+    A([Start]) --> B[Navigate to Patient Profile — Diet Plans tab]
+    B --> C{Plan exists and status = completed?}
+    C -->|No| D[Send button disabled]
+    D --> Z([End])
+    C -->|Yes| E{Authorized?\nAdmin or Doktor}
+    E -->|No| F[Send button hidden]
+    F --> Z
+    E -->|Yes| G[Click Send to Patient]
+    G --> H[POST /api/patients/id/diet-plans/planId/send]
+    H --> I[Create DietPlanDelivery record\nstatus: pending]
+    I --> J[Dispatch SendDietPlanEmailJob to queue]
+    J --> K[Return 202]
+    K --> L[Frontend shows pending delivery badge]
+    L --> M[Job executes — send via Laravel Mail]
+    M --> N{Email sent?}
+    N -->|Yes| O[DietPlanDelivery status → sent]
+    N -->|No| P[DietPlanDelivery status → failed]
+    O --> Q[Badge updates to sent]
+    P --> R[Badge updates to failed]
+    Q --> Z
+    R --> Z

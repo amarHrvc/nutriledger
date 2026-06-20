@@ -11,6 +11,7 @@ import HorizontalLayout from '@layouts/HorizontalLayout'
 
 // Component Imports
 import Providers from '@components/Providers'
+import PatientRedirectGuard from '@/components/PatientRedirectGuard'
 import Navigation from '@components/layout/vertical/Navigation'
 import Header from '@components/layout/horizontal/Header'
 import Navbar from '@components/layout/vertical/Navbar'
@@ -40,12 +41,16 @@ const Layout = async (props: ChildrenType) => {
           systemMode={systemMode}
           verticalLayout={
             <VerticalLayout navigation={<Navigation mode={mode} />} navbar={<Navbar />} footer={<VerticalFooter />}>
-              {children}
+              <PatientRedirectGuard>
+                {children}
+              </PatientRedirectGuard>
             </VerticalLayout>
           }
           horizontalLayout={
             <HorizontalLayout header={<Header />} footer={<HorizontalFooter />}>
-              {children}
+              <PatientRedirectGuard>
+                {children}
+              </PatientRedirectGuard>
             </HorizontalLayout>
           }
         />

@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DietPlanController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VisitController;
+use App\Http\Controllers\Api\VitalSignController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/ping', fn () => response()->json(['status' => 'ok', 'message' => 'ping', 'data' => []]));
@@ -37,6 +39,30 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             ->where('visit', '[0-9]+')
             ->name('patients.visits.destroy');
     });
+
+    // Vital signs — outside role middleware to allow patient access (checked via policy)
+    Route::get('/patients/{patient}/visits/{visit}/vitals', [VitalSignController::class, 'show'])
+        ->name('patients.visits.vitals.show');
+    Route::post('/patients/{patient}/visits/{visit}/vitals', [VitalSignController::class, 'store'])
+        ->name('patients.visits.vitals.store');
+    Route::patch('/patients/{patient}/visits/{visit}/vitals', [VitalSignController::class, 'update'])
+        ->name('patients.visits.vitals.update');
+    Route::delete('/patients/{patient}/visits/{visit}/vitals', [VitalSignController::class, 'destroy'])
+        ->name('patients.visits.vitals.destroy');
+    Route::get('/patients/{patient}/vitals', [VitalSignController::class, 'history'])
+        ->name('patients.vitals.history');
+
+    // Diet plans — admin and doctor only (checked via policy)
+    Route::get('/patients/{patient}/diet-plans', [DietPlanController::class, 'index'])
+        ->name('patients.diet-plans.index');
+    Route::post('/patients/{patient}/diet-plans', [DietPlanController::class, 'store'])
+        ->name('patients.diet-plans.store');
+    Route::get('/patients/{patient}/diet-plans/{dietPlan}', [DietPlanController::class, 'show'])
+        ->name('patients.diet-plans.show');
+    Route::patch('/patients/{patient}/diet-plans/{dietPlan}', [DietPlanController::class, 'update'])
+        ->name('patients.diet-plans.update');
+    Route::post('/patients/{patient}/diet-plans/{dietPlan}/send', [DietPlanController::class, 'send'])
+        ->name('patients.diet-plans.send');
 
     // Patients can view their own visits (checked via policy)
     Route::get('/patients/{patient}/visits', [VisitController::class, 'index'])

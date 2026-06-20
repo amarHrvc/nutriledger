@@ -71,7 +71,7 @@ const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
 
   return (
     <div className='flex items-center'>
-      <VuexyLogo className='text-2xl text-primary' />
+      <VuexyLogo />
       <LogoText
         color={color}
         ref={logoTextRef}
@@ -80,7 +80,7 @@ const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
         transitionDuration={transitionDuration}
         isBreakpointReached={isBreakpointReached}
       >
-        {themeConfig.templateName}
+        {/*{themeConfig.templateName}*/}
       </LogoText>
     </div>
   )
