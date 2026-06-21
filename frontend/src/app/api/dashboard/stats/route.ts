@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { usersIndex } from '@/api/generated/user/user'
 import { patientsIndex } from '@/api/generated/patient/patient'
