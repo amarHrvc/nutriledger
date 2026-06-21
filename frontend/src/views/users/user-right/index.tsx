@@ -10,8 +10,8 @@ import TabPanel from '@mui/lab/TabPanel'
 
 import type { UserResource } from '@/api/generated/nutriBaseAPI.schemas'
 import OverviewTab from './overview'
-import SecurityTab from './security'
-import BillingPlansTab from './billing-plans'
+import PatientTab from './patient'
+import UserForm from '../UserForm'
 
 interface Props {
   user: UserResource
@@ -19,6 +19,7 @@ interface Props {
 
 export default function UserRightTabs({ user }: Props) {
   const [activeTab, setActiveTab] = useState('overview')
+  const isPatient = user.attributes.role === 'pacijent'
 
   const handleChange = (_: SyntheticEvent, value: string) => setActiveTab(value)
 
@@ -26,18 +27,30 @@ export default function UserRightTabs({ user }: Props) {
     <TabContext value={activeTab}>
       <TabList onChange={handleChange} variant='scrollable'>
         <Tab value='overview' label='Overview' />
-        <Tab value='security' label='Security' />
-        <Tab value='billing-plans' label='Billing &amp; Plans' />
+        <Tab value='edit' label='Edit' />
+        {isPatient && <Tab value='patient' label='Patient Record' />}
       </TabList>
+
       <TabPanel value='overview' sx={{ px: 0, pt: 4 }}>
         <OverviewTab user={user} />
       </TabPanel>
-      <TabPanel value='security' sx={{ px: 0, pt: 4 }}>
-        <SecurityTab />
+
+      <TabPanel value='edit' sx={{ px: 0, pt: 4 }}>
+        <UserForm
+          mode='edit'
+          user={user}
+          onSuccess={() => {
+            window.dispatchEvent(new CustomEvent('users:changed'))
+            setActiveTab('overview')
+          }}
+        />
       </TabPanel>
-      <TabPanel value='billing-plans' sx={{ px: 0, pt: 4 }}>
-        <BillingPlansTab />
-      </TabPanel>
+
+      {isPatient && (
+        <TabPanel value='patient' sx={{ px: 0, pt: 4 }}>
+          <PatientTab user={user} />
+        </TabPanel>
+      )}
     </TabContext>
   )
 }
