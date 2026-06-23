@@ -1,0 +1,92 @@
+<mxfile host="app.diagrams.net" modified="2026-06-23T00:00:00.000Z" agent="Codex">
+  <diagram name="Figure 3.10" id="sequence-api-login">
+    <mxGraphModel dx="2008" dy="1148" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="Sequence Diagram — API Login" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="500" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="user" value="User" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#111827;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="55" y="70" width="50" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="client" value="Next.js Client" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#111827;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="75" width="130" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="request" value="Route / LoginRequest" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#111827;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="75" width="145" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="controller" value="AuthController / Service" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#111827;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="545" y="75" width="155" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="model" value="User Model" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#111827;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="75" width="120" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="sanctum" value="Sanctum" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#111827;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="940" y="75" width="105" height="42" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="life-user" value="" style="shape=line;html=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 5;" vertex="1" parent="1"><mxGeometry x="79" y="145" width="1" height="630" as="geometry"/></mxCell>
+        <mxCell id="life-client" value="" style="shape=line;html=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 5;" vertex="1" parent="1"><mxGeometry x="234" y="117" width="1" height="658" as="geometry"/></mxCell>
+        <mxCell id="life-request" value="" style="shape=line;html=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 5;" vertex="1" parent="1"><mxGeometry x="422" y="117" width="1" height="658" as="geometry"/></mxCell>
+        <mxCell id="life-controller" value="" style="shape=line;html=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 5;" vertex="1" parent="1"><mxGeometry x="622" y="117" width="1" height="658" as="geometry"/></mxCell>
+        <mxCell id="life-model" value="" style="shape=line;html=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 5;" vertex="1" parent="1"><mxGeometry x="819" y="117" width="1" height="658" as="geometry"/></mxCell>
+        <mxCell id="life-sanctum" value="" style="shape=line;html=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 5;" vertex="1" parent="1"><mxGeometry x="992" y="117" width="1" height="658" as="geometry"/></mxCell>
+
+        <mxCell id="frame-validation" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#6C8EBF;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="45" y="240" width="470" height="105" as="geometry"/>
+        </mxCell>
+        <mxCell id="label-validation" value="alt  Validation fails" style="text;html=1;whiteSpace=wrap;strokeColor=#6C8EBF;fillColor=#EAF2FF;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="45" y="240" width="120" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="frame-account" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#6C8EBF;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="45" y="430" width="680" height="175" as="geometry"/>
+        </mxCell>
+        <mxCell id="label-account" value="alt  Authentication result" style="text;html=1;whiteSpace=wrap;strokeColor=#6C8EBF;fillColor=#EAF2FF;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="45" y="430" width="145" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="separator-account" value="" style="shape=line;html=1;strokeColor=#6C8EBF;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="45" y="515" width="680" height="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="invalid-label" value="[Invalid credentials]" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;fontStyle=1;fontColor=#7F1D1D;" vertex="1" parent="1">
+          <mxGeometry x="195" y="440" width="125" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="inactive-label" value="[Account deactivated]" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;fontStyle=1;fontColor=#7F1D1D;" vertex="1" parent="1">
+          <mxGeometry x="195" y="525" width="140" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="frame-success" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#82B366;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="45" y="615" width="1015" height="165" as="geometry"/>
+        </mxCell>
+        <mxCell id="label-success" value="else  Active account" style="text;html=1;whiteSpace=wrap;strokeColor=#82B366;fillColor=#EAF7EF;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="45" y="615" width="125" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="m01" value="Enter email and password" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="80" y="160" as="sourcePoint"/><mxPoint x="235" y="160" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m02" value="POST /api/login" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="235" y="190" as="sourcePoint"/><mxPoint x="423" y="190" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m03" value="authorize() and validate()" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="423" y="220" as="sourcePoint"/><mxPoint x="423" y="240" as="targetPoint"/><Array as="points"><mxPoint x="475" y="220"/><mxPoint x="475" y="240"/></Array></mxGeometry></mxCell>
+
+        <mxCell id="m04" value="422 validation errors" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="423" y="280" as="sourcePoint"/><mxPoint x="235" y="280" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m05" value="Show field errors" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="235" y="315" as="sourcePoint"/><mxPoint x="80" y="315" as="targetPoint"/></mxGeometry></mxCell>
+
+        <mxCell id="m06" value="Validated login request" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="423" y="365" as="sourcePoint"/><mxPoint x="623" y="365" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m07" value="Find user by email and verify password" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="623" y="395" as="sourcePoint"/><mxPoint x="820" y="395" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m08" value="User record or authentication failure" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="820" y="425" as="sourcePoint"/><mxPoint x="623" y="425" as="targetPoint"/></mxGeometry></mxCell>
+
+        <mxCell id="m09" value="422 Invalid credentials" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="623" y="475" as="sourcePoint"/><mxPoint x="235" y="475" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m10" value="Show login error" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="235" y="500" as="sourcePoint"/><mxPoint x="80" y="500" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m11" value="403 Account is deactivated" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="623" y="555" as="sourcePoint"/><mxPoint x="235" y="555" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m12" value="Show deactivated-account message" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="235" y="585" as="sourcePoint"/><mxPoint x="80" y="585" as="targetPoint"/></mxGeometry></mxCell>
+
+        <mxCell id="m13" value="createToken(user)" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="623" y="650" as="sourcePoint"/><mxPoint x="993" y="650" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m14" value="Opaque API token" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="993" y="680" as="sourcePoint"/><mxPoint x="623" y="680" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m15" value="200 JSON: UserResource + token" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="623" y="710" as="sourcePoint"/><mxPoint x="235" y="710" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m16" value="Store token in auth state" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="235" y="735" as="sourcePoint"/><mxPoint x="235" y="755" as="targetPoint"/><Array as="points"><mxPoint x="285" y="735"/><mxPoint x="285" y="755"/></Array></mxGeometry></mxCell>
+        <mxCell id="m17" value="Redirect to role dashboard" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"><mxPoint x="235" y="770" as="sourcePoint"/><mxPoint x="80" y="770" as="targetPoint"/></mxGeometry></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
