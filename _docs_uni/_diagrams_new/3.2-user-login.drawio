@@ -1,0 +1,137 @@
+<mxfile host="app.diagrams.net" modified="2026-06-23T00:00:00.000Z" agent="Codex" version="24.7.17">
+  <diagram name="Figure 3.2" id="activity-user-login">
+    <mxGraphModel dx="2008" dy="1148" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="Activity Diagram — User Login" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="770" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lane-user" value="User" style="swimlane;html=1;horizontal=1;startSize=30;fillColor=#F8FAFC;swimlaneFillColor=#FFFFFF;strokeColor=#64748B;fontColor=#1F2937;fontSize=13;fontStyle=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="70" width="210" height="980" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane-frontend" value="Frontend (React SPA)" style="swimlane;html=1;horizontal=1;startSize=30;fillColor=#EAF2FF;swimlaneFillColor=#F8FBFF;strokeColor=#4E73A8;fontColor=#1F2937;fontSize=13;fontStyle=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="70" width="280" height="980" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane-api" value="API (Laravel + Sanctum)" style="swimlane;html=1;horizontal=1;startSize=30;fillColor=#EAF7EF;swimlaneFillColor=#F8FCF9;strokeColor=#4F8A64;fontColor=#1F2937;fontSize=13;fontStyle=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="530" y="70" width="280" height="980" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="start" value="" style="ellipse;html=1;aspect=fixed;fillColor=#1F2937;strokeColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="125" y="100" width="20" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="navigate" value="Open login page" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#64748B;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="75" y="140" width="120" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="show-form" value="Display login form" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="330" y="140" width="140" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="enter" value="Enter email and password" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#64748B;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="65" y="205" width="140" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="client-valid" value="Client-side&lt;br&gt;input valid?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="350" y="195" width="100" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="field-error" value="Show field validation errors" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="275" y="290" width="130" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="post-login" value="POST /api/login&lt;br&gt;{ email, password }" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="290" width="100" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="validate-request" value="Validate login request" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="600" y="290" width="140" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="request-valid" value="Request&lt;br&gt;valid?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="620" y="355" width="100" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="response-422" value="422 validation response" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="545" y="450" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="show-server-errors" value="Show validation errors" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="275" y="450" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="verify-credentials" value="Find user and verify password" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="665" y="450" width="135" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="credentials-valid" value="Credentials&lt;br&gt;valid?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="515" width="100" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="invalid-response" value="401 invalid credentials" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="545" y="610" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="show-invalid" value="Show “Invalid credentials”" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="275" y="610" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="account-active" value="Account&lt;br&gt;active?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="610" width="100" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="inactive-response" value="403 account deactivated" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="545" y="700" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="show-inactive" value="Show “Account is deactivated”" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="275" y="700" width="145" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="create-token" value="Create opaque Sanctum token" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="700" width="120" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="return-json" value="200 JSON: user + token" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="670" y="765" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="store-token" value="Store token in auth state&lt;br&gt;Use Authorization: Bearer" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="335" y="760" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="role" value="User role?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="355" y="835" width="110" height="72" as="geometry"/>
+        </mxCell>
+        <mxCell id="patient-me" value="GET /api/patients/me&lt;br&gt;with Bearer token" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="265" y="930" width="130" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="dashboard" value="Redirect admin / doctor&lt;br&gt;to /dashboard/home" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="410" y="930" width="110" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="patient-profile" value="Redirect patient to&lt;br&gt;/dashboard/patients/{id}" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#111827;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="265" y="995" width="130" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="end" value="" style="ellipse;html=1;aspect=fixed;fillColor=#FFFFFF;strokeColor=#1F2937;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="454" y="1005" width="24" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="end-inner" value="" style="ellipse;html=1;aspect=fixed;fillColor=#1F2937;strokeColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="460" y="1011" width="12" height="12" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e01" edge="1" parent="1" source="start" target="navigate" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e02" edge="1" parent="1" source="navigate" target="show-form" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e03" edge="1" parent="1" source="show-form" target="enter" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e04" edge="1" parent="1" source="enter" target="client-valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e05" value="No" edge="1" parent="1" source="client-valid" target="field-error" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=10;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e06" edge="1" parent="1" source="field-error" target="enter" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#B85450;exitX=0;exitY=0.5;entryX=1;entryY=0.5;"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="260" y="311"/><mxPoint x="260" y="226"/></Array></mxGeometry></mxCell>
+        <mxCell id="e07" value="Yes" edge="1" parent="1" source="client-valid" target="post-login" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e08" edge="1" parent="1" source="post-login" target="validate-request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e09" edge="1" parent="1" source="validate-request" target="request-valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e10" value="No" edge="1" parent="1" source="request-valid" target="response-422" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=10;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="response-422" target="show-server-errors" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#B85450;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="show-server-errors" target="enter" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#B85450;exitX=0;exitY=0.5;entryX=1;entryY=0.5;"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="260" y="470"/><mxPoint x="260" y="226"/></Array></mxGeometry></mxCell>
+        <mxCell id="e13" value="Yes" edge="1" parent="1" source="request-valid" target="verify-credentials" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="verify-credentials" target="credentials-valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e15" value="No" edge="1" parent="1" source="credentials-valid" target="invalid-response" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=10;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e16" edge="1" parent="1" source="invalid-response" target="show-invalid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#B85450;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="show-invalid" target="enter" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#B85450;exitX=0;exitY=0.5;entryX=1;entryY=0.5;"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="260" y="630"/><mxPoint x="260" y="226"/></Array></mxGeometry></mxCell>
+        <mxCell id="e18" value="Yes" edge="1" parent="1" source="credentials-valid" target="account-active" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e19" value="No" edge="1" parent="1" source="account-active" target="inactive-response" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#B85450;fontColor=#7F1D1D;fontSize=10;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e20" edge="1" parent="1" source="inactive-response" target="show-inactive" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#B85450;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e21" edge="1" parent="1" source="show-inactive" target="enter" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#B85450;exitX=0;exitY=0.5;entryX=1;entryY=0.5;"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="260" y="721"/><mxPoint x="260" y="226"/></Array></mxGeometry></mxCell>
+        <mxCell id="e22" value="Yes" edge="1" parent="1" source="account-active" target="create-token" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e23" edge="1" parent="1" source="create-token" target="return-json" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e24" edge="1" parent="1" source="return-json" target="store-token" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e25" edge="1" parent="1" source="store-token" target="role" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e26" value="Patient" edge="1" parent="1" source="role" target="patient-me" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e27" value="Admin / Doctor" edge="1" parent="1" source="role" target="dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;fontSize=10;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e28" edge="1" parent="1" source="patient-me" target="patient-profile" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e29" edge="1" parent="1" source="patient-profile" target="end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e30" edge="1" parent="1" source="dashboard" target="end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
