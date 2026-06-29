@@ -1313,10 +1313,14 @@ export type PatientsVisitsVitalsShow200DataAttributesDoctorName = string | null 
  */
 export type PatientsVisitsVitalsShow200DataAttributesPreviousVisit = {
   visitDate: string;
-  weight: string;
-  bmi: string;
-  systolicBp: string;
-  diastolicBp: string;
+  /** @nullable */
+  weight: string | null;
+  /** @nullable */
+  bmi: string | null;
+  /** @nullable */
+  systolicBp: number | null;
+  /** @nullable */
+  diastolicBp: number | null;
   /** @nullable */
   weightDelta: number | null;
   /** @nullable */
@@ -1390,10 +1394,14 @@ export type PatientsVisitsVitalsStore201DataAttributesDoctorName = string | null
  */
 export type PatientsVisitsVitalsStore201DataAttributesPreviousVisit = {
   visitDate: string;
-  weight: string;
-  bmi: string;
-  systolicBp: string;
-  diastolicBp: string;
+  /** @nullable */
+  weight: string | null;
+  /** @nullable */
+  bmi: string | null;
+  /** @nullable */
+  systolicBp: number | null;
+  /** @nullable */
+  diastolicBp: number | null;
   /** @nullable */
   weightDelta: number | null;
   /** @nullable */
@@ -1472,10 +1480,14 @@ export type PatientsVisitsVitalsUpdate200DataAttributesDoctorName = string | nul
  */
 export type PatientsVisitsVitalsUpdate200DataAttributesPreviousVisit = {
   visitDate: string;
-  weight: string;
-  bmi: string;
-  systolicBp: string;
-  diastolicBp: string;
+  /** @nullable */
+  weight: string | null;
+  /** @nullable */
+  bmi: string | null;
+  /** @nullable */
+  systolicBp: number | null;
+  /** @nullable */
+  diastolicBp: number | null;
   /** @nullable */
   weightDelta: number | null;
   /** @nullable */

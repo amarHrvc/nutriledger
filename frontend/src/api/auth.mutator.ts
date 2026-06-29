@@ -1,5 +1,7 @@
 import { cookies } from 'next/headers'
 
+const INTERNAL_BASE = process.env.INTERNAL_API_URL ?? 'http://localhost:8000'
+
 // customFetchMutator adapts fetch responses to the generated API client response shapes.
 // The generated functions expect a union type that includes { data, status, headers }.
 export const customFetchMutator = async <T>(url: string, options: RequestInit): Promise<T> => {
@@ -12,7 +14,11 @@ export const customFetchMutator = async <T>(url: string, options: RequestInit): 
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  const response = await fetch(url, { ...options, headers });
+  // Replace the hardcoded base URL baked in by Orval at generation time
+  const path = url.replace(/^https?:\/\/[^/]+/, '')
+  const resolvedUrl = `${INTERNAL_BASE}${path}`
+
+  const response = await fetch(resolvedUrl, { ...options, headers });
   const data = response.status === 204 ? null : await response.json();
 
   // Construct a result object that matches the generated response unions (includes headers)
