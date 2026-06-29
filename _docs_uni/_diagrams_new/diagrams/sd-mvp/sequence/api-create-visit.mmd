@@ -1,0 +1,36 @@
+sequenceDiagram
+    actor Doctor
+    participant SPA as React SPA
+    participant API as Laravel API
+    participant Sanctum
+    participant VisitPolicy
+    participant DB
+
+    Doctor->>SPA: Navigate to /patients/:id/visits/new
+    SPA->>API: GET /api/patients/:id\n Authorization: Bearer <token>
+    API->>Sanctum: Validate Bearer token
+    Sanctum-->>API: User $doctor
+    API-->>SPA: 200 { data: PatientResource }
+    SPA-->>Doctor: Create visit form with patient context
+
+    Doctor->>SPA: Fill date + notes + submit
+    SPA->>API: POST /api/patients/:id/visits { date, notes }\n Authorization: Bearer <token>
+
+    API->>VisitPolicy: can('create', Visit::class)
+    alt Not authorized
+        VisitPolicy-->>API: false
+        API-->>SPA: 403 { message: "Forbidden" }
+        SPA-->>Doctor: Show error
+    else Authorized
+        VisitPolicy-->>API: true
+        API->>API: validate() — date required, notes optional
+        alt Validation fails
+            API-->>SPA: 422 { errors: { date: [...] } }
+            SPA-->>Doctor: Highlight invalid fields
+        else Validation passes
+            API->>DB: INSERT INTO visits (doctor_id = auth user)
+            DB-->>API: Visit $visit
+            API-->>SPA: 201 { data: VisitResource, message: "Visit created" }
+            SPA-->>Doctor: Navigate to /patients/:id/visits/:visitId
+        end
+    end

@@ -1,0 +1,18 @@
+flowchart TD
+    A([Start]) --> B[Navigate to Patient Profile — Diet Plans tab]
+    B --> C{Plan exists?}
+    C -->|No| D[Show Generate button only]
+    D --> Z([End])
+    C -->|Yes| E{Authorized?\nAdmin or Doktor}
+    E -->|No| F[Read-only view — no edit button]
+    F --> Z
+    E -->|Yes| G[Click Edit on diet plan card]
+    G --> H[Open edit form with existing content]
+    H --> I[Modify plan content]
+    I --> J[Submit — PATCH /api/patients/id/diet-plans/planId]
+    J --> K{Validation passes?}
+    K -->|No| L[Show validation errors]
+    L --> I
+    K -->|Yes| M[DietPlan record updated]
+    M --> N[Show updated diet plan card]
+    N --> Z

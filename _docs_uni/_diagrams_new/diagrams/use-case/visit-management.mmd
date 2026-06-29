@@ -1,0 +1,24 @@
+graph LR
+    subgraph System ["Visit Management"]
+        UC1([View Visit List])
+        UC2([Create Visit])
+        UC3([View Visit])
+        UC4([Update Visit])
+        UC5([Delete Visit])
+    end
+
+    Admin((Admin)) --> UC1
+    Admin --> UC2
+    Admin --> UC3
+    Admin --> UC4
+    Admin --> UC5
+
+    Doktor((Doktor)) --> UC1
+    Doktor --> UC2
+    Doktor --> UC3
+    Doktor --> UC4
+
+    Pacijent((Pacijent)) --> UC3
+
+    note1[/Doktor: only own visits/] -. restricts .-> UC4
+    note2[/Pacijent: only own visits/] -. restricts .-> UC3

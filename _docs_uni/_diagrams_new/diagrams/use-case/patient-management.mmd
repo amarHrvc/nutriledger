@@ -1,0 +1,31 @@
+graph LR
+    subgraph System ["Patient Management"]
+        UC1([View Patient List])
+        UC2([Create Patient])
+        UC3([View Patient Profile])
+        UC4([Edit Patient])
+        UC5([Soft Delete Patient])
+        UC6([Force Delete Patient])
+        UC7([View Socioeconomic Data])
+        UC8([Manage Socioeconomic Data])
+    end
+
+    Admin((Admin)) --> UC1
+    Admin --> UC2
+    Admin --> UC3
+    Admin --> UC4
+    Admin --> UC5
+    Admin --> UC6
+    Admin --> UC7
+    Admin --> UC8
+
+    Doktor((Doktor)) --> UC1
+    Doktor --> UC2
+    Doktor --> UC3
+    Doktor --> UC4
+    Doktor --> UC5
+    Doktor --> UC7
+    Doktor --> UC8
+
+    Pacijent((Pacijent)) --> UC3
+    Pacijent --> UC4

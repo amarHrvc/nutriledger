@@ -1,0 +1,15 @@
+flowchart TD
+    A([Start]) --> B[Navigate to /patients/create]
+    B --> C{Authorized?\nAdmin or Doktor}
+    C -->|No| D[403 Forbidden]
+    D --> Z([End])
+    C -->|Yes| E[Display create patient form]
+    E --> F[Fill in patient details]
+    F --> G[Submit form]
+    G --> H{Validation passes?}
+    H -->|No| I[Show validation errors inline]
+    I --> F
+    H -->|Yes| J[Patient::create persisted to DB]
+    J --> K[Redirect to /patients/id]
+    K --> L[Display patient profile]
+    L --> M([End])
