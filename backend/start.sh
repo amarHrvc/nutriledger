@@ -1,11 +1,6 @@
 #!/bin/sh
 
-cd backend
-
-mkdir -p database
-touch database/database.sqlite
-
-php artisan migrate --force
+php artisan migrate:fresh
 
 php artisan db:seed
 
@@ -17,4 +12,4 @@ SERVER_PID=$!
 
 trap "kill $QUEUE_PID $SERVER_PID" TERM INT
 
-wait -n $QUEUE_PID $SERVER_PID
+wait $SERVER_PID
