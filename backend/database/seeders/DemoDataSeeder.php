@@ -37,16 +37,16 @@ class DemoDataSeeder extends Seeder
     {
         return [
             $this->makePatient(
-                email: 'marko.petrovic@nutribase.test',
-                first: 'Marko',
-                last: 'Petrović',
+                email: 'amar.hajrovic@m-trak.com',
+                first: 'Test',
+                last: 'User',
                 dob: '1985-04-12',
                 gender: 'M',
                 blood: 'A+',
                 allergies: 'Gluten, lactose intolerance',
                 notes: 'Referred for obesity management. BMI 34.2 at intake. History of hypertension managed with Ramipril 5mg.',
                 address: 'Ferhadija 14', city: 'Sarajevo', postal: '71000', phone: '+387 61 123 456',
-                ec_name: 'Ana Petrović', ec_phone: '+387 61 654 321',
+                ec_name: 'Test Wife', ec_phone: '+387 61 654 321',
                 socio: [
                     'marital_status' => 'married',
                     'number_of_dependents' => 2,
