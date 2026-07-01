@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
@@ -29,7 +29,7 @@ export default function DietPlanSection({ patientId }: Props) {
   const [fullPlan, setFullPlan] = useState<DietPlan | null>(null)
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const fetchFullPlan = async (planId: string): Promise<DietPlan | null> => {
+  const fetchFullPlan = useCallback(async (planId: string): Promise<DietPlan | null> => {
     try {
       const res = await fetch(`/api/patients/${patientId}/diet-plans/${planId}`)
       const json = await res.json()
@@ -40,9 +40,9 @@ export default function DietPlanSection({ patientId }: Props) {
     } catch {
       return null
     }
-  }
+  }, [patientId])
 
-  const fetchPlans = async (): Promise<DietPlanSummary[]> => {
+  const fetchPlans = useCallback(async (): Promise<DietPlanSummary[]> => {
     try {
       const res = await fetch(`/api/patients/${patientId}/diet-plans`)
       const json = await res.json()
@@ -61,16 +61,16 @@ export default function DietPlanSection({ patientId }: Props) {
     } catch {
       return []
     }
-  }
+  }, [patientId, fetchFullPlan])
 
-  const stopPolling = () => {
+  const stopPolling = useCallback(() => {
     if (pollingRef.current) {
       clearInterval(pollingRef.current)
       pollingRef.current = null
     }
-  }
+  }, [])
 
-  const startPolling = () => {
+  const startPolling = useCallback(() => {
     if (pollingRef.current) return
     pollingRef.current = setInterval(async () => {
       const latest = await fetchPlans()
@@ -79,7 +79,7 @@ export default function DietPlanSection({ patientId }: Props) {
         stopPolling()
       }
     }, 3000)
-  }
+  }, [fetchPlans, stopPolling])
 
   useEffect(() => {
     fetchPlans().then(items => {
@@ -88,7 +88,7 @@ export default function DietPlanSection({ patientId }: Props) {
     })
 
     return stopPolling
-  }, [patientId, fetchPlans, startPolling])
+  }, [patientId, fetchPlans, startPolling, stopPolling])
 
   const handleGenerate = async () => {
     setGenerating(true)
