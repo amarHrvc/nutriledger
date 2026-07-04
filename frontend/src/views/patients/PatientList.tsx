@@ -166,7 +166,7 @@ export default function PatientList() {
         />
       </Card>
 
-      <Dialog open={formOpen} onClose={() => setFormOpen(false)} fullWidth maxWidth='sm'>
+      <Dialog open={formOpen} onClose={() => setFormOpen(false)} fullWidth maxWidth='md'>
         <DialogTitle>Create Patient</DialogTitle>
         <DialogContent sx={{ pt: 2 }}>
           <PatientForm onSuccess={() => setFormOpen(false)} onCancel={() => setFormOpen(false)} />

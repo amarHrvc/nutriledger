@@ -218,6 +218,281 @@ export interface PatientSummaryResource {
   phone: string;
 }
 
+export type RegisterPatientRequestGender = typeof RegisterPatientRequestGender[keyof typeof RegisterPatientRequestGender];
+
+
+export const RegisterPatientRequestGender = {
+  M: 'M',
+  F: 'F',
+} as const;
+
+/**
+ * @nullable
+ */
+export type RegisterPatientRequestBloodType = typeof RegisterPatientRequestBloodType[keyof typeof RegisterPatientRequestBloodType] | null;
+
+
+export const RegisterPatientRequestBloodType = {
+  'A+': 'A+',
+  'A-': 'A-',
+  'B+': 'B+',
+  'B-': 'B-',
+  'AB+': 'AB+',
+  'AB-': 'AB-',
+  'O+': 'O+',
+  'O-': 'O-',
+} as const;
+
+/**
+ * @nullable
+ */
+export type RegisterPatientRequestSocioeconomicMaritalStatus = typeof RegisterPatientRequestSocioeconomicMaritalStatus[keyof typeof RegisterPatientRequestSocioeconomicMaritalStatus] | null;
+
+
+export const RegisterPatientRequestSocioeconomicMaritalStatus = {
+  single: 'single',
+  married: 'married',
+  divorced: 'divorced',
+  widowed: 'widowed',
+  separated: 'separated',
+  other: 'other',
+} as const;
+
+/**
+ * @nullable
+ */
+export type RegisterPatientRequestSocioeconomicLivingArrangement = typeof RegisterPatientRequestSocioeconomicLivingArrangement[keyof typeof RegisterPatientRequestSocioeconomicLivingArrangement] | null;
+
+
+export const RegisterPatientRequestSocioeconomicLivingArrangement = {
+  alone: 'alone',
+  with_family: 'with_family',
+  with_partner: 'with_partner',
+  shared_housing: 'shared_housing',
+  care_facility: 'care_facility',
+  other: 'other',
+} as const;
+
+/**
+ * @nullable
+ */
+export type RegisterPatientRequestSocioeconomicEmploymentStatus = typeof RegisterPatientRequestSocioeconomicEmploymentStatus[keyof typeof RegisterPatientRequestSocioeconomicEmploymentStatus] | null;
+
+
+export const RegisterPatientRequestSocioeconomicEmploymentStatus = {
+  employed_full_time: 'employed_full_time',
+  employed_part_time: 'employed_part_time',
+  self_employed: 'self_employed',
+  unemployed: 'unemployed',
+  retired: 'retired',
+  student: 'student',
+  unable_to_work: 'unable_to_work',
+  other: 'other',
+} as const;
+
+/**
+ * @nullable
+ */
+export type RegisterPatientRequestSocioeconomicIncomeLevel = typeof RegisterPatientRequestSocioeconomicIncomeLevel[keyof typeof RegisterPatientRequestSocioeconomicIncomeLevel] | null;
+
+
+export const RegisterPatientRequestSocioeconomicIncomeLevel = {
+  low: 'low',
+  lower_middle: 'lower_middle',
+  middle: 'middle',
+  upper_middle: 'upper_middle',
+  high: 'high',
+} as const;
+
+/**
+ * @nullable
+ */
+export type RegisterPatientRequestSocioeconomicEducationLevel = typeof RegisterPatientRequestSocioeconomicEducationLevel[keyof typeof RegisterPatientRequestSocioeconomicEducationLevel] | null;
+
+
+export const RegisterPatientRequestSocioeconomicEducationLevel = {
+  no_formal: 'no_formal',
+  primary: 'primary',
+  secondary: 'secondary',
+  vocational: 'vocational',
+  bachelors: 'bachelors',
+  masters: 'masters',
+  doctorate: 'doctorate',
+  other: 'other',
+} as const;
+
+/**
+ * @nullable
+ */
+export type RegisterPatientRequestSocioeconomicSmokingStatus = typeof RegisterPatientRequestSocioeconomicSmokingStatus[keyof typeof RegisterPatientRequestSocioeconomicSmokingStatus] | null;
+
+
+export const RegisterPatientRequestSocioeconomicSmokingStatus = {
+  never: 'never',
+  former: 'former',
+  current_light: 'current_light',
+  current_heavy: 'current_heavy',
+} as const;
+
+/**
+ * @nullable
+ */
+export type RegisterPatientRequestSocioeconomicAlcoholConsumption = typeof RegisterPatientRequestSocioeconomicAlcoholConsumption[keyof typeof RegisterPatientRequestSocioeconomicAlcoholConsumption] | null;
+
+
+export const RegisterPatientRequestSocioeconomicAlcoholConsumption = {
+  none: 'none',
+  occasional: 'occasional',
+  moderate: 'moderate',
+  heavy: 'heavy',
+} as const;
+
+/**
+ * @nullable
+ */
+export type RegisterPatientRequestSocioeconomicPhysicalActivityLevel = typeof RegisterPatientRequestSocioeconomicPhysicalActivityLevel[keyof typeof RegisterPatientRequestSocioeconomicPhysicalActivityLevel] | null;
+
+
+export const RegisterPatientRequestSocioeconomicPhysicalActivityLevel = {
+  sedentary: 'sedentary',
+  lightly_active: 'lightly_active',
+  moderately_active: 'moderately_active',
+  very_active: 'very_active',
+} as const;
+
+/**
+ * @nullable
+ */
+export type RegisterPatientRequestSocioeconomicTransportationAccess = typeof RegisterPatientRequestSocioeconomicTransportationAccess[keyof typeof RegisterPatientRequestSocioeconomicTransportationAccess] | null;
+
+
+export const RegisterPatientRequestSocioeconomicTransportationAccess = {
+  own_vehicle: 'own_vehicle',
+  public_transport: 'public_transport',
+  rideshare: 'rideshare',
+  walking: 'walking',
+  limited: 'limited',
+  none: 'none',
+} as const;
+
+/**
+ * @nullable
+ */
+export type RegisterPatientRequestSocioeconomicFoodSecurityStatus = typeof RegisterPatientRequestSocioeconomicFoodSecurityStatus[keyof typeof RegisterPatientRequestSocioeconomicFoodSecurityStatus] | null;
+
+
+export const RegisterPatientRequestSocioeconomicFoodSecurityStatus = {
+  food_secure: 'food_secure',
+  marginally_secure: 'marginally_secure',
+  food_insecure: 'food_insecure',
+  severely_insecure: 'severely_insecure',
+} as const;
+
+/**
+ * Socioeconomic fields (all optional on create)
+ */
+export type RegisterPatientRequestSocioeconomic = {
+  /** @nullable */
+  marital_status?: RegisterPatientRequestSocioeconomicMaritalStatus;
+  /**
+     * @minimum 0
+     * @maximum 20
+     * @nullable
+     */
+  number_of_dependents?: number | null;
+  /** @nullable */
+  living_arrangement?: RegisterPatientRequestSocioeconomicLivingArrangement;
+  /** @nullable */
+  employment_status?: RegisterPatientRequestSocioeconomicEmploymentStatus;
+  /**
+     * @maxLength 255
+     * @nullable
+     */
+  occupation?: string | null;
+  /** @nullable */
+  income_level?: RegisterPatientRequestSocioeconomicIncomeLevel;
+  /** @nullable */
+  has_health_insurance?: boolean | null;
+  /** @nullable */
+  education_level?: RegisterPatientRequestSocioeconomicEducationLevel;
+  /** @nullable */
+  smoking_status?: RegisterPatientRequestSocioeconomicSmokingStatus;
+  /** @nullable */
+  alcohol_consumption?: RegisterPatientRequestSocioeconomicAlcoholConsumption;
+  /** @nullable */
+  physical_activity_level?: RegisterPatientRequestSocioeconomicPhysicalActivityLevel;
+  /** @nullable */
+  has_family_support?: boolean | null;
+  /** @nullable */
+  has_caregiver?: boolean | null;
+  /** @nullable */
+  transportation_access?: RegisterPatientRequestSocioeconomicTransportationAccess;
+  /** @nullable */
+  food_security_status?: RegisterPatientRequestSocioeconomicFoodSecurityStatus;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  dietary_restrictions_cultural?: string | null;
+  /**
+     * @maxLength 2000
+     * @nullable
+     */
+  additional_notes?: string | null;
+};
+
+export interface RegisterPatientRequest {
+  /**
+     * Account fields — the created account is always role "pacijent";
+  role is not client-supplied so this endpoint cannot mint doctor/admin accounts.
+     * @maxLength 255
+     */
+  name: string;
+  email: string;
+  /** @minLength 8 */
+  password: string;
+  /**
+     * Patient core fields
+     * @maxLength 50
+     */
+  first_name: string;
+  /** @maxLength 50 */
+  last_name: string;
+  date_of_birth: string;
+  gender: RegisterPatientRequestGender;
+  /** @maxLength 33 */
+  phone: string;
+  /**
+     * @maxLength 100
+     * @nullable
+     */
+  address?: string | null;
+  /**
+     * @maxLength 33
+     * @nullable
+     */
+  city?: string | null;
+  /**
+     * @maxLength 20
+     * @nullable
+     */
+  postal_code?: string | null;
+  /** @maxLength 100 */
+  emergency_contact_name: string;
+  /** @maxLength 50 */
+  emergency_contact_phone: string;
+  /** @nullable */
+  blood_type?: RegisterPatientRequestBloodType;
+  /** @nullable */
+  allergies?: string | null;
+  /** @nullable */
+  medical_notes?: string | null;
+  /** @minLength 8 */
+  password_confirmation: string;
+  /** Socioeconomic fields (all optional on create) */
+  socioeconomic?: RegisterPatientRequestSocioeconomic;
+}
+
 export type StorePatientRequestGender = typeof StorePatientRequestGender[keyof typeof StorePatientRequestGender];
 
 
@@ -1080,6 +1355,16 @@ export type PatientsDietPlansSend202 = {
   message: 'Diet plan delivery initiated.';
   status: 202;
   data: PatientsDietPlansSend202Data;
+};
+
+export type PatientsRegister201Data = {
+  patient: PatientResource;
+};
+
+export type PatientsRegister201 = {
+  message: 'Patient registered successfully.';
+  status: 201;
+  data: PatientsRegister201Data;
 };
 
 export type PatientsIndexParams = {

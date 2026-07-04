@@ -10,15 +10,72 @@ import type {
   ModelNotFoundExceptionResponse,
   PatientsIndex200,
   PatientsIndexParams,
+  PatientsRegister201,
   PatientsShow200,
   PatientsStore201,
   PatientsUpdate200,
+  RegisterPatientRequest,
   StorePatientRequest,
   UpdatePatientRequest,
   ValidationExceptionResponse
 } from '../nutriBaseAPI.schemas';
 
 import { customFetchMutator } from '../../auth.mutator';
+
+/**
+ * @summary Create a patient-role login account and its linked patient record together,
+in one transaction. Used when a doctor or admin onboards a brand-new patient
+who does not yet have an account
+ */
+export type patientsRegisterResponse201 = {
+  data: PatientsRegister201
+  status: 201
+}
+
+export type patientsRegisterResponse401 = {
+  data: AuthenticationExceptionResponse
+  status: 401
+}
+
+export type patientsRegisterResponse403 = {
+  data: AuthorizationExceptionResponse
+  status: 403
+}
+
+export type patientsRegisterResponse422 = {
+  data: ValidationExceptionResponse
+  status: 422
+}
+
+export type patientsRegisterResponseSuccess = (patientsRegisterResponse201) & {
+  headers: Headers;
+};
+export type patientsRegisterResponseError = (patientsRegisterResponse401 | patientsRegisterResponse403 | patientsRegisterResponse422) & {
+  headers: Headers;
+};
+
+export type patientsRegisterResponse = (patientsRegisterResponseSuccess | patientsRegisterResponseError)
+
+export const getPatientsRegisterUrl = () => {
+
+
+
+
+  return `http://localhost:8000/api/patients/register`
+}
+
+export const patientsRegister = async (registerPatientRequest: RegisterPatientRequest, options?: RequestInit): Promise<patientsRegisterResponse> => {
+
+  return customFetchMutator<patientsRegisterResponse>(getPatientsRegisterUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      registerPatientRequest,)
+  }
+);}
+
 
 export type patientsIndexResponse200 = {
   data: PatientsIndex200

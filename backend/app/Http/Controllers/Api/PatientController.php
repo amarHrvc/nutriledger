@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\PatientIndexRequest;
+use App\Http\Requests\RegisterPatientRequest;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
 use App\Http\Resources\Api\PatientResource;
@@ -63,6 +64,30 @@ class PatientController extends ApiController
         );
 
         return $this->created('Patient created successfully.',
+            ['patient' => new PatientResource($patient)]);
+    }
+
+    /**
+     * Create a patient-role login account and its linked patient record together,
+     * in one transaction. Used when a doctor or admin onboards a brand-new patient
+     * who does not yet have an account.
+     *
+     * @throws \Throwable
+     */
+    public function register(RegisterPatientRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+
+        $userData = collect($validated)->only(['name', 'email', 'password'])->toArray();
+        $patientData = collect($validated)->except(['name', 'email', 'password', 'password_confirmation', 'socioeconomic'])->toArray();
+
+        $patient = $this->patientService->createPatientWithAccount(
+            $userData,
+            $patientData,
+            $validated['socioeconomic'] ?? null
+        );
+
+        return $this->created('Patient registered successfully.',
             ['patient' => new PatientResource($patient)]);
     }
 

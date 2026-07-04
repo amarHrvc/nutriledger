@@ -19,6 +19,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::apiResource('users', UserController::class);
 
+    Route::post('/patients/register', [PatientController::class, 'register'])->name('patients.register');
     Route::apiResource('patients', PatientController::class);
 
     Route::middleware(['role:admin'])->group(function () {
