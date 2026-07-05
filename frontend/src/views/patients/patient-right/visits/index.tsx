@@ -111,80 +111,78 @@ export default function VisitsTab({ patient }: { patient: PatientResource }) {
 		)
 	}
 
-	if (!visits || visits.length === 0) {
-		return (
-			<Card>
-				<CardContent>
-					<Stack spacing={2}>
-						<Typography variant='body2' color='text.secondary' sx={{ textAlign: 'center', py: 4 }}>
-							No visits recorded.
-						</Typography>
-						{!isPatient && (
-							<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-								<Button variant='contained' onClick={() => setAddDialogOpen(true)}>
-									Add Visit
-								</Button>
-							</Box>
-						)}
-					</Stack>
-				</CardContent>
-			</Card>
-		)
-	}
+	const hasVisits = visits && visits.length > 0
 
 	return (
 		<>
 			<Card>
 				<CardContent>
-					<Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
-						{!isPatient && (
-							<Button variant='contained' onClick={() => setAddDialogOpen(true)}>
-								Add Visit
-							</Button>
-						)}
-					</Box>
+					{hasVisits ? (
+						<>
+							<Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+								{!isPatient && (
+									<Button variant='contained' onClick={() => setAddDialogOpen(true)}>
+										Add Visit
+									</Button>
+								)}
+							</Box>
 
-					<TableContainer>
-						<Table>
-							<TableHead>
-								<TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-									<TableCell>Date</TableCell>
-									<TableCell>Doctor</TableCell>
-									<TableCell>Notes</TableCell>
-									<TableCell align='right'>Actions</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{visits.map(visit => (
-									<TableRow key={visit.id}>
-										<TableCell>{formatDate(visit.attributes.date)}</TableCell>
-										<TableCell>{visit.attributes.doctorName || '—'}</TableCell>
-										<TableCell>{visit.attributes.notes || '—'}</TableCell>
-										<TableCell align='right'>
-											<Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-												<Button
-													size='small'
-													variant='outlined'
-													component={Link}
-													href={`/dashboard/visits/${visit.id}?patient=${patient.id}`}
-												>
-													View
-												</Button>
-												<Button
-													size='small'
-													variant='outlined'
-													onClick={() => handleEditClick(visit)}
-													disabled={!visit.attributes.isEditable}
-												>
-													Edit
-												</Button>
-											</Box>
-										</TableCell>
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
-					</TableContainer>
+							<TableContainer>
+								<Table>
+									<TableHead>
+										<TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+											<TableCell>Date</TableCell>
+											<TableCell>Doctor</TableCell>
+											<TableCell>Notes</TableCell>
+											<TableCell align='right'>Actions</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{visits.map(visit => (
+											<TableRow key={visit.id}>
+												<TableCell>{formatDate(visit.attributes.date)}</TableCell>
+												<TableCell>{visit.attributes.doctorName || '—'}</TableCell>
+												<TableCell>{visit.attributes.notes || '—'}</TableCell>
+												<TableCell align='right'>
+													<Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+														<Button
+															size='small'
+															variant='outlined'
+															component={Link}
+															href={`/dashboard/visits/${visit.id}?patient=${patient.id}`}
+														>
+															View
+														</Button>
+														<Button
+															size='small'
+															variant='outlined'
+															onClick={() => handleEditClick(visit)}
+															disabled={!visit.attributes.isEditable}
+														>
+															Edit
+														</Button>
+													</Box>
+												</TableCell>
+											</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							</TableContainer>
+						</>
+					) : (
+						<Stack spacing={2}>
+							<Typography variant='body2' color='text.secondary' sx={{ textAlign: 'center', py: 4 }}>
+								No visits recorded.
+							</Typography>
+							{!isPatient && (
+								<Box sx={{ display: 'flex', justifyContent: 'center' }}>
+									<Button variant='contained' onClick={() => setAddDialogOpen(true)}>
+										Add Visit
+									</Button>
+								</Box>
+							)}
+						</Stack>
+					)}
 				</CardContent>
 			</Card>
 
